@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'widgets/custom_search_bar.dart';
+import 'widgets/category_button.dart';
+import 'widgets/tabs.dart';
+import 'widgets/input_field.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -56,6 +59,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  String _searchValue = '';
+  String _selectedCategory = '';
+  TextEditingController _controller = TextEditingController();
 
   void _incrementCounter() {
     setState(() {
@@ -66,6 +72,20 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  void _handleSearch(String value) {
+    setState(() {
+      _searchValue = value;
+    });
+    print('Search value from main: $_searchValue');
+  }
+
+  void _handleCategoryPress(String category) {
+    setState((){
+      _selectedCategory = category;
+    });
+    print('Category pressed: $category');
   }
 
   @override
@@ -104,14 +124,40 @@ class _MyHomePageState extends State<MyHomePage> {
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 80,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            CustomSearchBar(
+              onSearch: _handleSearch,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            CategoryButton(
+              onPress: _handleCategoryPress,
+              category: 'Category 1',
+              icon: Icons.camera_alt,
             ),
+            Tabs(
+              tabs: [
+                TabItem(id: 1, title: 'Tab 1'),
+                TabItem(id: 2, title: 'Tab 2'),
+                TabItem(id: 3, title: 'Tab 3'),
+              ],
+              onTabTap: (index) {
+                print('Tab ${index} tapped');
+              },
+            ),
+            InputField(
+              label: 'Label',
+              hint: 'Hint',
+              controller: _controller,
+              error: '',
+              onChanged: (value) {
+                print('Value changed: $value');
+              },
+              onIconTap: () {
+                print('Icon tapped');
+              },
+              icon: Icons.calendar_today,
+            ),
+            Text('Current search: $_searchValue'),
           ],
         ),
       ),
@@ -119,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
