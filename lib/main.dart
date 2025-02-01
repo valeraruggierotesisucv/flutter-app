@@ -5,6 +5,7 @@ import 'widgets/tabs.dart';
 import 'widgets/input_field.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/custom_button.dart';
+import 'widgets/user_card.dart';
 
 void main() {
   runApp(const MyApp());
@@ -126,6 +127,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   debugPrint('Following pressed');
                 },
               ),
+              const SizedBox(height: 20),
+              UserCard(
+                username: 'John Doe',
+                profileImage:
+                    'https://avatars.githubusercontent.com/u/82007072',
+                onPressUser: () {
+                  debugPrint('User pressed');
+                },
+                onPressButton: () {
+                  debugPrint('Button pressed');
+                },
+              ),
+              const SizedBox(height: 20),
               const SizedBox(height: 20),
               CustomButton(
                 label: 'Button',
