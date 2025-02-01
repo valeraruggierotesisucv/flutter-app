@@ -6,6 +6,7 @@ import 'widgets/input_field.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/custom_button.dart';
 import 'widgets/user_card.dart';
+import 'widgets/social_interactions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -153,6 +154,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 category: 'Category 1',
                 icon: Icons.camera_alt,
               ),
+              const SizedBox(height: 20),
+              SocialInteractions(
+                isLiked: false,
+                onLike: () {
+                  debugPrint('Like pressed');
+                },
+                onComment: () {
+                  debugPrint('Comment pressed');
+                },
+                onShare: () {
+                  debugPrint('Share pressed');
+                },
+              ),
+              const SizedBox(height: 20),
               Tabs(
                 tabs: [
                   TabItem(id: 1, title: 'Tab 1'),
