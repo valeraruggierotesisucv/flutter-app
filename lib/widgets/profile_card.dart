@@ -49,13 +49,10 @@ class ProfileCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 40,
-                backgroundImage:
-                    profileImage != null ? NetworkImage(profileImage!) : null,
                 child: profileImage == null
                     ? const Icon(Icons.person, size: 40)
                     : null,
               ),
-              const SizedBox(width: 16),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

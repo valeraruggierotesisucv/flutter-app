@@ -65,14 +65,14 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _searchValue = value;
     });
-    print('Search value from main: $_searchValue');
+    debugPrint('Search value from main: $_searchValue');
   }
 
   void _handleCategoryPress(String category) {
     setState(() {
       _selectedCategory = category;
     });
-    print('Category pressed: $category');
+    debugPrint('Category pressed: $category');
   }
 
   @override
@@ -110,19 +110,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 following: 120,
                 isFollowing: false,
                 onFollow: () {
-                  print('Follow pressed');
+                  debugPrint('Follow pressed');
                 },
                 onEditProfile: () {
-                  print('Edit profile pressed');
+                  debugPrint('Edit profile pressed');
                 },
                 onEvents: () {
-                  print('Events pressed');
+                  debugPrint('Events pressed');
                 },
                 onFollowers: () {
-                  print('Followers pressed');
+                  debugPrint('Followers pressed');
                 },
                 onFollowed: () {
-                  print('Following pressed');
+                  debugPrint('Following pressed');
                 },
               ),
               CategoryButton(
@@ -137,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   TabItem(id: 3, title: 'Tab 3'),
                 ],
                 onTabTap: (index) {
-                  print('Tab ${index} tapped');
+                  debugPrint('Tab ${index} tapped');
                 },
               ),
               InputField(
@@ -146,10 +146,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: _controller,
                 error: '',
                 onChanged: (value) {
-                  print('Value changed: $value');
+                  debugPrint('Value changed: $value');
                 },
                 onIconTap: () {
-                  print('Icon tapped');
+                  debugPrint('Icon tapped');
                 },
                 icon: Icons.calendar_today,
               ),
