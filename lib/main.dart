@@ -3,6 +3,7 @@ import 'widgets/custom_search_bar.dart';
 import 'widgets/category_button.dart';
 import 'widgets/tabs.dart';
 import 'widgets/input_field.dart';
+import 'widgets/loading.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -62,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _searchValue = '';
   String _selectedCategory = '';
   TextEditingController _controller = TextEditingController();
+  bool _isLoading = true;
 
   void _incrementCounter() {
     setState(() {
@@ -90,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -106,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
+      body: _isLoading ? Loading() : Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
