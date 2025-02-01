@@ -17,7 +17,7 @@ class ProfileCard extends StatelessWidget {
   final bool disableFollowButton;
 
   const ProfileCard({
-    Key? key,
+    super.key,
     this.profileImage,
     required this.username,
     required this.biography,
@@ -32,7 +32,7 @@ class ProfileCard extends StatelessWidget {
     this.onFollowers,
     this.onFollowed,
     this.disableFollowButton = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
