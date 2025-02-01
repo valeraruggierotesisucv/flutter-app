@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/custom_search_bar.dart';
-import 'widgets/category_button.dart';
-import 'widgets/tabs.dart';
-import 'widgets/input_field.dart';
+import 'widgets/comments_section.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -105,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -126,38 +124,26 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 80,
           children: <Widget>[
-            CustomSearchBar(
-              onSearch: _handleSearch,
-            ),
-            CategoryButton(
-              onPress: _handleCategoryPress,
-              category: 'Category 1',
-              icon: Icons.camera_alt,
-            ),
-            Tabs(
-              tabs: [
-                TabItem(id: 1, title: 'Tab 1'),
-                TabItem(id: 2, title: 'Tab 2'),
-                TabItem(id: 3, title: 'Tab 3'),
-              ],
-              onTabTap: (index) {
-                print('Tab ${index} tapped');
-              },
-            ),
-            InputField(
-              label: 'Label',
-              hint: 'Hint',
-              controller: _controller,
-              error: '',
-              onChanged: (value) {
-                print('Value changed: $value');
-              },
-              onIconTap: () {
-                print('Icon tapped');
-              },
-              icon: Icons.calendar_today,
-            ),
-            Text('Current search: $_searchValue'),
+            Text("Hello"),
+            ElevatedButton(
+              onPressed: () => showCommentsModal(
+                context, 
+                [
+                  Comment(
+                    username: "starryskies23", 
+                    timeAgo: DateTime.now(), 
+                    message: "This is a comment! 😄"
+                  ),
+                ],
+                User(username: "starryskies23", imageUrl: "https://m.media-amazon.com/images/S/pv-target-images/16627900db04b76fae3b64266ca161511422059cd24062fb5d900971003a0b70._SX1080_FMjpg_.jpg"),
+                (comment) async {
+                  await Future.delayed(const Duration(seconds: 1));
+                  print("Comment submitted: ${comment.message}");
+                  return comment;
+                }
+              ),
+              child: Text("Show Comments")
+            )
           ],
         ),
       ),
