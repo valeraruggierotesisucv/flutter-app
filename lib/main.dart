@@ -1,3 +1,4 @@
+import 'package:eventify/widgets/event_card.dart';
 import 'package:flutter/material.dart';
 import 'widgets/custom_search_bar.dart';
 import 'widgets/category_button.dart';
@@ -5,6 +6,9 @@ import 'widgets/tabs.dart';
 import 'widgets/input_field.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/custom_button.dart';
+import 'widgets/user_card.dart';
+import 'widgets/social_interactions.dart';
+import 'widgets/custom_chip.dart';
 
 void main() {
   runApp(const MyApp());
@@ -76,6 +80,33 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('Category pressed: $category');
   }
 
+  Future<void> onComment(String eventId, String comment) async {
+    // Implementar lógica para manejar comentarios
+    debugPrint('Nuevo comentario en evento $eventId: $comment');
+  }
+
+  Future<List<Comment>> fetchComments() async {
+    // Simular obtención de comentarios
+    return [
+      Comment(
+        username: "Usuario1",
+        comment: "¡Gran evento!",
+        profileImage: "https://avatars.githubusercontent.com/u/1",
+        timestamp: DateTime.now(),
+      ),
+      Comment(
+        username: "Usuario2",
+        comment: "¡No puedo esperar!",
+        profileImage: "https://avatars.githubusercontent.com/u/2",
+        timestamp: DateTime.now(),
+      ),
+    ];
+  }
+
+  void handleLike() {
+    debugPrint('Like presionado');
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -127,6 +158,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               const SizedBox(height: 20),
+              UserCard(
+                username: 'John Doe',
+                profileImage:
+                    'https://avatars.githubusercontent.com/u/82007072',
+                onPressUser: () {
+                  debugPrint('User pressed');
+                },
+                onPressButton: () {
+                  debugPrint('Button pressed');
+                },
+              ),
+              const SizedBox(height: 20),
+              const SizedBox(height: 20),
               CustomButton(
                 label: 'Button',
                 onPress: () {
@@ -138,6 +182,61 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPress: _handleCategoryPress,
                 category: 'Category 1',
                 icon: Icons.camera_alt,
+              ),
+              const SizedBox(height: 20),
+              SocialInteractions(
+                isLiked: false,
+                onLike: () {
+                  debugPrint('Like pressed');
+                },
+                onComment: () {
+                  debugPrint('Comment pressed');
+                },
+                onShare: () {
+                  debugPrint('Share pressed');
+                },
+              ),
+              const SizedBox(height: 20),
+              CustomChip(
+                label: 'Chip',
+                onPress: () {
+                  debugPrint('Chip pressed');
+                },
+              ),
+              const SizedBox(height: 20),
+              EventCard(
+                eventId: "1",
+                profileImage:
+                    "https://avatars.githubusercontent.com/u/82007072",
+                username: "John Doe",
+                eventImage: "https://picsum.photos/800/600",
+                title: "Evento de Programación Flutter",
+                description:
+                    "Únete a nosotros para aprender sobre el desarrollo de aplicaciones móviles con Flutter. ¡Será una experiencia increíble!",
+                isLiked: false,
+                date: "10/02/2001",
+                latitude: "19.4326",
+                longitude: "-99.1332",
+                startsAt: "10:00",
+                endsAt: "18:00",
+                category: "Tecnología",
+                variant: EventCardVariant.defaultCard,
+                userComment: {
+                  "username": "CurrentUser",
+                  "profileImage": "https://avatars.githubusercontent.com/u/3",
+                },
+                onPressUser: () {
+                  debugPrint('Usuario presionado');
+                },
+                onComment: onComment,
+                onShare: () {
+                  debugPrint('Compartir presionado');
+                },
+                onMoreDetails: () {
+                  debugPrint('Ver más detalles presionado');
+                },
+                fetchComments: fetchComments,
+                handleLike: handleLike,
               ),
               Tabs(
                 tabs: [
@@ -166,11 +265,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
