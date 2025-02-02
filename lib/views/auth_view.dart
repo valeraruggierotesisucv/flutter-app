@@ -1,3 +1,4 @@
+import 'package:eventify/routes.dart';
 import 'package:flutter/material.dart';
 
 class AuthView extends StatelessWidget {
@@ -31,7 +32,8 @@ class AuthView extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/home');
+                Navigator.pushReplacementNamed(
+                    context, '/${AppTabs.home.name}');
               },
               child: const Text('Ingresar'),
             ),
