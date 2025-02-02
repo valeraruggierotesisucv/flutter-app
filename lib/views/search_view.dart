@@ -1,3 +1,4 @@
+import 'package:eventify/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class SearchView extends StatefulWidget {
@@ -41,64 +42,19 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Búsqueda'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Buscar...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchResults.clear();
-                          });
-                        },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onChanged: (value) {
-                if (value.length > 2) {
-                  _performSearch(value);
-                }
-              },
-            ),
+        appBar: AppBar(
+          title: const Text('Búsqueda'),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomButton(
+                label: "Event Details",
+                onPress: () =>
+                    {Navigator.pushReplacementNamed(context, '/home')},
+              )
+            ],
           ),
-          Expanded(
-            child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : _searchResults.isEmpty
-                    ? const Center(
-                        child: Text('No hay resultados'),
-                      )
-                    : ListView.builder(
-                        itemCount: _searchResults.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: const Icon(Icons.article),
-                            title: Text(_searchResults[index]),
-                            onTap: () {
-                              // TODO: Implementar acción al seleccionar un resultado
-                            },
-                          );
-                        },
-                      ),
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }
