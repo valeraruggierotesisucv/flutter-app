@@ -1,8 +1,7 @@
+import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:flutter/material.dart';
-import 'widgets/custom_search_bar.dart';
-import 'widgets/category_button.dart';
-import 'widgets/tabs.dart';
-import 'widgets/input_field.dart';
+import 'widgets/event_thumbnail.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -123,41 +122,18 @@ class _MyHomePageState extends State<MyHomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 80,
           children: <Widget>[
-            CustomSearchBar(
-              onSearch: _handleSearch,
-            ),
-            CategoryButton(
-              onPress: _handleCategoryPress,
-              category: 'Category 1',
-              icon: Icons.camera_alt,
-            ),
-            Tabs(
-              tabs: [
-                TabItem(id: 1, title: 'Tab 1'),
-                TabItem(id: 2, title: 'Tab 2'),
-                TabItem(id: 3, title: 'Tab 3'),
-              ],
-              onTabTap: (index) {
-                print('Tab ${index} tapped');
-              },
-            ),
-            InputField(
-              label: 'Label',
-              hint: 'Hint',
-              controller: _controller,
-              error: '',
-              onChanged: (value) {
-                print('Value changed: $value');
-              },
-              onIconTap: () {
-                print('Icon tapped');
-              },
-              icon: Icons.calendar_today,
-            ),
-            Text('Current search: $_searchValue'),
+            
+            EventThumbnailList(events: [
+              ...List.generate(10, (index) => Event(id: '${index + 1}', imageUrl: 'https://notizulia.net/wp-content/uploads/2023/01/avatar-kE4H-1024x512@abc.jpeg')),
+            ],
+              onEventTap: (id) {
+                print('Event tapped: $id');
+              }
+            )
           ],
         ),
       ),
