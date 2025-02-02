@@ -3,6 +3,8 @@ import 'widgets/custom_search_bar.dart';
 import 'widgets/category_button.dart';
 import 'widgets/tabs.dart';
 import 'widgets/input_field.dart';
+import 'widgets/profile_card.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -16,21 +18,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
@@ -78,14 +65,14 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _searchValue = value;
     });
-    print('Search value from main: $_searchValue');
+    debugPrint('Search value from main: $_searchValue');
   }
 
   void _handleCategoryPress(String category) {
-    setState((){
+    setState(() {
       _selectedCategory = category;
     });
-    print('Category pressed: $category');
+    debugPrint('Category pressed: $category');
   }
 
   @override
@@ -106,59 +93,69 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 80,
-          children: <Widget>[
-            CustomSearchBar(
-              onSearch: _handleSearch,
-            ),
-            CategoryButton(
-              onPress: _handleCategoryPress,
-              category: 'Category 1',
-              icon: Icons.camera_alt,
-            ),
-            Tabs(
-              tabs: [
-                TabItem(id: 1, title: 'Tab 1'),
-                TabItem(id: 2, title: 'Tab 2'),
-                TabItem(id: 3, title: 'Tab 3'),
-              ],
-              onTabTap: (index) {
-                print('Tab ${index} tapped');
-              },
-            ),
-            InputField(
-              label: 'Label',
-              hint: 'Hint',
-              controller: _controller,
-              error: '',
-              onChanged: (value) {
-                print('Value changed: $value');
-              },
-              onIconTap: () {
-                print('Icon tapped');
-              },
-              icon: Icons.calendar_today,
-            ),
-            Text('Current search: $_searchValue'),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CustomSearchBar(
+                onSearch: _handleSearch,
+              ),
+              const SizedBox(height: 20),
+              ProfileCard(
+                username: 'John Doe',
+                biography: 'Flutter Developer',
+                events: 10,
+                followers: 150,
+                following: 120,
+                isFollowing: false,
+                onFollow: () {
+                  debugPrint('Follow pressed');
+                },
+                onEditProfile: () {
+                  debugPrint('Edit profile pressed');
+                },
+                onEvents: () {
+                  debugPrint('Events pressed');
+                },
+                onFollowers: () {
+                  debugPrint('Followers pressed');
+                },
+                onFollowed: () {
+                  debugPrint('Following pressed');
+                },
+              ),
+              CategoryButton(
+                onPress: _handleCategoryPress,
+                category: 'Category 1',
+                icon: Icons.camera_alt,
+              ),
+              Tabs(
+                tabs: [
+                  TabItem(id: 1, title: 'Tab 1'),
+                  TabItem(id: 2, title: 'Tab 2'),
+                  TabItem(id: 3, title: 'Tab 3'),
+                ],
+                onTabTap: (index) {
+                  debugPrint('Tab ${index} tapped');
+                },
+              ),
+              InputField(
+                label: 'Label',
+                hint: 'Hint',
+                controller: _controller,
+                error: '',
+                onChanged: (value) {
+                  debugPrint('Value changed: $value');
+                },
+                onIconTap: () {
+                  debugPrint('Icon tapped');
+                },
+                icon: Icons.calendar_today,
+              ),
+              Text('Current search: $_searchValue'),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
