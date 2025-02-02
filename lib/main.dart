@@ -4,6 +4,7 @@ import 'widgets/category_button.dart';
 import 'widgets/tabs.dart';
 import 'widgets/input_field.dart';
 import 'widgets/profile_card.dart';
+import 'widgets/custom_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -125,6 +126,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   debugPrint('Following pressed');
                 },
               ),
+              const SizedBox(height: 20),
+              CustomButton(
+                label: 'Button',
+                onPress: () {
+                  debugPrint('Button pressed');
+                },
+              ),
+              const SizedBox(height: 20),
               CategoryButton(
                 onPress: _handleCategoryPress,
                 category: 'Category 1',
