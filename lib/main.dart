@@ -1,14 +1,4 @@
-import 'package:eventify/widgets/event_card.dart';
 import 'package:flutter/material.dart';
-import 'widgets/custom_search_bar.dart';
-import 'widgets/category_button.dart';
-import 'widgets/tabs.dart';
-import 'widgets/input_field.dart';
-import 'widgets/profile_card.dart';
-import 'widgets/custom_button.dart';
-import 'widgets/user_card.dart';
-import 'widgets/social_interactions.dart';
-import 'widgets/custom_chip.dart';
 import 'views/auth_view.dart';
 import 'views/home_view.dart';
 import 'views/search_view.dart';
