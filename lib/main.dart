@@ -2,8 +2,21 @@
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:flutter/material.dart';
-
-
+import 'widgets/custom_search_bar.dart';
+import 'widgets/category_button.dart';
+import 'widgets/tabs.dart';
+import 'widgets/input_field.dart';
+import 'widgets/profile_card.dart';
+import 'widgets/custom_button.dart';
+import 'widgets/user_card.dart';
+import 'widgets/social_interactions.dart';
+import 'widgets/custom_chip.dart';
+import 'views/auth_view.dart';
+import 'views/home_view.dart';
+import 'views/search_view.dart';
+import 'views/add_view.dart';
+import 'views/notifications_view.dart';
+import 'views/profile_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,120 +29,82 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Eventify',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const AuthView(),
+        '/home': (context) => const MainView(),
+        '/search': (context) => const SearchView(),
+        '/add': (context) => const AddView(),
+        '/notifications': (context) => const NotificationsView(),
+        '/profile': (context) => const ProfileView(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MainView extends StatefulWidget {
+  const MainView({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainView> createState() => _MainViewState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  String _searchValue = '';
-  String _selectedCategory = '';
-  TextEditingController _controller = TextEditingController();
-  bool _isLoading = true;
+class _MainViewState extends State<MainView> {
+  int _selectedIndex = 0;
 
-  void _incrementCounter() {
+  static final List<Widget> _screens = [
+    const HomeView(),
+    const SearchView(),
+    const AddView(),
+    const NotificationsView(),
+    const ProfileView(),
+  ];
+
+  void _onItemTapped(int index) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _selectedIndex = index;
     });
-  }
-
-  void _handleSearch(String value) {
-    setState(() {
-      _searchValue = value;
-    });
-    debugPrint('Search value from main: $_searchValue');
-  }
-
-  void _handleCategoryPress(String category) {
-    setState(() {
-      _selectedCategory = category;
-    });
-    debugPrint('Category pressed: $category');
-  }
-
-  Future<void> onComment(String eventId, String comment) async {
-    // Implementar lógica para manejar comentarios
-    debugPrint('Nuevo comentario en evento $eventId: $comment');
-  }
-
-
-
-  void handleLike() {
-    debugPrint('Like presionado');
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppHeader(title: 'Eventify', goBack: () => print('Back button pressed')),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 80,
-          children: <Widget>[
-            
-            EventThumbnailList(events: [
-              ...List.generate(10, (index) => Event(id: '${index + 1}', imageUrl: 'https://notizulia.net/wp-content/uploads/2023/01/avatar-kE4H-1024x512@abc.jpeg')),
-            ],
-              onEventTap: (id) {
-                print('Event tapped: $id');
-              }
-            )
-          ],
-        ),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.add_circle_outline),
+            selectedIcon: Icon(Icons.add_circle),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_outlined),
+            selectedIcon: Icon(Icons.notifications),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: '',
+          ),
+        ],
       ),
     );
   }
