@@ -1,4 +1,6 @@
 import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/custom_input.dart';
+import 'package:eventify/widgets/icon_logo.dart';
 import 'package:flutter/material.dart';
 import 'widgets/custom_search_bar.dart';
 import 'widgets/category_button.dart';
@@ -118,40 +120,51 @@ class _MyHomePageState extends State<MyHomePage> {
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 80,
+          spacing: 10,
           children: <Widget>[
-            CustomSearchBar(
-              onSearch: _handleSearch,
+            IconLogo(width: 300, height: 300),
+            // Default Input with placeholder and required
+            CustomInput(
+              label: 'Search',
+              placeholder: 'Search for an event',
+              variant: InputVariant.defaultInput,
+              required: true,
+              value: _searchValue,
+              onChangeValue: _handleSearch,
             ),
-            CategoryButton(
-              onPress: _handleCategoryPress,
-              category: 'Category 1',
-              icon: Icons.camera_alt,
+            
+            const SizedBox(height: 20),
+          
+            // Arrow variant with placeholder
+            CustomInput(
+              label: 'Category',
+              placeholder: 'Select a category',
+              variant: InputVariant.arrow,
+              required: false,
+              onPress: () => print('Category pressed'),
             ),
-            Tabs(
-              tabs: [
-                TabItem(id: 1, title: 'Tab 1'),
-                TabItem(id: 2, title: 'Tab 2'),
-                TabItem(id: 3, title: 'Tab 3'),
-              ],
-              onTabTap: (index) {
-                print('Tab ${index} tapped');
-              },
+            
+            const SizedBox(height: 20),
+            
+            // Optional field (not required)
+            CustomInput(
+              label: 'Description',
+              placeholder: 'Enter event description',
+              variant: InputVariant.defaultInput,
+              required: false,
+              onChangeValue: (value) => print(value),
             ),
-            InputField(
-              label: 'Label',
-              hint: 'Hint',
-              controller: _controller,
-              error: '',
-              onChanged: (value) {
-                print('Value changed: $value');
-              },
-              onIconTap: () {
-                print('Icon tapped');
-              },
-              icon: Icons.calendar_today,
+            
+            const SizedBox(height: 20),
+            
+            // Multiline disabled
+            CustomInput(
+              label: 'Location',
+              placeholder: 'Enter event location',
+              variant: InputVariant.defaultInput,
+              multiline: false,
+              onChangeValue: (value) => print(value),
             ),
-            Text('Current search: $_searchValue'),
           ],
         ),
       ),
