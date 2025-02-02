@@ -70,8 +70,6 @@ class _HomeViewState extends State<HomeView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CustomSearchBar(onSearch: _handleSearch),
-          const SizedBox(height: 20),
           ProfileCard(
             username: 'John Doe',
             biography: 'Flutter Developer',
@@ -95,6 +93,8 @@ class _HomeViewState extends State<HomeView> {
               debugPrint('Following pressed');
             },
           ),
+          const SizedBox(height: 20),
+          CustomSearchBar(onSearch: _handleSearch),
           const SizedBox(height: 20),
           UserCard(
             username: 'John Doe',
