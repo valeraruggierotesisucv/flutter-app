@@ -1,12 +1,45 @@
+import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/views/add_view.dart';
+import 'package:eventify/views/auth_view.dart';
+import 'package:eventify/views/onboarding_view.dart';
+import 'package:eventify/views/forgot_password_view.dart';
+import 'package:eventify/views/forgot_password_login_view.dart';
+import 'package:eventify/views/success_view.dart';
+import 'package:eventify/views/event_details_view.dart';
+import 'package:eventify/views/profile_details_view.dart';
+import 'package:eventify/views/folowers_view.dart';
+import 'package:eventify/views/followed_view.dart';
+import 'package:eventify/views/edit_profile_view.dart';
+import 'package:eventify/views/edit_event_view.dart';
+import 'package:eventify/views/configuration_view.dart';
+import 'package:eventify/views/change_password_view.dart';
+import 'package:eventify/views/search_view.dart';
+import 'package:eventify/views/notifications_view.dart';
+import 'package:eventify/views/profile_view.dart';
+import 'package:eventify/navigation.dart';
+import 'package:eventify/routes.dart';
 
-import 'package:eventify/widgets/app_header.dart';
-import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+void main() async {
+  // supabase setup
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
 
-
-void main() {
-  runApp(const MyApp());
+  await Supabase.initialize(
+      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+      url: dotenv.env['SUPABASE_URL']!
+  );
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => UserProvider(), 
+      child: const MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,121 +49,44 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Eventify',
+      home: AuthGate(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        // AppScreens routes
+        '/${AppScreens.auth.name}': (context) => const AuthView(),
+        '/${AppScreens.onboarding.name}': (context) => const OnboardingView(),
+        '/${AppScreens.forgotPassword.name}': (context) =>
+            const ForgotPasswordView(),
+        '/${AppScreens.forgotPasswordLogin.name}': (context) =>
+            const ForgotPasswordLoginView(),
+        '/${AppScreens.success.name}': (context) => const SuccessView(),
+        '/${AppScreens.eventDetails.name}': (context) =>
+            const EventDetailsView(),
+        '/${AppScreens.profileDetails.name}': (context) =>
+            const ProfileDetailsView(),
+        '/${AppScreens.folowers.name}': (context) => const FollowersView(),
+        '/${AppScreens.folowed.name}': (context) => const FollowedView(),
+        '/${AppScreens.editProfile.name}': (context) => const EditProfileView(),
+        '/${AppScreens.editEvent.name}': (context) => const EditEventView(),
+        '/${AppScreens.configuration.name}': (context) =>
+            const ConfigurationView(),
+        '/${AppScreens.changePassword.name}': (context) =>
+            const ChangePasswordView(),
+
+        // AppTabs routes
+        '/${AppTabs.home.name}': (context) => const MainView(),
+        '/${AppTabs.search.name}': (context) => const SearchView(),
+        '/${AppTabs.add.name}': (context) => const AddView(),
+        '/${AppTabs.notifications.name}': (context) =>
+            const NotificationsView(),
+        '/${AppTabs.profile.name}': (context) => const ProfileView(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  String _searchValue = '';
-  String _selectedCategory = '';
-  TextEditingController _controller = TextEditingController();
-  bool _isLoading = true;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  void _handleSearch(String value) {
-    setState(() {
-      _searchValue = value;
-    });
-    debugPrint('Search value from main: $_searchValue');
-  }
-
-  void _handleCategoryPress(String category) {
-    setState(() {
-      _selectedCategory = category;
-    });
-    debugPrint('Category pressed: $category');
-  }
-
-  Future<void> onComment(String eventId, String comment) async {
-    // Implementar lógica para manejar comentarios
-    debugPrint('Nuevo comentario en evento $eventId: $comment');
-  }
-
-
-
-  void handleLike() {
-    debugPrint('Like presionado');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppHeader(title: 'Eventify', goBack: () => print('Back button pressed')),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 80,
-          children: <Widget>[
-            
-            EventThumbnailList(events: [
-              ...List.generate(10, (index) => Event(id: '${index + 1}', imageUrl: 'https://notizulia.net/wp-content/uploads/2023/01/avatar-kE4H-1024x512@abc.jpeg')),
-            ],
-              onEventTap: (id) {
-                print('Event tapped: $id');
-              }
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
