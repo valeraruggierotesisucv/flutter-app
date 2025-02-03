@@ -1,7 +1,8 @@
 
+import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:flutter/material.dart';
-import 'widgets/event_thumbnail.dart';
+
 
 
 void main() {
@@ -80,23 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('Nuevo comentario en evento $eventId: $comment');
   }
 
-  Future<List<Comment>> fetchComments() async {
-    // Simular obtención de comentarios
-    return [
-      Comment(
-        username: "Usuario1",
-        comment: "¡Gran evento!",
-        profileImage: "https://avatars.githubusercontent.com/u/1",
-        timestamp: DateTime.now(),
-      ),
-      Comment(
-        username: "Usuario2",
-        comment: "¡No puedo esperar!",
-        profileImage: "https://avatars.githubusercontent.com/u/2",
-        timestamp: DateTime.now(),
-      ),
-    ];
-  }
+
 
   void handleLike() {
     debugPrint('Like presionado');
