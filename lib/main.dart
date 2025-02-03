@@ -21,16 +21,19 @@ import 'package:eventify/navigation.dart';
 import 'package:eventify/routes.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   // supabase setup
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
   await Supabase.initialize(
-      anonKey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybmFycHZwYWZieXd2ZHpmdWtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU4NTgwNDAsImV4cCI6MjA1MTQzNDA0MH0.SThw_RVKOggwgR0OzUcA40y66ZIPO21wqJygsJQxk6I",
-      url: "https://crnarpvpafbywvdzfukp.supabase.co"); 
+      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+      url: dotenv.env['SUPABASE_URL']!
+  );
   runApp(
     ChangeNotifierProvider(
       create: (_) => UserProvider(), 
