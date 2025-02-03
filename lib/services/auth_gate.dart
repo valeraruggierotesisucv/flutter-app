@@ -1,8 +1,10 @@
 /* This will constinuosly listen for auth changes */
-import 'package:eventify/main.dart';
+
+import 'package:eventify/navigation.dart';
 import 'package:eventify/views/auth_view.dart';
-import 'package:flutter/material.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/material.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
