@@ -1,6 +1,8 @@
+
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_input.dart';
 import 'package:eventify/widgets/icon_logo.dart';
+
 import 'package:flutter/material.dart';
 import 'widgets/custom_search_bar.dart';
 import 'widgets/category_button.dart';
@@ -20,21 +22,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
@@ -66,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _searchValue = '';
   String _selectedCategory = '';
   TextEditingController _controller = TextEditingController();
+  bool _isLoading = true;
 
   void _incrementCounter() {
     setState(() {
@@ -82,18 +70,46 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _searchValue = value;
     });
-    print('Search value from main: $_searchValue');
+    debugPrint('Search value from main: $_searchValue');
   }
 
   void _handleCategoryPress(String category) {
-    setState((){
+    setState(() {
       _selectedCategory = category;
     });
-    print('Category pressed: $category');
+    debugPrint('Category pressed: $category');
+  }
+
+  Future<void> onComment(String eventId, String comment) async {
+    // Implementar lógica para manejar comentarios
+    debugPrint('Nuevo comentario en evento $eventId: $comment');
+  }
+
+  Future<List<Comment>> fetchComments() async {
+    // Simular obtención de comentarios
+    return [
+      Comment(
+        username: "Usuario1",
+        comment: "¡Gran evento!",
+        profileImage: "https://avatars.githubusercontent.com/u/1",
+        timestamp: DateTime.now(),
+      ),
+      Comment(
+        username: "Usuario2",
+        comment: "¡No puedo esperar!",
+        profileImage: "https://avatars.githubusercontent.com/u/2",
+        timestamp: DateTime.now(),
+      ),
+    ];
+  }
+
+  void handleLike() {
+    debugPrint('Like presionado');
   }
 
   @override
   Widget build(BuildContext context) {
+    
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -101,8 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+
       appBar: AppHeader(title: 'Eventify', goBack: () => print('Back button pressed')),
       body: Center(
+
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -167,11 +185,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
