@@ -75,10 +75,10 @@ class _HomeViewState extends State<HomeView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(user!.email),
+
           ProfileCard(
-            username: 'John Doe',
-            biography: 'Flutter Developer',
+            username: user!.email,
+            biography: 'ID --> ${user.id}, \n Access token ---> ${user.accessToken}',
             events: 10,
             followers: 150,
             following: 120,

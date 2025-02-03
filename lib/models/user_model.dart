@@ -2,9 +2,7 @@
 class UserModel {
   final String id;
   final String email;
+  final String accessToken; 
 
-  UserModel({
-    required this.id, 
-    required this.email
-  });
+  UserModel({required this.id, required this.email, required this.accessToken});
 }

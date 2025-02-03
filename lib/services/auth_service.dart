@@ -18,7 +18,11 @@ class AuthService {
     
     if (response.user != null) {
       // Crear un modelo de usuario
-      final user = UserModel(id: response.user!.id, email: response.user!.email!);
+      final user = UserModel(
+        id: response.user!.id, 
+        email: response.user!.email!,
+        accessToken: response.session!.accessToken
+      );
 
       // Verificar si el widget está montado antes de acceder al contexto
       if (!context.mounted) return;
@@ -35,7 +39,11 @@ class AuthService {
 
     if (response.user != null) {
       // Crear un modelo de usuario
-      final user = UserModel(id: response.user!.id, email: response.user!.email!);
+      final user = UserModel(
+        id: response.user!.id, 
+        email: response.user!.email!,
+        accessToken: response.session!.accessToken
+      );
 
       // Verificar si el widget está montado antes de acceder al contexto
       if (!context.mounted) return;

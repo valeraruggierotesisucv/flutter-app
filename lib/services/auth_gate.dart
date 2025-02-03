@@ -33,7 +33,12 @@ class AuthGate extends StatelessWidget {
 
           if (session != null) {
             // Si hay sesión activa, actualizamos el estado del usuario
-            final user = UserModel(id: session.user.id, email: session.user.email!);
+            final user = UserModel(
+              id: session.user.id, 
+              email: session.user.email!,
+              accessToken: session.accessToken
+            );
+            
             Provider.of<UserProvider>(context, listen: false).setUser(user);
 
             return MainView();
