@@ -4,10 +4,8 @@ import 'package:eventify/widgets/custom_input.dart';
 import 'package:eventify/widgets/icon_logo.dart';
 
 import 'package:flutter/material.dart';
-import 'widgets/custom_search_bar.dart';
-import 'widgets/category_button.dart';
-import 'widgets/tabs.dart';
-import 'widgets/input_field.dart';
+
+import 'widgets/comments_section.dart';
 
 void main() {
   runApp(const MyApp());
@@ -117,10 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-
       appBar: AppHeader(title: 'Eventify', goBack: () => print('Back button pressed')),
       body: Center(
-
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -140,49 +136,26 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 10,
           children: <Widget>[
-            IconLogo(width: 300, height: 300),
-            // Default Input with placeholder and required
-            CustomInput(
-              label: 'Search',
-              placeholder: 'Search for an event',
-              variant: InputVariant.defaultInput,
-              required: true,
-              value: _searchValue,
-              onChangeValue: _handleSearch,
-            ),
-            
-            const SizedBox(height: 20),
-          
-            // Arrow variant with placeholder
-            CustomInput(
-              label: 'Category',
-              placeholder: 'Select a category',
-              variant: InputVariant.arrow,
-              required: false,
-              onPress: () => print('Category pressed'),
-            ),
-            
-            const SizedBox(height: 20),
-            
-            // Optional field (not required)
-            CustomInput(
-              label: 'Description',
-              placeholder: 'Enter event description',
-              variant: InputVariant.defaultInput,
-              required: false,
-              onChangeValue: (value) => print(value),
-            ),
-            
-            const SizedBox(height: 20),
-            
-            // Multiline disabled
-            CustomInput(
-              label: 'Location',
-              placeholder: 'Enter event location',
-              variant: InputVariant.defaultInput,
-              multiline: false,
-              onChangeValue: (value) => print(value),
-            ),
+            Text("Hello"),
+            ElevatedButton(
+              onPressed: () => showCommentsModal(
+                context, 
+                [
+                  Comment(
+                    username: "starryskies23", 
+                    timeAgo: DateTime.now(), 
+                    message: "This is a comment! 😄"
+                  ),
+                ],
+                User(username: "starryskies23", imageUrl: "https://m.media-amazon.com/images/S/pv-target-images/16627900db04b76fae3b64266ca161511422059cd24062fb5d900971003a0b70._SX1080_FMjpg_.jpg"),
+                (comment) async {
+                  await Future.delayed(const Duration(seconds: 1));
+                  print("Comment submitted: ${comment.message}");
+                  return comment;
+                }
+              ),
+              child: Text("Show Comments")
+            )
           ],
         ),
       ),
