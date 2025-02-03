@@ -1,11 +1,8 @@
 
-import 'package:eventify/widgets/app_header.dart';
-import 'package:eventify/widgets/custom_input.dart';
-import 'package:eventify/widgets/icon_logo.dart';
-
+import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:flutter/material.dart';
+import 'widgets/event_thumbnail.dart';
 
-import 'widgets/comments_section.dart';
 
 void main() {
   runApp(const MyApp());
@@ -133,28 +130,18 @@ class _MyHomePageState extends State<MyHomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 10,
+
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 80,
           children: <Widget>[
-            Text("Hello"),
-            ElevatedButton(
-              onPressed: () => showCommentsModal(
-                context, 
-                [
-                  Comment(
-                    username: "starryskies23", 
-                    timeAgo: DateTime.now(), 
-                    message: "This is a comment! 😄"
-                  ),
-                ],
-                User(username: "starryskies23", imageUrl: "https://m.media-amazon.com/images/S/pv-target-images/16627900db04b76fae3b64266ca161511422059cd24062fb5d900971003a0b70._SX1080_FMjpg_.jpg"),
-                (comment) async {
-                  await Future.delayed(const Duration(seconds: 1));
-                  print("Comment submitted: ${comment.message}");
-                  return comment;
-                }
-              ),
-              child: Text("Show Comments")
+            
+            EventThumbnailList(events: [
+              ...List.generate(10, (index) => Event(id: '${index + 1}', imageUrl: 'https://notizulia.net/wp-content/uploads/2023/01/avatar-kE4H-1024x512@abc.jpeg')),
+            ],
+              onEventTap: (id) {
+                print('Event tapped: $id');
+              }
             )
           ],
         ),
