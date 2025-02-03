@@ -4,12 +4,7 @@ import 'widgets/custom_search_bar.dart';
 import 'widgets/category_button.dart';
 import 'widgets/tabs.dart';
 import 'widgets/input_field.dart';
-import 'widgets/profile_card.dart';
-import 'widgets/custom_button.dart';
-import 'widgets/user_card.dart';
-import 'widgets/social_interactions.dart';
-import 'widgets/custom_chip.dart';
-
+import 'widgets/loading.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -54,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _searchValue = '';
   String _selectedCategory = '';
   TextEditingController _controller = TextEditingController();
+  bool _isLoading = true;
 
   void _incrementCounter() {
     setState(() {
@@ -109,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -125,145 +122,60 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CustomSearchBar(
-                onSearch: _handleSearch,
-              ),
-              const SizedBox(height: 20),
-              ProfileCard(
-                username: 'John Doe',
-                biography: 'Flutter Developer',
-                events: 10,
-                followers: 150,
-                following: 120,
-                isFollowing: false,
-                onFollow: () {
-                  debugPrint('Follow pressed');
-                },
-                onEditProfile: () {
-                  debugPrint('Edit profile pressed');
-                },
-                onEvents: () {
-                  debugPrint('Events pressed');
-                },
-                onFollowers: () {
-                  debugPrint('Followers pressed');
-                },
-                onFollowed: () {
-                  debugPrint('Following pressed');
-                },
-              ),
-              const SizedBox(height: 20),
-              UserCard(
-                username: 'John Doe',
-                profileImage:
-                    'https://avatars.githubusercontent.com/u/82007072',
-                onPressUser: () {
-                  debugPrint('User pressed');
-                },
-                onPressButton: () {
-                  debugPrint('Button pressed');
-                },
-              ),
-              const SizedBox(height: 20),
-              const SizedBox(height: 20),
-              CustomButton(
-                label: 'Button',
-                onPress: () {
-                  debugPrint('Button pressed');
-                },
-              ),
-              const SizedBox(height: 20),
-              CategoryButton(
-                onPress: _handleCategoryPress,
-                category: 'Category 1',
-                icon: Icons.camera_alt,
-              ),
-              const SizedBox(height: 20),
-              SocialInteractions(
-                isLiked: false,
-                onLike: () {
-                  debugPrint('Like pressed');
-                },
-                onComment: () {
-                  debugPrint('Comment pressed');
-                },
-                onShare: () {
-                  debugPrint('Share pressed');
-                },
-              ),
-              const SizedBox(height: 20),
-              CustomChip(
-                label: 'Chip',
-                onPress: () {
-                  debugPrint('Chip pressed');
-                },
-              ),
-              const SizedBox(height: 20),
-              EventCard(
-                eventId: "1",
-                profileImage:
-                    "https://avatars.githubusercontent.com/u/82007072",
-                username: "John Doe",
-                eventImage: "https://picsum.photos/800/600",
-                title: "Evento de Programación Flutter",
-                description:
-                    "Únete a nosotros para aprender sobre el desarrollo de aplicaciones móviles con Flutter. ¡Será una experiencia increíble!",
-                isLiked: false,
-                date: "10/02/2001",
-                latitude: "19.4326",
-                longitude: "-99.1332",
-                startsAt: "10:00",
-                endsAt: "18:00",
-                category: "Tecnología",
-                variant: EventCardVariant.defaultCard,
-                userComment: {
-                  "username": "CurrentUser",
-                  "profileImage": "https://avatars.githubusercontent.com/u/3",
-                },
-                onPressUser: () {
-                  debugPrint('Usuario presionado');
-                },
-                onComment: onComment,
-                onShare: () {
-                  debugPrint('Compartir presionado');
-                },
-                onMoreDetails: () {
-                  debugPrint('Ver más detalles presionado');
-                },
-                fetchComments: fetchComments,
-                handleLike: handleLike,
-              ),
-              Tabs(
-                tabs: [
-                  TabItem(id: 1, title: 'Tab 1'),
-                  TabItem(id: 2, title: 'Tab 2'),
-                  TabItem(id: 3, title: 'Tab 3'),
-                ],
-                onTabTap: (index) {
-                  debugPrint('Tab ${index} tapped');
-                },
-              ),
-              InputField(
-                label: 'Label',
-                hint: 'Hint',
-                controller: _controller,
-                error: '',
-                onChanged: (value) {
-                  debugPrint('Value changed: $value');
-                },
-                onIconTap: () {
-                  debugPrint('Icon tapped');
-                },
-                icon: Icons.calendar_today,
-              ),
-              Text('Current search: $_searchValue'),
-            ],
-          ),
+
+      body: _isLoading ? Loading() : Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          //
+          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+          // action in the IDE, or press "p" in the console), to see the
+          // wireframe for each widget.
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 80,
+          children: <Widget>[
+            CustomSearchBar(
+              onSearch: _handleSearch,
+            ),
+            CategoryButton(
+              onPress: _handleCategoryPress,
+              category: 'Category 1',
+              icon: Icons.camera_alt,
+            ),
+            Tabs(
+              tabs: [
+                TabItem(id: 1, title: 'Tab 1'),
+                TabItem(id: 2, title: 'Tab 2'),
+                TabItem(id: 3, title: 'Tab 3'),
+              ],
+              onTabTap: (index) {
+                print('Tab ${index} tapped');
+              },
+            ),
+            InputField(
+              label: 'Label',
+              hint: 'Hint',
+              controller: _controller,
+              error: '',
+              onChanged: (value) {
+                print('Value changed: $value');
+              },
+              onIconTap: () {
+                print('Icon tapped');
+              },
+              icon: Icons.calendar_today,
+            ),
+            Text('Current search: $_searchValue'),
+          ],
         ),
       ),
     );
