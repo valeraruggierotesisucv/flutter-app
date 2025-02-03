@@ -1,3 +1,4 @@
+import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
 import 'package:eventify/views/add_view.dart';
 import 'package:eventify/views/auth_view.dart';
@@ -20,6 +21,7 @@ import 'package:eventify/navigation.dart';
 import 'package:eventify/routes.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -29,7 +31,12 @@ void main() async {
       anonKey:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybmFycHZwYWZieXd2ZHpmdWtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU4NTgwNDAsImV4cCI6MjA1MTQzNDA0MH0.SThw_RVKOggwgR0OzUcA40y66ZIPO21wqJygsJQxk6I",
       url: "https://crnarpvpafbywvdzfukp.supabase.co"); 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => UserProvider(), 
+      child: const MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {

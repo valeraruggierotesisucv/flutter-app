@@ -85,7 +85,7 @@ class _ProfileViewState extends State<ProfileView> {
               icon: Icons.logout,
               title: 'Cerrar Sesión',
               onTap: () {
-                authService.signOut();
+                authService.signOut(context);
               },
             ),
           ],

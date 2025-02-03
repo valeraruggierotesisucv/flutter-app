@@ -24,7 +24,7 @@ class _AuthViewState extends State<AuthView> {
     final password = _passwordControler.text;
 
     try {
-      await authService.signInWithEmailPassword(email, password);
+      await authService.signInWithEmailPassword(email, password, context);
 
     } catch (e) {
       if (mounted) {

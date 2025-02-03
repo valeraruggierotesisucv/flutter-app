@@ -1,7 +1,10 @@
 /* This will constinuosly listen for auth changes */
 
+import 'package:eventify/models/user_model.dart';
 import 'package:eventify/navigation.dart';
+import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/views/auth_view.dart';
+import 'package:provider/provider.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +32,10 @@ class AuthGate extends StatelessWidget {
           final session = snapshot.hasData ? snapshot.data?.session : null;
 
           if (session != null) {
+            // Si hay sesión activa, actualizamos el estado del usuario
+            final user = UserModel(id: session.user.id, email: session.user.email!);
+            Provider.of<UserProvider>(context, listen: false).setUser(user);
+
             return MainView();
           } else {
             return AuthView(); 

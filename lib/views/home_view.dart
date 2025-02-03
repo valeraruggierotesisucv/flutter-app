@@ -1,3 +1,4 @@
+import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
 import 'package:eventify/widgets/profile_card.dart';
@@ -10,6 +11,7 @@ import 'package:eventify/widgets/event_card.dart';
 import 'package:eventify/widgets/tabs.dart';
 import 'package:eventify/widgets/input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -23,7 +25,6 @@ class _HomeViewState extends State<HomeView> {
   String _selectedCategory = '';
   TextEditingController _controller = TextEditingController();
   final authService = AuthService();
- 
 
   void _handleSearch(String value) {
     setState(() {
@@ -68,13 +69,13 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final userEmail = authService.getCurrentUserEmail(); 
+    final user = Provider.of<UserProvider>(context).user; 
     return Scaffold(
         body: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(userEmail ?? "Not user "),
+          Text(user!.email),
           ProfileCard(
             username: 'John Doe',
             biography: 'Flutter Developer',
