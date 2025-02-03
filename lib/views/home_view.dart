@@ -1,3 +1,4 @@
+import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/user_card.dart';
@@ -21,6 +22,8 @@ class _HomeViewState extends State<HomeView> {
   String _searchValue = '';
   String _selectedCategory = '';
   TextEditingController _controller = TextEditingController();
+  final authService = AuthService();
+ 
 
   void _handleSearch(String value) {
     setState(() {
@@ -65,11 +68,13 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final userEmail = authService.getCurrentUserEmail(); 
     return Scaffold(
         body: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Text(userEmail ?? "Not user "),
           ProfileCard(
             username: 'John Doe',
             biography: 'Flutter Developer',

@@ -1,7 +1,15 @@
+import 'package:eventify/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
+
+  @override
+  State createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  final authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +85,7 @@ class ProfileView extends StatelessWidget {
               icon: Icons.logout,
               title: 'Cerrar Sesión',
               onTap: () {
-                Navigator.of(context).pushReplacementNamed('/');
+                authService.signOut();
               },
             ),
           ],

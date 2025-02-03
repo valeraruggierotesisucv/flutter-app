@@ -1,8 +1,6 @@
-
-import 'package:eventify/widgets/app_header.dart';
-import 'package:eventify/widgets/event_thumbnail_list.dart';
+import 'package:eventify/services/auth_gate.dart';
 import 'package:flutter/material.dart';
-import 'package:eventify/views/add_view.dart'; 
+import 'package:eventify/views/add_view.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:eventify/views/onboarding_view.dart';
 import 'package:eventify/views/forgot_password_view.dart';
@@ -22,9 +20,15 @@ import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/views/home_view.dart';
 
 import 'package:eventify/routes.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-
-void main() {
+void main() async {
+  // supabase setup
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+      anonKey:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybmFycHZwYWZieXd2ZHpmdWtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU4NTgwNDAsImV4cCI6MjA1MTQzNDA0MH0.SThw_RVKOggwgR0OzUcA40y66ZIPO21wqJygsJQxk6I",
+      url: "https://crnarpvpafbywvdzfukp.supabase.co"); 
   runApp(const MyApp());
 }
 
@@ -36,32 +40,39 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Eventify',
+      home: AuthGate(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      initialRoute: '/${AppScreens.auth.name}',
       routes: {
         // AppScreens routes
         '/${AppScreens.auth.name}': (context) => const AuthView(),
         '/${AppScreens.onboarding.name}': (context) => const OnboardingView(),
-        '/${AppScreens.forgotPassword.name}': (context) => const ForgotPasswordView(),
-        '/${AppScreens.forgotPasswordLogin.name}': (context) => const ForgotPasswordLoginView(),
+        '/${AppScreens.forgotPassword.name}': (context) =>
+            const ForgotPasswordView(),
+        '/${AppScreens.forgotPasswordLogin.name}': (context) =>
+            const ForgotPasswordLoginView(),
         '/${AppScreens.success.name}': (context) => const SuccessView(),
-        '/${AppScreens.eventDetails.name}': (context) => const EventDetailsView(),
-        '/${AppScreens.profileDetails.name}': (context) => const ProfileDetailsView(),
+        '/${AppScreens.eventDetails.name}': (context) =>
+            const EventDetailsView(),
+        '/${AppScreens.profileDetails.name}': (context) =>
+            const ProfileDetailsView(),
         '/${AppScreens.folowers.name}': (context) => const FollowersView(),
         '/${AppScreens.folowed.name}': (context) => const FollowedView(),
         '/${AppScreens.editProfile.name}': (context) => const EditProfileView(),
         '/${AppScreens.editEvent.name}': (context) => const EditEventView(),
-        '/${AppScreens.configuration.name}': (context) => const ConfigurationView(),
-        '/${AppScreens.changePassword.name}': (context) => const ChangePasswordView(),
+        '/${AppScreens.configuration.name}': (context) =>
+            const ConfigurationView(),
+        '/${AppScreens.changePassword.name}': (context) =>
+            const ChangePasswordView(),
 
         // AppTabs routes
         '/${AppTabs.home.name}': (context) => const MainView(),
         '/${AppTabs.search.name}': (context) => const SearchView(),
         '/${AppTabs.add.name}': (context) => const AddView(),
-        '/${AppTabs.notifications.name}': (context) => const NotificationsView(),
+        '/${AppTabs.notifications.name}': (context) =>
+            const NotificationsView(),
         '/${AppTabs.profile.name}': (context) => const ProfileView(),
       },
     );
