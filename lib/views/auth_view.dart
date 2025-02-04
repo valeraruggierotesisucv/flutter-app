@@ -41,11 +41,20 @@ class _AuthViewState extends State<AuthView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // email
+          Text(
+            "Eventify",
+            style: TextStyle(
+              fontFamily: 'SFProRounded',
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           TextField(
             controller: _emailController,
             decoration:  InputDecoration(
                 labelText: 'Correo electrónico',
+                
                 border: OutlineInputBorder(),
               ),
           ),
