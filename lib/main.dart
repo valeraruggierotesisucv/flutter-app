@@ -1,3 +1,4 @@
+import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
 import 'package:eventify/views/add_view.dart';
@@ -19,11 +20,13 @@ import 'package:eventify/views/notifications_view.dart';
 import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/navigation.dart';
 import 'package:eventify/routes.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:eventify/models/locale.dart';
 
 void main() async {
   // supabase setup
@@ -48,43 +51,59 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Eventify',
-      home: AuthGate(),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: true,
-      ),
-      routes: {
-        // AppScreens routes
-        '/${AppScreens.auth.name}': (context) => const AuthView(),
-        '/${AppScreens.onboarding.name}': (context) => const OnboardingView(),
-        '/${AppScreens.forgotPassword.name}': (context) =>
-            const ForgotPasswordView(),
-        '/${AppScreens.forgotPasswordLogin.name}': (context) =>
-            const ForgotPasswordLoginView(),
-        '/${AppScreens.success.name}': (context) => const SuccessView(),
-        '/${AppScreens.eventDetails.name}': (context) =>
-            const EventDetailsView(),
-        '/${AppScreens.profileDetails.name}': (context) =>
-            const ProfileDetailsView(),
-        '/${AppScreens.folowers.name}': (context) => const FollowersView(),
-        '/${AppScreens.folowed.name}': (context) => const FollowedView(),
-        '/${AppScreens.editProfile.name}': (context) => const EditProfileView(),
-        '/${AppScreens.editEvent.name}': (context) => const EditEventView(),
-        '/${AppScreens.configuration.name}': (context) =>
-            const ConfigurationView(),
-        '/${AppScreens.changePassword.name}': (context) =>
-            const ChangePasswordView(),
+    return ChangeNotifierProvider(
+      create: (context) => LocaleModel(),
+      child: Consumer<LocaleModel>(
+        builder: (context, localeModel, child) => MaterialApp(
+          title: 'Eventify',
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('es'),
+          ],
+          locale: localeModel.locale,
+          home: const AuthGate(),
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+            useMaterial3: true,
+          ),
+          routes: {
+            // AppScreens routes
+            '/${AppScreens.auth.name}': (context) => const AuthView(),
+            '/${AppScreens.onboarding.name}': (context) => const OnboardingView(),
+            '/${AppScreens.forgotPassword.name}': (context) =>
+                const ForgotPasswordView(),
+            '/${AppScreens.forgotPasswordLogin.name}': (context) =>
+                const ForgotPasswordLoginView(),
+            '/${AppScreens.success.name}': (context) => const SuccessView(),
+            '/${AppScreens.eventDetails.name}': (context) =>
+                const EventDetailsView(),
+            '/${AppScreens.profileDetails.name}': (context) =>
+                const ProfileDetailsView(),
+            '/${AppScreens.folowers.name}': (context) => const FollowersView(),
+            '/${AppScreens.folowed.name}': (context) => const FollowedView(),
+            '/${AppScreens.editProfile.name}': (context) => const EditProfileView(),
+            '/${AppScreens.editEvent.name}': (context) => const EditEventView(),
+            '/${AppScreens.configuration.name}': (context) =>
+                const ConfigurationView(),
+            '/${AppScreens.changePassword.name}': (context) =>
+                const ChangePasswordView(),
 
-        // AppTabs routes
-        '/${AppTabs.home.name}': (context) => const MainView(),
-        '/${AppTabs.search.name}': (context) => const SearchView(),
-        '/${AppTabs.add.name}': (context) => const AddView(),
-        '/${AppTabs.notifications.name}': (context) =>
-            const NotificationsView(),
-        '/${AppTabs.profile.name}': (context) => const ProfileView(),
-      },
+            // AppTabs routes
+            '/${AppTabs.home.name}': (context) => const MainView(),
+            '/${AppTabs.search.name}': (context) => const SearchView(),
+            '/${AppTabs.add.name}': (context) => const AddView(),
+            '/${AppTabs.notifications.name}': (context) =>
+                const NotificationsView(),
+            '/${AppTabs.profile.name}': (context) => const ProfileView(),
+          },
+        ),
+      ),
     );
   }
 }
