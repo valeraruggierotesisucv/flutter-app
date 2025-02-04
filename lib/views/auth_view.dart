@@ -1,9 +1,14 @@
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/widgets/custom_button.dart';
+import 'package:eventify/widgets/date_time_picker_field.dart';
+import 'package:eventify/widgets/icon_logo.dart';
+import 'package:eventify/widgets/input_field.dart';
+import 'package:eventify/widgets/tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:eventify/models/locale.dart';
-import 'package:provider/provider.dart';
+
+
+
+
 
 class AuthView extends StatefulWidget {
   const AuthView({super.key});
@@ -16,17 +21,26 @@ class _AuthViewState extends State<AuthView> {
   final authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordControler = TextEditingController();
-
+  final _nameController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  DateTime _dateOfBirthController = DateTime.now();
+  final tabs = [
+    TabItem(id: 1, title: 'Iniciar Sesión'),
+    TabItem(id: 2, title: 'Registrarse'),
+  ];
+  int selectedTab = 1;
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-    final selectedLocale = Localizations.localeOf(context).toString();
-    
+   
     // login button pressed
     void login() async {
       // prepare data
       final email = _emailController.text;
       final password = _passwordControler.text;
+
+      print(email);
+      print(password);
 
       try {
         await authService.signInWithEmailPassword(email, password, context);
@@ -39,56 +53,146 @@ class _AuthViewState extends State<AuthView> {
       }
     }
 
+    void register() async {
+      final name = _nameController.text;
+      final fullName = _fullNameController.text;
+      final email = _emailController.text;
+      final password = _passwordControler.text;
+      final confirmPassword = _confirmPasswordController.text;
+    }
+
     return Scaffold(
-      body: Padding(padding: const EdgeInsets.all(16.0), 
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-
-          Text(
-            "Eventify",
-            style: TextStyle(
-              fontFamily: 'SFProRounded',
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          Consumer<LocaleModel>(
-              builder: (context, localeModel, child) =>
-              ElevatedButton(
-                onPressed: () => localeModel.set(Locale('es')),
-                child: Text('Spanish'),
+      backgroundColor: const Color(0xFFD9D9D9),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(0), 
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 350,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 50),
+                        child: IconLogo(
+                          width: 200,
+                          height: 200,
+                        ),
+                      ),
+                      Tabs(tabs: tabs, onTabTap: (id) {
+                        setState(() {
+                          selectedTab = id;
+                        });
+                      })
+                    ],
+                  ),
+                ),
               ),
-          ),
-          Text('${t.helloWorld} $selectedLocale'),
-          // email
-
-          TextField(
-            controller: _emailController,
-            decoration:  InputDecoration(
-                labelText: 'Correo electrónico',
-                
-                border: OutlineInputBorder(),
+              Expanded(
+                flex: 1,
+                child: SingleChildScrollView(
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height - 400,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                        child: selectedTab == 1 ? Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                InputField(
+                                  label: 'Correo electrónico',
+                                  hint: 'Correo electrónico',
+                                  error: '',
+                                  controller: _emailController,
+                                ),
+                                const SizedBox(height: 20),
+                                InputField(
+                                  label: 'Contraseña',
+                                  hint: 'Contraseña',
+                                  error: '',
+                                  controller: _passwordControler,
+                                ),
+                                const SizedBox(height: 60),
+                              ],
+                            ),
+                            CustomButton(
+                              label: "Iniciar Sesión",
+                              onPress: login,
+                            ),
+                          ],
+                        ): Column(
+                          children: [
+                            Column(
+                              spacing: 30,
+                              children: [
+                                InputField(
+                                  label: 'Nombre de Usuario',
+                                  hint: 'Nombre de Usuario',
+                                  error: '',
+                                  controller: _nameController,
+                                ),
+                                InputField(
+                                  label: 'Nombre Completo',
+                                  hint: 'Nombre Completo',
+                                  error: '',
+                                  controller: _fullNameController,
+                                ),
+                                InputField(
+                                  label: 'Correo electrónico',
+                                  hint: 'Correo electrónico',
+                                  error: '',
+                                  controller: _emailController
+                                ),
+                                DateTimePickerField(
+                                  label: 'Fecha de nacimiento',
+                                  value: _dateOfBirthController,
+                                  onChange: (value) => setState(() {
+                                    _dateOfBirthController = value;
+                                  })
+                                ),
+                                InputField(
+                                  label: 'Contraseña',
+                                  hint: 'Contraseña',
+                                  error: '',
+                                  controller: _passwordControler
+                                ),
+                                InputField(
+                                  label: 'Confirmar contraseña',
+                                  hint: 'Confirmar contraseña',
+                                  error: '',
+                                  controller: _confirmPasswordController
+                                ),
+                                const SizedBox(height: 10),
+                                CustomButton(
+                                  label: 'Registrarse',
+                                  onPress: register
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
+            ],
           ),
-          const SizedBox(height: 20,), 
-          // password
-          TextField(
-            controller: _passwordControler,
-            decoration:  InputDecoration(
-                labelText: 'Correo electrónico',
-                border: OutlineInputBorder(),
-              ),
-          ), 
-          const SizedBox(height: 20,), 
-          CustomButton(
-            label: "Iniciar Sesión", 
-            onPress: login,
-          )
-        ],
+        ),
       ),
-      )
     );
   }
 }

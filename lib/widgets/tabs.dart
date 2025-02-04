@@ -35,21 +35,22 @@ class _TabsState extends State<Tabs> with SingleTickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-    length: 3,
-    child: TabBar(
+      length: widget.tabs.length,
+      child: TabBar(
         dividerColor: Colors.transparent,
         indicatorSize: TabBarIndicatorSize.tab,
-        indicatorColor: Colors.blue,
+        indicatorColor: const Color(0xFF050F71),
         indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(width: 3, color: Colors.blue),
-          insets: EdgeInsets.symmetric(horizontal: 16.0),
+          borderSide: BorderSide(width: 3, color: const Color(0xFF050F71)),
+          insets: EdgeInsets.symmetric(horizontal: 32.0),
           borderRadius: BorderRadius.circular(10),
         ),
-          tabs: widget.tabs.map((tab) => Tab(text: tab.title)).toList(),
-          onTap: (index) {
-            widget.onTabTap(widget.tabs[index].id);
-          },
-        ),
+
+        tabs: widget.tabs.map((tab) => Tab(text: tab.title)).toList(),
+        onTap: (index) {
+          widget.onTabTap(widget.tabs[index].id);
+        },
+      ),
     );
   }
 }
