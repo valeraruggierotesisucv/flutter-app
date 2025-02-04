@@ -1,7 +1,10 @@
 import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/routes.dart';
 import 'package:eventify/services/auth_service.dart';
+import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
+import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/user_card.dart';
 import 'package:eventify/widgets/custom_button.dart';
@@ -32,17 +35,17 @@ class _HomeViewState extends State<HomeView> {
     debugPrint('Nuevo comentario en evento $eventId: $comment');
   }
 
-    
   Future<List<dynamic>> fetchEvents() async {
     // Add artificial delay of 2 seconds
     await Future.delayed(const Duration(seconds: 8));
-    
+
     return [
       {
         'id': '1',
         'title': 'Evento 1',
         'description': 'Descripción del evento 1',
-        'image': 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
+        'image':
+            'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
         'location': 'Ciudad, País',
         'date': DateTime.now(),
       },
@@ -50,7 +53,8 @@ class _HomeViewState extends State<HomeView> {
         'id': '2',
         'title': 'Evento 2',
         'description': 'Descripción del evento 2',
-        'image': 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
+        'image':
+            'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
         'location': 'Ciudad, País',
         'date': DateTime.now(),
       },
@@ -74,34 +78,37 @@ class _HomeViewState extends State<HomeView> {
                 future: fetchEvents(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height - 200, // Adjust this value as needed
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                    return Loading();
                   }
-                  
+
                   return Column(
-                    children: snapshot.data!.map((event) => EventCard(
-                      eventId: event['id'],
-                      profileImage: event['image'],
-                      username: 'Usuario 1',
-                      eventImage: event['image'],
-                      title: event['title'],
-                      description: 'Descripción del evento 1',
-                      isLiked: false,
-                      date: '2024-01-01',
-                      userComment: {},
-                      onPressUser: () {},
-                      onComment: (eventId, comment) async {
-                        print(eventId);
-                        print(comment);
-                      },
-                      onShare: () {},
-                      fetchComments: () async => [],
-                      handleLike: () {},
-                    )).toList(),
+                    children: snapshot.data!
+                        .map((event) => EventCard(
+                              eventId: event['id'],
+                              profileImage: event['image'],
+                              username: 'Usuario 1',
+                              eventImage: event['image'],
+                              title: event['title'],
+                              description: 'Descripción del evento 1',
+                              isLiked: false,
+                              date: '2024-01-01',
+                              userComment: {},
+                              onPressUser: () {},
+                              onComment: (eventId, comment) async {
+                                print(eventId);
+                                print(comment);
+                              },
+                              onMoreDetails: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/${AppScreens.eventDetails.name}',
+                                );
+                              },
+                              onShare: () {},
+                              fetchComments: () async => [],
+                              handleLike: () {},
+                            ))
+                        .toList(),
                   );
                 },
               ),
