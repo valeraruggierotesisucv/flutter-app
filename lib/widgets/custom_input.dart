@@ -120,15 +120,14 @@ class _CustomInputState extends State<CustomInput> {
                   ),
                 ),
               )
-            else if (widget.placeholder != null)
+            else 
               Expanded(
                 flex: 55,
                 child: Text(
                   widget.placeholder!,
                   style: TextStyle(
-                    
-                    color: Colors.grey.shade600,
-                    height: 50,
+                    fontSize: 15,
+                    color: Colors.grey,
                   ),
                 ),
               ),
