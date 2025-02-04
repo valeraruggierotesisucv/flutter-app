@@ -9,18 +9,18 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // title: title != null ? Text(title!) : Text('Your App Title'),
-      title: title != null ? Text(title!) : Image.asset('assets/images/EventifyTextLogo.png'),
+      title: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: title != null ? Text(title!) : Image.asset('assets/images/EventifyTextLogo.png'),
+      ),
       centerTitle: true,
       leading: goBack != null ? IconButton(
         onPressed: () => goBack!(),
         icon: Icon(Icons.arrow_back),
       ) : SizedBox(),
 
-
-
-      
     );
+
   }
 
 
