@@ -44,6 +44,16 @@ class _AuthViewState extends State<AuthView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+
+          Text(
+            "Eventify",
+            style: TextStyle(
+              fontFamily: 'SFProRounded',
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           Consumer<LocaleModel>(
               builder: (context, localeModel, child) =>
               ElevatedButton(
@@ -53,10 +63,12 @@ class _AuthViewState extends State<AuthView> {
           ),
           Text('${t.helloWorld} $selectedLocale'),
           // email
+
           TextField(
             controller: _emailController,
             decoration:  InputDecoration(
                 labelText: 'Correo electrónico',
+                
                 border: OutlineInputBorder(),
               ),
           ),
