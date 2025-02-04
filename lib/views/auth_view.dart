@@ -25,6 +25,7 @@ class _AuthViewState extends State<AuthView> {
   final _fullNameController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   DateTime _dateOfBirthController = DateTime.now();
+  bool passwordVisibility = false;
   final tabs = [
     TabItem(id: 1, title: 'Iniciar Sesión'),
     TabItem(id: 2, title: 'Registrarse'),
@@ -64,15 +65,17 @@ class _AuthViewState extends State<AuthView> {
     return Scaffold(
       backgroundColor: const Color(0xFFD9D9D9),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(0), 
+        child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
                 ),
                 child: SizedBox(
                   width: double.infinity,
@@ -96,98 +99,98 @@ class _AuthViewState extends State<AuthView> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: SingleChildScrollView(
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(),
-                    child: Container(
-                      constraints: BoxConstraints(
-                        minHeight: MediaQuery.of(context).size.height - 400,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-                        child: selectedTab == 1 ? Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                child: selectedTab == 1 
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height - 500, // Adjust 500 as needed
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              InputField(
+                                label: 'Correo electrónico',
+                                hint: 'Correo electrónico',
+                                error: '',
+                                controller: _emailController,
+                              ),
+                              const SizedBox(height: 20),
+                              InputField(
+                                label: 'Contraseña',
+                                hint: 'Contraseña',
+                                error: '',
+                                controller: _passwordControler,
+                                secureText: !passwordVisibility,
+                                icon: passwordVisibility ? Icons.visibility_off : Icons.visibility,
+                                onIconTap: () {
+                                  setState(() {
+                                    passwordVisibility = !passwordVisibility;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 60),
+                            ],
+                          ),
+                          
+                          CustomButton(
+                            label: "Iniciar Sesión",
+                            onPress: login,
+                          ),
+                        ],
+                      )
+                    )
+                  : Column(
+                      children: [
+                        Column(
+                          spacing: 30,
                           children: [
-                            Column(
-                              children: [
-                                InputField(
-                                  label: 'Correo electrónico',
-                                  hint: 'Correo electrónico',
-                                  error: '',
-                                  controller: _emailController,
-                                ),
-                                const SizedBox(height: 20),
-                                InputField(
-                                  label: 'Contraseña',
-                                  hint: 'Contraseña',
-                                  error: '',
-                                  controller: _passwordControler,
-                                ),
-                                const SizedBox(height: 60),
-                              ],
+                            InputField(
+                              label: 'Nombre de Usuario',
+                              hint: 'Nombre de Usuario',
+                              error: '',
+                              controller: _nameController,
                             ),
+                            InputField(
+                              label: 'Nombre Completo',
+                              hint: 'Nombre Completo',
+                              error: '',
+                              controller: _fullNameController,
+                            ),
+                            InputField(
+                              label: 'Correo electrónico',
+                              hint: 'Correo electrónico',
+                              error: '',
+                              controller: _emailController
+                            ),
+                            DateTimePickerField(
+                              label: 'Fecha de nacimiento',
+                              value: _dateOfBirthController,
+                              onChange: (value) => setState(() {
+                                _dateOfBirthController = value;
+                              })
+                            ),
+                            InputField(
+                              label: 'Contraseña',
+                              hint: 'Contraseña',
+                              error: '',
+                              controller: _passwordControler
+                            ),
+                            InputField(
+                              label: 'Confirmar contraseña',
+                              hint: 'Confirmar contraseña',
+                              error: '',
+                              controller: _confirmPasswordController
+                            ),
+                            const SizedBox(height: 10),
                             CustomButton(
-                              label: "Iniciar Sesión",
-                              onPress: login,
-                            ),
-                          ],
-                        ): Column(
-                          children: [
-                            Column(
-                              spacing: 30,
-                              children: [
-                                InputField(
-                                  label: 'Nombre de Usuario',
-                                  hint: 'Nombre de Usuario',
-                                  error: '',
-                                  controller: _nameController,
-                                ),
-                                InputField(
-                                  label: 'Nombre Completo',
-                                  hint: 'Nombre Completo',
-                                  error: '',
-                                  controller: _fullNameController,
-                                ),
-                                InputField(
-                                  label: 'Correo electrónico',
-                                  hint: 'Correo electrónico',
-                                  error: '',
-                                  controller: _emailController
-                                ),
-                                DateTimePickerField(
-                                  label: 'Fecha de nacimiento',
-                                  value: _dateOfBirthController,
-                                  onChange: (value) => setState(() {
-                                    _dateOfBirthController = value;
-                                  })
-                                ),
-                                InputField(
-                                  label: 'Contraseña',
-                                  hint: 'Contraseña',
-                                  error: '',
-                                  controller: _passwordControler
-                                ),
-                                InputField(
-                                  label: 'Confirmar contraseña',
-                                  hint: 'Confirmar contraseña',
-                                  error: '',
-                                  controller: _confirmPasswordController
-                                ),
-                                const SizedBox(height: 10),
-                                CustomButton(
-                                  label: 'Registrarse',
-                                  onPress: register
-                                ),
-                              ],
+                              label: 'Registrarse',
+                              onPress: register
                             ),
                           ],
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                ),
               ),
             ],
           ),

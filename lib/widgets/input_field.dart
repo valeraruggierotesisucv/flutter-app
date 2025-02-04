@@ -8,6 +8,8 @@ class InputField extends StatefulWidget {
   final Function()? onIconTap;
   final Function(String)? onChanged;
   final TextEditingController? controller;
+  final bool? secureText;
+
 
   const InputField({
     super.key,
@@ -18,7 +20,7 @@ class InputField extends StatefulWidget {
     this.onIconTap,
     this.onChanged,
     this.controller,
-
+    this.secureText = false,
   });
 
   @override
@@ -52,9 +54,12 @@ class _InputFieldState extends State<InputField> {
           TextField(
             controller: widget.controller ?? _controller,
             onChanged: widget.onChanged,
+            obscureText: widget.secureText ?? false,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
+
+
               hintText: widget.hint,
               border:
                   OutlineInputBorder(

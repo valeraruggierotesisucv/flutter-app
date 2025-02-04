@@ -40,13 +40,21 @@ class _TabsState extends State<Tabs> with SingleTickerProviderStateMixin{
         dividerColor: Colors.transparent,
         indicatorSize: TabBarIndicatorSize.tab,
         indicatorColor: const Color(0xFF050F71),
+        labelStyle: const TextStyle(
+          fontFamily: 'SFProRounded',
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: 'SFProRounded',
+          fontSize: 16,
+        ),
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(width: 3, color: const Color(0xFF050F71)),
           insets: EdgeInsets.symmetric(horizontal: 32.0),
           borderRadius: BorderRadius.circular(10),
         ),
-
-        tabs: widget.tabs.map((tab) => Tab(text: tab.title)).toList(),
+        tabs: widget.tabs.map((tab) => Tab(text: tab.title, )).toList(),
         onTap: (index) {
           widget.onTabTap(widget.tabs[index].id);
         },
