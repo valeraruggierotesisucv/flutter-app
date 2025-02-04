@@ -15,20 +15,20 @@ class _ProfileViewState extends State<ProfileView> {
   final authService = AuthService();
   // Lista de eventos de ejemplo
   List<Event> sampleEvents = [
-    Event(id: '1', imageUrl: 'https://example.com/image1.jpg'),
-    Event(id: '2', imageUrl: 'https://example.com/image2.jpg'),
-    Event(id: '3', imageUrl: 'https://example.com/image3.jpg'),
-    Event(id: '4', imageUrl: 'https://example.com/image4.jpg'),
-    Event(id: '5', imageUrl: 'https://example.com/image5.jpg'),
-    Event(id: '1', imageUrl: 'https://example.com/image1.jpg'),
-    Event(id: '2', imageUrl: 'https://example.com/image2.jpg'),
-    Event(id: '3', imageUrl: 'https://example.com/image3.jpg'),
-    Event(id: '4', imageUrl: 'https://example.com/image4.jpg'),
-    Event(id: '5', imageUrl: 'https://example.com/image5.jpg'),
-    Event(id: '2', imageUrl: 'https://example.com/image2.jpg'),
-    Event(id: '3', imageUrl: 'https://example.com/image3.jpg'),
-    Event(id: '4', imageUrl: 'https://example.com/image4.jpg'),
-    Event(id: '5', imageUrl: 'https://example.com/image5.jpg'),
+    Event(id: '1', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '1', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
   ];
   bool isLoading = false;
 
