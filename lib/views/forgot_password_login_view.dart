@@ -36,7 +36,7 @@ class ForgotPasswordLoginView extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       child: Image.asset(
-                        'assets/images/ForgotPassword.png',
+                        'assets/images/Success.png',
                         fit: BoxFit.contain,
                       ),
                     ),
