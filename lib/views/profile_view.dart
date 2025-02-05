@@ -4,14 +4,29 @@ import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 
-class ProfileView extends StatefulWidget {
+class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
   @override
-  State createState() => _ProfileViewState();
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          builder: (context) => const ProfileHomeScreen(),
+        );
+      },
+    );
+  }
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class ProfileHomeScreen extends StatefulWidget {
+  const ProfileHomeScreen({super.key});
+
+  @override
+  State createState() => _ProfileHomeScreenState();
+}
+
+class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
   final authService = AuthService();
   // Lista de eventos de ejemplo
   List<Event> sampleEvents = [
