@@ -1,4 +1,6 @@
 import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/image_modal.dart';
+import 'package:eventify/widgets/modal.dart';
 import 'package:flutter/material.dart';
 
 class AddView extends StatefulWidget {
@@ -9,7 +11,6 @@ class AddView extends StatefulWidget {
 }
 
 class _AddViewState extends State<AddView> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +21,10 @@ class _AddViewState extends State<AddView> {
           children: [
             GestureDetector(
               onTap: () {
-                debugPrint("click");
+                showPhotoModal(context,
+                  onTakePhoto: () => debugPrint("TAKE PHOTO"),
+                  onChooseFromGallery: () => debugPrint("CHOOSE GALERY"),
+                  onClose: () => debugPrint("CERRAR"));
               },
               child: Container(
                 width: double.infinity,
