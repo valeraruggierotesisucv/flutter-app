@@ -26,7 +26,7 @@ class ConfigurationView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => authService.signOut(),
+              onPressed: () => authService.signOut(context),
               child: const Text('Cerrar sesión'),
             )
           ],
