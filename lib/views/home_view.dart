@@ -103,6 +103,10 @@ class _HomeViewState extends State<HomeView> {
                                 Navigator.pushNamed(
                                   context,
                                   '/${AppScreens.eventDetails.name}',
+                                  arguments: {
+                                    'insideMainView': true,
+                                    'eventData': event,
+                                  }
                                 );
                               },
                               onShare: () {},
