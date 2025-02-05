@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onComment: (eventId, comment) async {
                                 debugPrint(eventId);
                                 debugPrint(comment);
-                              },
+                              },                              
                               onMoreDetails: () {
                                 Navigator.push(
                                   context,

@@ -50,8 +50,14 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                       description: "description",
                       isLiked: true,
                       date: "10-02-2025",
+                      latitude: "68.12458",
+                      longitude: "-84.3215",
+                      startsAt: "8:00 PM",
+                      endsAt: "10:00 PM",
+                      category: "MUSIC",
+                      musicUrl: "https://crnarpvpafbywvdzfukp.supabase.co/storage/v1/object/public/DONT%20DELETE/EventsMusic.mp3",
                       userComment: userComment,
-                  
+                      variant: EventCardVariant.details,
                       onPressUser: () {},
                       onComment: (eventId, comment) async {
                         debugPrint(eventId);
