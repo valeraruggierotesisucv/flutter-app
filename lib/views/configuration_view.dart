@@ -13,7 +13,7 @@ class ConfigurationView extends StatelessWidget {
     final selectedLocale = Localizations.localeOf(context).toString();
     
     return Scaffold(
-      body: Center(
+      body: SafeArea(
         child: Column(
           children: [
             Text('Configuration View'),
@@ -23,6 +23,11 @@ class ConfigurationView extends StatelessWidget {
                 child: const Text('Spanish'),
               ),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => ,
+              child: const Text('Cerrar sesión'),
+            )
           ],
         ),
       ),

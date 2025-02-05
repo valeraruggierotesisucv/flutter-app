@@ -1,3 +1,4 @@
+import 'package:eventify/widgets/app_header.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordView extends StatelessWidget {
@@ -5,7 +6,10 @@ class ForgotPasswordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppHeader(
+        goBack: () => Navigator.pop(context),
+      ),
       body: Center(
         child: Text('Forgot Password View'),
       ),
