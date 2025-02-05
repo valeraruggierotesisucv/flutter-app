@@ -8,12 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+enum StepsEnum {
+  DEFAULT,
+  DATE,
+  CATEGORY,
+  LOCATION,
+}
+
 class AddView extends StatelessWidget {
   const AddView({super.key});
 
   @override
   Widget build(BuildContext context) {
-     return Navigator(
+    return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           builder: (context) => const AddViewScreen(),
@@ -23,7 +30,6 @@ class AddView extends StatelessWidget {
   }
 }
 
-
 class AddViewScreen extends StatefulWidget {
   const AddViewScreen({super.key});
 
@@ -32,6 +38,7 @@ class AddViewScreen extends StatefulWidget {
 }
 
 class _AddViewScreenState extends State<AddViewScreen> {
+  StepsEnum currentStep = StepsEnum.DEFAULT;
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   String? _title;
@@ -66,6 +73,31 @@ class _AddViewScreenState extends State<AddViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child:
+                _buildStepWidget(), // Renderiza el widget según el paso actual
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepWidget() {
+    switch (currentStep) {
+      case StepsEnum.DEFAULT:
+        return _defaultWidget();
+
+      case StepsEnum.DATE:
+        return AddDateView(); 
+      default:
+        return _defaultWidget();
+    }
+  }
+
+  Widget _defaultWidget() {
     return Scaffold(
       appBar: AppHeader(title: "Nuevo Evento"),
       backgroundColor: Colors.white,
@@ -156,10 +188,9 @@ class _AddViewScreenState extends State<AddViewScreen> {
               placeholder: "Agrega fecha y hora",
               variant: InputVariant.arrow,
               onPress: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddDateView()),
-                )
+                setState(() {
+                  currentStep = StepsEnum.DATE;
+                })
               },
             ),
     );
