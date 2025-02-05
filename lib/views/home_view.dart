@@ -69,6 +69,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppHeader(),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -95,8 +96,8 @@ class _HomeViewState extends State<HomeView> {
                               userComment: {},
                               onPressUser: () {},
                               onComment: (eventId, comment) async {
-                                print(eventId);
-                                print(comment);
+                                debugPrint(eventId);
+                                debugPrint(comment);
                               },
                               onMoreDetails: () {
                                 Navigator.pushNamed(
