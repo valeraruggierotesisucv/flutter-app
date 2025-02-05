@@ -137,6 +137,28 @@ class ProfileCard extends StatelessWidget {
                   ),
                 ),
               ],
+              if (onConfigureProfile != null) ...[
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: onConfigureProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF050F71),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Configure Profile',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ],

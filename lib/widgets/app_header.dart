@@ -14,6 +14,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         child: title != null ? Text(title!) : Image.asset('assets/images/EventifyTextLogo.png'),
       ),
       centerTitle: true,
+      backgroundColor: Colors.white,
       leading: goBack != null ? IconButton(
         onPressed: () => goBack!(),
         icon: Icon(Icons.arrow_back),

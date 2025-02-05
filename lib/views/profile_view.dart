@@ -1,5 +1,8 @@
-import 'package:eventify/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:eventify/services/auth_service.dart';
+import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/profile_card.dart';
+import 'package:eventify/widgets/event_thumbnail_list.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -10,100 +13,67 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final authService = AuthService();
+  // Lista de eventos de ejemplo
+  List<Event> sampleEvents = [
+    Event(id: '1', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '1', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
+  ];
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mi Perfil'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // TODO: Implementar navegación a configuración
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+      appBar: AppHeader(),
+      backgroundColor: Colors.white,
+      body: 
+        Column(
           children: [
-            const CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(
-                'https://via.placeholder.com/100',
+            ProfileCard(
+              username: "John Doe",
+              biography: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              events: 0,
+              followers: 0,
+              following: 0,
+              onFollowers: () {
+                // Navegar a la pantalla de seguidores
+              },
+              onFollowed: () {
+                // Navegar a la pantalla de seguidos
+              },
+              onConfigureProfile: () {
+                // Navegar a la configuración del perfil
+              },
+              onEditProfile: () {
+                // Navegar a la edición del perfil
+              },
+            ),
+            Expanded( 
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  height: 400, 
+                  child: EventThumbnailList(
+                    events: sampleEvents,
+                    onEventTap: (String eventId) {
+                      debugPrint("Evento tapped: $eventId");
+                    },
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Nombre Usuario',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'usuario@email.com',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 24),
-            _buildProfileOption(
-              icon: Icons.person,
-              title: 'Editar Perfil',
-              onTap: () {
-                // TODO: Implementar edición de perfil
-              },
-            ),
-            _buildProfileOption(
-              icon: Icons.notifications,
-              title: 'Notificaciones',
-              onTap: () {
-                // TODO: Implementar configuración de notificaciones
-              },
-            ),
-            _buildProfileOption(
-              icon: Icons.security,
-              title: 'Privacidad y Seguridad',
-              onTap: () {
-                // TODO: Implementar configuración de privacidad
-              },
-            ),
-            _buildProfileOption(
-              icon: Icons.help,
-              title: 'Ayuda y Soporte',
-              onTap: () {
-                // TODO: Implementar sección de ayuda
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildProfileOption(
-              icon: Icons.logout,
-              title: 'Cerrar Sesión',
-              onTap: () {
-                authService.signOut(context);
-              },
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildProfileOption({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: onTap,
     );
   }
 }
