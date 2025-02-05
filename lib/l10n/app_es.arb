@@ -1,6 +1,18 @@
 {
   "helloWorld": "Hola Mundo!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
-  }
+  
+  "forgotPasswordViewTitle": "¿Olvidaste tu contraseña?",
+  "forgotPasswordViewDescription": "Introduce tu dirección de Correo Electrónico para solicitar el restablecimiento de tu contraseña.",
+  "forgotPasswordViewEmail": "Correo",
+  "forgotPasswordViewEmailHint": "Introduce tu correo",
+  "forgotPasswordViewSendLink": "Enviar enlace",
+  
+
+  "forgotPasswordLoginViewTitle": "¡Correo enviado con éxito!",
+  "forgotPasswordLoginViewLogin": "Iniciar Sesión",
+  "forgotPasswordLoginViewDescription": "Por favor, verifica tu bandeja de entrada y sigue el enlace para cambiar tu contraseña. No olvides revisar la carpeta de spam si no lo encuentras.",
+  "forgotPasswordLoginViewSendLink": "Enviar enlace"
+
+
+
 }

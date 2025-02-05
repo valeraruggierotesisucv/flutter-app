@@ -1,13 +1,121 @@
+import 'package:eventify/views/forgot_password_login_view.dart';
+import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/input_field.dart';
+import 'package:eventify/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ForgotPasswordView extends StatelessWidget {
+class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
 
   @override
+  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
+}
+
+class _ForgotPasswordViewState extends State<ForgotPasswordView> {
+  final _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _sendResetLink() {
+    // Implement password reset logic here
+    print('Send reset link to: ${_emailController.text}');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Forgot Password View'),
+    final t = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppHeader(
+        goBack: () => Navigator.pop(context),
+      ),
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - kToolbarHeight,
+          ),
+          child: Container(
+            color: const Color(0xFFD9D9D9),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                      ),
+                      child: SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 40),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    t!.forgotPasswordViewTitle,
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      fontFamily: 'SFProRounded',
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Image.asset(
+                                    'assets/images/ForgotPassword.png',
+                                    height: 300,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    t!.forgotPasswordViewDescription,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            )
+                          ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 40),
+                          InputField(
+                            label: t.forgotPasswordViewEmail,
+                            hint: t.forgotPasswordViewEmailHint,
+                            controller: _emailController,
+                            error: '',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 60.0),
+                  child: CustomButton(
+                    label: t.forgotPasswordViewSendLink,
+                    onPress: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPasswordLoginView())),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

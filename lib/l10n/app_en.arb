@@ -1,6 +1,17 @@
 {
   "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
-  }
+  "forgotPasswordViewTitle": "Forgot your password?",
+  "forgotPasswordViewDescription": "Enter your email address to request a password reset link.",
+  "forgotPasswordViewEmail": "Email",
+  "forgotPasswordViewEmailHint": "Enter your email",
+  "forgotPasswordViewSendLink": "Send link",
+
+
+
+  "forgotPasswordLoginViewTitle": "Email sent successfully!",
+  "forgotPasswordLoginViewLogin": "Login",
+  "forgotPasswordLoginViewDescription": "Please check your email for a link to reset your password. Don't forget to check your spam folder if you don't see it.",
+  "forgotPasswordLoginViewSendLink": "Send link"
+
+
 }
