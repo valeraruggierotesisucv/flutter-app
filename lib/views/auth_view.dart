@@ -103,48 +103,48 @@ class _AuthViewState extends State<AuthView> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
                 child: selectedTab == 1 
-                  ? SizedBox(
-                      height: MediaQuery.of(context).size.height - 500, // Adjust 500 as needed
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              InputField(
-                                label: 'Correo electrónico',
-                                hint: 'Correo electrónico',
-                                error: '',
-                                controller: _emailController,
-                                icon: Icons.email,
-                              ),
-                              const SizedBox(height: 20),
-                              InputField(
-                                label: 'Contraseña',
-                                hint: 'Contraseña',
-                                error: '',
-                                controller: _passwordControler,
-                                secureText: !passwordVisibility,
-                                icon: passwordVisibility ? Icons.visibility_off : Icons.visibility,
-                                onIconTap: () {
-                                  setState(() {
-                                    passwordVisibility = !passwordVisibility;
-                                  });
-                                },
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordView())),
-                                child: const Text('¿Olvidaste tu contraseña?'),
-                              ),
-                              const SizedBox(height: 60),
-                            ],
-                          ),
-                          
-                          CustomButton(
-                            label: "Iniciar Sesión",
-                            onPress: login,
-                          ),
-                        ],
-                      )
+                  ? LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                InputField(
+                                  label: 'Correo electrónico',
+                                  hint: 'Correo electrónico',
+                                  error: '',
+                                  controller: _emailController,
+                                ),
+                                const SizedBox(height: 20),
+                                InputField(
+                                  label: 'Contraseña',
+                                  hint: 'Contraseña',
+                                  error: '',
+                                  controller: _passwordControler,
+                                  secureText: !passwordVisibility,
+                                  icon: passwordVisibility ? Icons.visibility_off : Icons.visibility,
+                                  onIconTap: () {
+                                    setState(() {
+                                      passwordVisibility = !passwordVisibility;
+                                    });
+                                  },
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pushNamed(context, '/forgot_password'),
+                                  child: const Text('¿Olvidaste tu contraseña?'),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                            CustomButton(
+                              label: "Iniciar Sesión",
+                              onPress: login,
+                            ),
+                          ],
+                        );
+                      }
                     )
                   : Column(
                       children: [

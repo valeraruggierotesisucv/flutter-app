@@ -1,33 +1,34 @@
-import 'package:eventify/providers/auth_provider.dart';
-import 'package:eventify/routes.dart';
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
-import 'package:eventify/widgets/custom_search_bar.dart';
 import 'package:eventify/widgets/loading.dart';
-import 'package:eventify/widgets/profile_card.dart';
-import 'package:eventify/widgets/user_card.dart';
-import 'package:eventify/widgets/custom_button.dart';
-import 'package:eventify/widgets/category_button.dart';
-import 'package:eventify/widgets/social_interactions.dart';
-import 'package:eventify/widgets/custom_chip.dart';
 import 'package:eventify/widgets/event_card.dart';
-import 'package:eventify/widgets/tabs.dart';
-import 'package:eventify/widgets/input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class HomeView extends StatelessWidget {
+  const HomeView({super.key}); 
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        );
+      },
+    );
+  }
 }
 
-class _HomeViewState extends State<HomeView> {
-  String _searchValue = '';
-  String _selectedCategory = '';
-  TextEditingController _controller = TextEditingController();
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final authService = AuthService();
 
   Future<void> onComment(String eventId, String comment) async {
@@ -98,17 +99,18 @@ class _HomeViewState extends State<HomeView> {
                               onComment: (eventId, comment) async {
                                 debugPrint(eventId);
                                 debugPrint(comment);
-                              },
+                              },                              
                               onMoreDetails: () {
-                                Navigator.pushNamed(
+                                Navigator.push(
                                   context,
-                                  '/${AppScreens.eventDetails.name}',
-                                  arguments: {
-                                    'insideMainView': true,
-                                    'eventData': event,
-                                  }
+                                  MaterialPageRoute(
+                                    builder: (context) => EventDetailsView(
+                                      eventId: event['id'], 
+                                      canEdit: false,
+                                    ),
+                                  ),
                                 );
-                              },
+                              }, 
                               onShare: () {},
                               fetchComments: () async => [],
                               handleLike: () {},

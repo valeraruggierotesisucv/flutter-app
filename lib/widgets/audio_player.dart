@@ -57,57 +57,51 @@ class _CustomAudioPlayerState extends State<CustomAudioPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-
-        children: [
-          IconButton(
-              icon: Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
-                size: 40,
-              ),
-              onPressed: () async {
-                if (isPlaying) {
-                  await player.pause();
-                } else {
-                  await player.play(UrlSource(widget.audioUrl));
-                }
-              },
-            ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Slider(
-                  min: 0,
-                  max: duration.inSeconds.toDouble(),
-                  value: position.inSeconds.toDouble(),
-                  onChanged: (value) async {
-                    final position = Duration(seconds: value.toInt());
-                    await player.seek(position);
-                  },
-                  activeColor: const Color(0xFF050F71),
-                  inactiveColor: Colors.grey,
-                ),
-
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(formatTime(position)),
-                      Text(formatTime(duration)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: Icon(
+            isPlaying ? Icons.pause : Icons.play_arrow,
+            size: 40,
           ),
-        ],
-      ),
+          onPressed: () async {
+            if (isPlaying) {
+              await player.pause();
+            } else {
+              await player.play(UrlSource(widget.audioUrl));
+            }
+          },
+        ),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Slider(
+                min: 0,
+                max: duration.inSeconds.toDouble(),
+                value: position.inSeconds.toDouble(),
+                onChanged: (value) async {
+                  final position = Duration(seconds: value.toInt());
+                  await player.seek(position);
+                },
+                activeColor: const Color(0xFF050F71),
+                inactiveColor: Colors.grey,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(formatTime(position)),
+                    Text(formatTime(duration)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

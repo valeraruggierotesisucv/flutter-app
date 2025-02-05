@@ -18,7 +18,7 @@ class DisplayInput extends StatelessWidget {
         border: Border(
           bottom: BorderSide(
             width: 2,
-            color: Colors.grey, // Ajusta este color según tu theme
+            color: Color(0xFFE9E8E8), // Ajusta este color según tu theme
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:eventify/models/locale.dart';
+import 'package:eventify/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,6 +10,8 @@ class ConfigurationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authService = AuthService();
+    final t = AppLocalizations.of(context)!;
     final authService = AuthService();
     final t = AppLocalizations.of(context)!;
     final selectedLocale = Localizations.localeOf(context).toString();
@@ -24,7 +27,6 @@ class ConfigurationView extends StatelessWidget {
                 child: const Text('Spanish'),
               ),
             ),
-            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => authService.signOut(context),
               child: const Text('Cerrar sesión'),

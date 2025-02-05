@@ -7,7 +7,6 @@ import 'package:eventify/views/onboarding_view.dart';
 import 'package:eventify/views/forgot_password_view.dart';
 import 'package:eventify/views/forgot_password_login_view.dart';
 import 'package:eventify/views/success_view.dart';
-import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/views/folowers_view.dart';
 import 'package:eventify/views/followed_view.dart';
@@ -80,7 +79,6 @@ class MyApp extends StatelessWidget {
             '/${AppScreens.forgotPasswordLogin.name}': (context) =>
                 const ForgotPasswordLoginView(),
             '/${AppScreens.success.name}': (context) => const SuccessView(),
-            '/${AppScreens.eventDetails.name}': (context) => const EventDetailsView(),
             '/${AppScreens.profileDetails.name}': (context) =>
                 const ProfileDetailsView(),
             '/${AppScreens.folowers.name}': (context) => const FollowersView(),

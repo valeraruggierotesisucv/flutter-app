@@ -1,3 +1,4 @@
+import 'package:eventify/widgets/audio_player.dart';
 import 'package:flutter/material.dart';
 import 'custom_chip.dart';
 import 'display_input.dart';
@@ -42,11 +43,11 @@ class Pill extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CustomChip(label: startsAt, variant: ChipVariant.light),
+        CustomChip(label: startsAt, variant: ChipVariant.defaultChip),
         const SizedBox(width: 8),
-        CustomChip(label: endsAt, variant: ChipVariant.light),
+        CustomChip(label: endsAt, variant: ChipVariant.defaultChip),
         const SizedBox(width: 8),
-        CustomChip(label: date, variant: ChipVariant.light),
+        CustomChip(label: date, variant: ChipVariant.defaultChip),
       ],
     );
   }
@@ -64,14 +65,12 @@ class LocationPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lat = double.parse(latitude).toStringAsFixed(3);
-    final long = double.parse(longitude).toStringAsFixed(3);
 
     return Row(
       children: [
-        CustomChip(label: lat, variant: ChipVariant.light),
+        CustomChip(label: latitude, variant: ChipVariant.defaultChip),
         const SizedBox(width: 8),
-        CustomChip(label: long, variant: ChipVariant.light),
+        CustomChip(label: longitude, variant: ChipVariant.defaultChip),
       ],
     );
   }
@@ -101,7 +100,8 @@ class DisplayEvent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Falta AudioPlayer
+        if (musicUrl != null && musicUrl!.isNotEmpty)
+          CustomAudioPlayer(audioUrl: musicUrl!),
         DisplayInput(
           label: 'LOCATION', // Usar i18n aquí
           data: LocationPill(
@@ -121,7 +121,7 @@ class DisplayEvent extends StatelessWidget {
           label: 'CATEGORY', // Usar i18n aquí
           data: CustomChip(
             label: category ?? '',
-            variant: ChipVariant.light,
+            variant: ChipVariant.defaultChip,
           ),
         ),
       ],
@@ -184,48 +184,6 @@ class EventCard extends StatefulWidget {
 }
 
 class _EventCardState extends State<EventCard> {
-  bool _commentsVisible = false;
-  List<Comment> _comments = [];
-
-  Future<void> _handleAddComment(String comment) async {
-    try {
-      await widget.onComment(widget.eventId, comment);
-      setState(() {
-        _comments = [
-          ..._comments,
-          Comment(
-            username: widget.userComment['username']!,
-            comment: comment,
-            profileImage: widget.userComment['profileImage']!,
-            timestamp: DateTime.now(),
-          ),
-        ];
-      });
-    } catch (e) {
-      debugPrint('Error adding comment: $e');
-    }
-  }
-
-  Future<void> _getComments() async {
-    if (_commentsVisible) {
-      try {
-        final response = await widget.fetchComments();
-        setState(() {
-          _comments = response;
-        });
-      } catch (e) {
-        debugPrint('Error fetching comments: $e');
-      }
-    }
-  }
-
-  @override
-  void didUpdateWidget(EventCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (_commentsVisible) {
-      _getComments();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +206,7 @@ class _EventCardState extends State<EventCard> {
         SocialInteractions(
           isLiked: widget.isLiked,
           onLike: widget.handleLike,
-          onComment: () => setState(() => _commentsVisible = true),
+          onComment: () => debugPrint("OnComment"),
           onShare: widget.onShare,
         ),
         Padding(
