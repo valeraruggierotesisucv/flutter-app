@@ -16,9 +16,8 @@ class _AddViewState extends State<AddView> {
   XFile? _image;
 
   Future<void> _takePhoto() async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera, maxHeight: 250);
     if (photo != null && mounted) {
-      // Aquí puedes manejar la imagen capturada
       setState(() {
         _image = photo;
       });
@@ -28,9 +27,8 @@ class _AddViewState extends State<AddView> {
   }
 
   Future<void> _chooseFromGallery() async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? photo = await _picker.pickImage(source: ImageSource.gallery, maxHeight: 250);
     if (photo != null && mounted) {
-      // Aquí puedes manejar la imagen seleccionada
       setState(() {
         _image = photo; 
       });
@@ -47,37 +45,40 @@ class _AddViewState extends State<AddView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                showPhotoModal(
-                  context,
-                  onTakePhoto: _takePhoto,
-                  onChooseFromGallery: _chooseFromGallery,
-                  onClose: () {
-                    Navigator.of(context).pop(); // Cierra el modal
-                  },
-                );
-              },
-              child: 
-              _image != null 
-              ? Container(
-                  width: double.infinity,
-                  height: 250,
-                  decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
-                  child: Image.file(File(_image!.path)),
-                )
-              : Container(
-                width: double.infinity,
-                height: 250,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Color(0xFFD9D9D9),
-                ),
-                child: Icon(Icons.add, size: 48, color: Colors.black),
-              ),
-            )
+            _imagePickerWidget(image: _image),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _imagePickerWidget({XFile? image}) {
+    return GestureDetector(
+      onTap: () {
+        showPhotoModal(
+          context,
+          onTakePhoto: _takePhoto,
+          onChooseFromGallery: _chooseFromGallery,
+          onClose: () {
+            Navigator.of(context).pop(); // Cierra el modal
+          },
+        );
+      },
+      child: image != null 
+      ? Container(
+          width: double.infinity,
+          height: 250,
+          decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+          child: Image.file(File(image.path)),
+        )
+      : Container(
+        width: double.infinity,
+        height: 250,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Color(0xFFD9D9D9),
+        ),
+        child: Icon(Icons.add, size: 48, color: Colors.black),
       ),
     );
   }
