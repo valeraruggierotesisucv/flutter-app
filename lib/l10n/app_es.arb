@@ -11,8 +11,19 @@
   "forgotPasswordLoginViewTitle": "¡Correo enviado con éxito!",
   "forgotPasswordLoginViewLogin": "Iniciar Sesión",
   "forgotPasswordLoginViewDescription": "Por favor, verifica tu bandeja de entrada y sigue el enlace para cambiar tu contraseña. No olvides revisar la carpeta de spam si no lo encuentras.",
-  "forgotPasswordLoginViewSendLink": "Enviar enlace"
+  "forgotPasswordLoginViewSendLink": "Enviar enlace",
 
+  "editProfileTitle": "Editar Perfil",
+  "editProfileName": "Nombre",
+  "editProfileNameHint": "Ingresa tu nombre",
+  "editProfileBio": "Biografía",
+  "editProfileBioHint": "Cuéntanos sobre ti",
+  "editProfileSubmit": "Guardar",
 
-
+  "configTitle": "Configuración",
+  "configSpanish": "Español",
+  "configEnglish": "Inglés",
+  "configLogout": "Cerrar sesión",
+  "configLanguage": "Cambiar idioma",
+  "configChangePassword": "Cambiar contraseña"
 }

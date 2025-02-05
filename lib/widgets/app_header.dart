@@ -5,26 +5,37 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final Function? goBack;
   const AppHeader({super.key, this.title, this.goBack});
 
-
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: title != null ? Text(title!) : Image.asset('assets/images/EventifyTextLogo.png'),
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+      child: Container(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child: AppBar(
+          title: title != null 
+            ? Text(
+                title!,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'SFProRounded'
+                ),
+              ) 
+            : Image.asset('assets/images/EventifyTextLogo.png'),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          leading: goBack != null 
+            ? IconButton(
+                onPressed: () => goBack!(),
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+              ) 
+            : const SizedBox(),
+        ),
       ),
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      leading: goBack != null ? IconButton(
-        onPressed: () => goBack!(),
-        icon: Icon(Icons.arrow_back),
-      ) : SizedBox(),
-
     );
-
   }
 
-
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 10);
 }
