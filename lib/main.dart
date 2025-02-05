@@ -80,7 +80,6 @@ class MyApp extends StatelessWidget {
             '/${AppScreens.forgotPasswordLogin.name}': (context) =>
                 const ForgotPasswordLoginView(),
             '/${AppScreens.success.name}': (context) => const SuccessView(),
-            '/${AppScreens.eventDetails.name}': (context) => const EventDetailsView(),
             '/${AppScreens.profileDetails.name}': (context) =>
                 const ProfileDetailsView(),
             '/${AppScreens.folowers.name}': (context) => const FollowersView(),
