@@ -131,7 +131,8 @@ class _SearchViewState extends State<SearchView> {
                 const SizedBox(height: 16),
                 
                 selectedTab == 1
-                ? Column(  // Events tab content
+                ? Column(  
+                    
                     children: [
                       Container(
                         child: FutureBuilder(
@@ -189,6 +190,7 @@ class _SearchViewState extends State<SearchView> {
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return const Center(child: Loading());
                       return Column(
+                        spacing: 10,
                         children: snapshot.data!.map((user) => UserCard(
                           username: user['name'],
                           profileImage: user['image'],
