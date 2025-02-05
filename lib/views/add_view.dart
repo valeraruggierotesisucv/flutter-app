@@ -10,15 +10,30 @@ class AddView extends StatefulWidget {
 
 class _AddViewState extends State<AddView> {
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppHeader(title: "Nuevo Evento"),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                debugPrint("click");
+              },
+              child: Container(
+                width: double.infinity,
+                height: 250,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Color(0xFFD9D9D9),
+                ),
+                child: Icon(Icons.add, size: 48, color: Colors.black),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
