@@ -1,3 +1,7 @@
+import 'package:eventify/views/configuration_view.dart';
+import 'package:eventify/views/edit_profile_view.dart';
+import 'package:eventify/views/followed_view.dart';
+import 'package:eventify/views/folowers_view.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/widgets/app_header.dart';
@@ -62,16 +66,28 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
               followers: 0,
               following: 0,
               onFollowers: () {
-                // Navegar a la pantalla de seguidores
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FollowersView()),
+                );
               },
               onFollowed: () {
-                // Navegar a la pantalla de seguidos
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FollowedView()),
+                );
               },
               onConfigureProfile: () {
-                // Navegar a la configuración del perfil
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ConfigurationView()),
+                );
               },
               onEditProfile: () {
-                // Navegar a la edición del perfil
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditProfileView()),
+                );
               },
             ),
             Expanded( 
