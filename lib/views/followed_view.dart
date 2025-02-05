@@ -80,11 +80,11 @@ class _FollowedViewState extends State<FollowedView> {
         .toList();
 
     return Scaffold(
+      appBar: AppHeader(title: "Seguidos", goBack: () => Navigator.of(context).pop()),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            AppHeader(
-                title: "Seguidos", goBack: () => Navigator.of(context).pop()),
             CustomSearchBar(
               onSearch: (value) {
                 setState(() {

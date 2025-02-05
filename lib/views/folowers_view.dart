@@ -80,11 +80,11 @@ class _FollowersViewState extends State<FollowersView> {
         .toList();
 
     return Scaffold(
+      appBar: AppHeader(title: "Seguidores", goBack: () => Navigator.of(context).pop()),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            AppHeader(
-                title: "Seguidores", goBack: () => Navigator.of(context).pop()),
             CustomSearchBar(
               onSearch: (value) {
                 setState(() {
