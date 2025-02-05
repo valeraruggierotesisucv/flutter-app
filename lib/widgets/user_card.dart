@@ -14,7 +14,7 @@ class UserCard extends StatelessWidget {
   final VoidCallback? onPressButton;
   final String? actionLabel;
   final bool disabled;
-
+  final bool isFollowing;
   const UserCard({
     super.key,
     this.profileImage,
@@ -24,6 +24,7 @@ class UserCard extends StatelessWidget {
     this.onPressButton,
     this.actionLabel,
     this.disabled = false,
+    this.isFollowing = false,
   });
 
   @override

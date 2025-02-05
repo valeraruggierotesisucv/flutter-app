@@ -26,12 +26,12 @@ class Comment {
 }
 
 // Widgets auxiliares
-class Pills extends StatelessWidget {
+class Pill extends StatelessWidget {
   final String startsAt;
   final String endsAt;
   final String date;
 
-  const Pills({
+  const Pill({
     super.key,
     required this.startsAt,
     required this.endsAt,
@@ -52,11 +52,11 @@ class Pills extends StatelessWidget {
   }
 }
 
-class LocationPills extends StatelessWidget {
+class LocationPill extends StatelessWidget {
   final String latitude;
   final String longitude;
 
-  const LocationPills({
+  const LocationPill({
     super.key,
     required this.latitude,
     required this.longitude,
@@ -104,14 +104,14 @@ class DisplayEvent extends StatelessWidget {
         // Falta AudioPlayer
         DisplayInput(
           label: 'LOCATION', // Usar i18n aquí
-          data: LocationPills(
+          data: LocationPill(
             latitude: latitude ?? '',
             longitude: longitude ?? '',
           ),
         ),
         DisplayInput(
           label: 'WHEN', // Usar i18n aquí
-          data: Pills(
+          data: Pill(
             startsAt: startsAt ?? '',
             endsAt: endsAt ?? '',
             date: date ?? '',
