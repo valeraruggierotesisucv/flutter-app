@@ -1,22 +1,44 @@
+import 'package:eventify/views/add_date_view.dart';
 import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/custom_chip.dart';
 import 'package:eventify/widgets/custom_input.dart';
+import 'package:eventify/widgets/display_input.dart';
 import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class AddView extends StatefulWidget {
+class AddView extends StatelessWidget {
   const AddView({super.key});
 
   @override
-  State<AddView> createState() => _AddViewState();
+  Widget build(BuildContext context) {
+     return Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          builder: (context) => const AddViewScreen(),
+        );
+      },
+    );
+  }
 }
 
-class _AddViewState extends State<AddView> {
+
+class AddViewScreen extends StatefulWidget {
+  const AddViewScreen({super.key});
+
+  @override
+  State<AddViewScreen> createState() => _AddViewScreenState();
+}
+
+class _AddViewScreenState extends State<AddViewScreen> {
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   String? _title;
-  String? _description; 
+  String? _description;
+  String? _date;
+  String? _startsAt;
+  String? _endsAt;
 
   Future<void> _takePhoto() async {
     final XFile? photo =
@@ -52,7 +74,8 @@ class _AddViewState extends State<AddView> {
           children: [
             _imagePickerWidget(image: _image),
             _addTitle(title: _title),
-            _addDescription(description: _description)
+            _addDescription(description: _description),
+            _addDate(date: _date, startsAt: _startsAt, endsAt: _endsAt),
           ],
         ),
       ),
@@ -117,6 +140,28 @@ class _AddViewState extends State<AddView> {
         });
       },
       required: description != null ? true : false,
+    );
+  }
+
+  Widget _addDate({String? date, String? startsAt, String? endsAt}) {
+    return GestureDetector(
+      onTap: () => debugPrint("TAP"),
+      child: (date != null && startsAt != null && endsAt != null)
+          ? DisplayInput(
+              label: "CUANDO",
+              data: CustomChip(label: "label"),
+            )
+          : CustomInput(
+              label: "CUANDO",
+              placeholder: "Agrega fecha y hora",
+              variant: InputVariant.arrow,
+              onPress: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddDateView()),
+                )
+              },
+            ),
     );
   }
 }
