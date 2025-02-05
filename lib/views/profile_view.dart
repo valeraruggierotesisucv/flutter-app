@@ -1,17 +1,36 @@
+import 'package:eventify/views/configuration_view.dart';
+import 'package:eventify/views/edit_profile_view.dart';
+import 'package:eventify/views/followed_view.dart';
+import 'package:eventify/views/folowers_view.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 
-class ProfileView extends StatefulWidget {
+class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
   @override
-  State createState() => _ProfileViewState();
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          builder: (context) => const ProfileHomeScreen(),
+        );
+      },
+    );
+  }
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class ProfileHomeScreen extends StatefulWidget {
+  const ProfileHomeScreen({super.key});
+
+  @override
+  State createState() => _ProfileHomeScreenState();
+}
+
+class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
   final authService = AuthService();
   // Lista de eventos de ejemplo
   List<Event> sampleEvents = [
@@ -47,16 +66,28 @@ class _ProfileViewState extends State<ProfileView> {
               followers: 0,
               following: 0,
               onFollowers: () {
-                // Navegar a la pantalla de seguidores
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FollowersView()),
+                );
               },
               onFollowed: () {
-                // Navegar a la pantalla de seguidos
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FollowedView()),
+                );
               },
               onConfigureProfile: () {
-                // Navegar a la configuración del perfil
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ConfigurationView()),
+                );
               },
               onEditProfile: () {
-                // Navegar a la edición del perfil
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditProfileView()),
+                );
               },
             ),
             Expanded( 

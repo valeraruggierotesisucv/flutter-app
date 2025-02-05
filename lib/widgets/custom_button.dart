@@ -34,7 +34,7 @@ class CustomButton extends StatelessWidget {
   double get _getWidth {
     switch (size) {
       case ButtonSize.extraSmall:
-        return 72;
+        return 130;
       case ButtonSize.small:
         return 160;
       case ButtonSize.medium:
