@@ -1,11 +1,15 @@
 //import 'package:eventify/widgets/calendar.dart';
+import 'package:eventify/views/add_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/widgets/calendar.dart';
 
 class AddDateView extends StatefulWidget {
-  const AddDateView({super.key});
+  final Function(StepsEnum) onStepChanged;
+  final Function(DateTime?) onDateChanged;
+
+  const AddDateView({super.key, required this.onStepChanged, required this.onDateChanged});
 
   @override
   State createState() => _AddDateViewState();
@@ -33,6 +37,8 @@ class _AddDateViewState extends State<AddDateView> {
               onDateChange: (date) {
                 setState(() {
                   selectedDate = date;
+                  widget.onDateChanged(selectedDate);
+                  debugPrint(selectedDate.toString()); 
                 });
               },
               onStartTimeChange: (time) {
@@ -55,7 +61,10 @@ class _AddDateViewState extends State<AddDateView> {
                 child: CustomButton(
                   label:
                       "Siguiente", // Cambia esto por la traducción correspondiente
-                  onPress: () {},
+                  onPress: () {
+                    widget.onStepChanged(
+                        StepsEnum.defaultStep); // Llama al callback
+                  },
                 ),
               ),
             ),

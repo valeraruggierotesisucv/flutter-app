@@ -1,3 +1,4 @@
+import 'package:eventify/utils/date_formatter.dart';
 import 'package:eventify/views/add_date_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_chip.dart';
@@ -9,10 +10,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 enum StepsEnum {
-  DEFAULT,
-  DATE,
-  CATEGORY,
-  LOCATION,
+  defaultStep,
+  dateStep,
+  categoryStep,
+  locationStep,
 }
 
 class AddView extends StatelessWidget {
@@ -38,12 +39,12 @@ class AddViewScreen extends StatefulWidget {
 }
 
 class _AddViewScreenState extends State<AddViewScreen> {
-  StepsEnum currentStep = StepsEnum.DEFAULT;
+  StepsEnum currentStep = StepsEnum.defaultStep;
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   String? _title;
   String? _description;
-  String? _date;
+  DateTime? _date;
   String? _startsAt;
   String? _endsAt;
 
@@ -87,11 +88,22 @@ class _AddViewScreenState extends State<AddViewScreen> {
 
   Widget _buildStepWidget() {
     switch (currentStep) {
-      case StepsEnum.DEFAULT:
+      case StepsEnum.defaultStep:
         return _defaultWidget();
 
-      case StepsEnum.DATE:
-        return AddDateView(); 
+      case StepsEnum.dateStep:
+        return AddDateView(
+          onStepChanged: (newStep) {
+            setState(() {
+              currentStep = newStep;
+            });
+          },
+          onDateChanged: (newDate) {
+            setState(() {
+              _date = newDate;
+            });
+          },
+        );
       default:
         return _defaultWidget();
     }
@@ -175,13 +187,15 @@ class _AddViewScreenState extends State<AddViewScreen> {
     );
   }
 
-  Widget _addDate({String? date, String? startsAt, String? endsAt}) {
+  Widget _addDate({DateTime? date, String? startsAt, String? endsAt}) {
+    debugPrint("This is the date--${date.toString()}"); 
+
     return GestureDetector(
       onTap: () => debugPrint("TAP"),
-      child: (date != null && startsAt != null && endsAt != null)
+      child: (date != null)
           ? DisplayInput(
               label: "CUANDO",
-              data: CustomChip(label: "label"),
+              data: CustomChip(label: formatDateToLocalString(date)),
             )
           : CustomInput(
               label: "CUANDO",
@@ -189,7 +203,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
               variant: InputVariant.arrow,
               onPress: () => {
                 setState(() {
-                  currentStep = StepsEnum.DATE;
+                  currentStep = StepsEnum.dateStep;
                 })
               },
             ),
