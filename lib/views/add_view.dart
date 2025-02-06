@@ -1,5 +1,6 @@
 import 'package:eventify/utils/date_formatter.dart';
 import 'package:eventify/views/add_date_view.dart';
+import 'package:eventify/views/choose_category_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_chip.dart';
 import 'package:eventify/widgets/custom_input.dart';
@@ -48,9 +49,10 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _startsAt;
   String? _endsAt;
   String? _category;
+  String? _categoryId;
   String? _music;
   String? _latitude;
-  String? _longitude; 
+  String? _longitude;
 
   Future<void> _takePhoto() async {
     final XFile? photo =
@@ -82,8 +84,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
       body: Column(
         children: [
           Expanded(
-            child:
-                _buildStepWidget(), // Renderiza el widget según el paso actual
+            child: _buildStepWidget(),
           ),
         ],
       ),
@@ -109,7 +110,22 @@ class _AddViewScreenState extends State<AddViewScreen> {
           },
         );
       case StepsEnum.categoryStep:
-        return _defaultWidget();
+        return ChooseCategoriesView(
+            onCategoryChanged: (newCategory, newCategoryId) {
+          setState(() {
+            _category = newCategory;
+            _categoryId = newCategoryId;
+            debugPrint("CategoryId $_categoryId");
+          });
+        }, onCategoryIdChanged: (newCategoryId) {
+          setState(() {
+            _categoryId = newCategoryId;
+          });
+        }, onStepChanged: (newStep) {
+          setState(() {
+            currentStep = newStep;
+          });
+        });
       default:
         return _defaultWidget();
     }
@@ -174,7 +190,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
       variant: InputVariant.defaultInput,
       onChangeValue: (newValue) {
         setState(() {
-          title = newValue;
+          _title = newValue;
         });
       },
       required: title != null ? false : true,
@@ -189,7 +205,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
       multiline: false,
       onChangeValue: (newValue) {
         setState(() {
-          description = newValue;
+          _description = newValue;
         });
       },
       required: description != null ? false : true,

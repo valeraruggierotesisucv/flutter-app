@@ -24,7 +24,7 @@ class _AddDateViewState extends State<AddDateView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeader(title: "Cuando"),
+      appBar: AppHeader(title: "Cuando", goBack: () {widget.onStepChanged(StepsEnum.defaultStep);}),
       backgroundColor: Colors.white,
       body: Column(
         children: [
