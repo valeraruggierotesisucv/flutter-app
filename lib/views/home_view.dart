@@ -1,5 +1,6 @@
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/views/event_details_view.dart';
+import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/event_card.dart';
@@ -49,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
         'location': 'Ciudad, País',
         'date': DateTime.now(),
+        'userId': '1',
       },
       {
         'id': '2',
@@ -58,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
             'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
         'location': 'Ciudad, País',
         'date': DateTime.now(),
+        'userId': '2',
       },
     ];
   }
@@ -95,7 +98,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               isLiked: false,
                               date: '2024-01-01',
                               userComment: {},
-                              onPressUser: () {},
+                              onPressUser: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfileDetailsView(
+                                      userId: event['userId'], 
+                                    ),
+                                  ),
+                                );
+                              },
                               onComment: (eventId, comment) async {
                                 debugPrint(eventId);
                                 debugPrint(comment);
