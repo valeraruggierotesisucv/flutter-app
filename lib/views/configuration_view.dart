@@ -12,8 +12,6 @@ class ConfigurationView extends StatelessWidget {
   Widget build(BuildContext context) {
     final authService = AuthService();
     final t = AppLocalizations.of(context)!;
-    final authService = AuthService();
-    final t = AppLocalizations.of(context)!;
     final selectedLocale = Localizations.localeOf(context).toString();
     
     return Scaffold(
