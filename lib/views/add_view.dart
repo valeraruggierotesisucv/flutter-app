@@ -168,7 +168,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
           title = newValue;
         });
       },
-      required: title != null ? true : false,
+      required: title != null ? false : true,
     );
   }
 
@@ -183,19 +183,47 @@ class _AddViewScreenState extends State<AddViewScreen> {
           description = newValue;
         });
       },
-      required: description != null ? true : false,
+      required: description != null ? false : true,
+    );
+  }
+
+  Widget _datePills(String date, String startsAt, String endsAt) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            CustomChip(label: startsAt),     
+            SizedBox(width: 8),       
+            CustomChip(label: date),
+          ],
+        ),
+        // Icono de borrar
+        IconButton(
+          icon:
+              Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
+          onPressed: () {
+            setState(() {
+              // Limpiar los valores de fecha
+              _date = null;
+              _startsAt = null;
+              _endsAt = null;
+            });
+          },
+        ),
+      ],
     );
   }
 
   Widget _addDate({DateTime? date, String? startsAt, String? endsAt}) {
-    debugPrint("This is the date--${date.toString()}"); 
+    debugPrint("This is the date--${date.toString()}");
 
     return GestureDetector(
       onTap: () => debugPrint("TAP"),
       child: (date != null)
           ? DisplayInput(
               label: "CUANDO",
-              data: CustomChip(label: formatDateToLocalString(date)),
+              data: _datePills(formatDateToLocalString(date), "FALTA", ""),
             )
           : CustomInput(
               label: "CUANDO",
