@@ -47,6 +47,10 @@ class _AddViewScreenState extends State<AddViewScreen> {
   DateTime? _date;
   String? _startsAt;
   String? _endsAt;
+  String? _category;
+  String? _music;
+  String? _latitude;
+  String? _longitude; 
 
   Future<void> _takePhoto() async {
     final XFile? photo =
@@ -104,6 +108,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
             });
           },
         );
+      case StepsEnum.categoryStep:
+        return _defaultWidget();
       default:
         return _defaultWidget();
     }
@@ -120,6 +126,9 @@ class _AddViewScreenState extends State<AddViewScreen> {
             _addTitle(title: _title),
             _addDescription(description: _description),
             _addDate(date: _date, startsAt: _startsAt, endsAt: _endsAt),
+            _addCategory(category: _category),
+            _addMusic(music: _music),
+            _addLocation(latitude: _latitude, longitude: _longitude)
           ],
         ),
       ),
@@ -193,8 +202,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
       children: [
         Row(
           children: [
-            CustomChip(label: startsAt),     
-            SizedBox(width: 8),       
+            CustomChip(label: startsAt),
+            SizedBox(width: 8),
             CustomChip(label: date),
           ],
         ),
@@ -215,26 +224,129 @@ class _AddViewScreenState extends State<AddViewScreen> {
     );
   }
 
+  Widget _categoryPill(String category) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [CustomChip(label: category), SizedBox(width: 8)],
+        ),
+        // Icono de borrar
+        IconButton(
+          icon:
+              Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
+          onPressed: () {
+            setState(() {
+              _category = null;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _musicPill(String music) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [CustomChip(label: music), SizedBox(width: 8)],
+        ),
+        // Icono de borrar
+        IconButton(
+          icon:
+              Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
+          onPressed: () {
+            setState(() {
+              _music = null;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _locationPills(String latitude, String longitude) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            CustomChip(label: latitude),
+            SizedBox(width: 8),
+            CustomChip(label: longitude)
+          ],
+        ),
+        // Icono de borrar
+        IconButton(
+          icon:
+              Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
+          onPressed: () {
+            setState(() {
+              _latitude = null;
+              _longitude = null;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _addDate({DateTime? date, String? startsAt, String? endsAt}) {
     debugPrint("This is the date--${date.toString()}");
 
-    return GestureDetector(
-      onTap: () => debugPrint("TAP"),
-      child: (date != null)
-          ? DisplayInput(
-              label: "CUANDO",
-              data: _datePills(formatDateToLocalString(date), "FALTA", ""),
-            )
-          : CustomInput(
-              label: "CUANDO",
-              placeholder: "Agrega fecha y hora",
-              variant: InputVariant.arrow,
-              onPress: () => {
-                setState(() {
-                  currentStep = StepsEnum.dateStep;
-                })
-              },
-            ),
-    );
+    return (date != null)
+        ? DisplayInput(
+            label: "CUANDO",
+            data: _datePills(formatDateToLocalString(date), "FALTA", ""),
+          )
+        : CustomInput(
+            label: "CUANDO",
+            placeholder: "Agrega fecha y hora",
+            variant: InputVariant.arrow,
+            onPress: () => {
+              setState(() {
+                currentStep = StepsEnum.dateStep;
+              })
+            },
+          );
+  }
+
+  Widget _addCategory({String? category}) {
+    return (category != null)
+        ? DisplayInput(label: "CATEGORIA", data: _categoryPill(category))
+        : CustomInput(
+            label: "CATEGORIA",
+            placeholder: "Agrega una categoría",
+            variant: InputVariant.arrow,
+            onPress: () => {
+              setState(() {
+                currentStep = StepsEnum.categoryStep;
+              })
+            },
+          );
+  }
+
+  Widget _addMusic({String? music}) {
+    return (music != null)
+        ? DisplayInput(label: "CATEGORIA", data: _musicPill(music))
+        : CustomInput(
+            label: "MUSICA",
+            placeholder: "Agrega música",
+            variant: InputVariant.arrow,
+            onPress: () => {},
+          );
+  }
+
+  Widget _addLocation({String? latitude, String? longitude}) {
+    return (latitude != null && longitude != null)
+        ? DisplayInput(
+            label: "CATEGORIA", data: _locationPills(latitude, longitude))
+        : CustomInput(
+            label: "UBICACIÓN",
+            placeholder: "Agrega ubicación",
+            variant: InputVariant.arrow,
+            onPress: () => {},
+          );
   }
 }
