@@ -32,16 +32,12 @@ class ChooseCategoriesView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppHeader(title: "Categoría", goBack: () { onStepChanged(StepsEnum.defaultStep);}),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              "Selecciona al menos 3 categorías de tu preferencia:",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
             const SizedBox(height: 16),
             Expanded(
               child: GridView.builder(
@@ -66,12 +62,19 @@ class ChooseCategoriesView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            CustomButton(
-              label: "Continuar",
-              onPress: () {
-                onStepChanged(StepsEnum.defaultStep);
-              },
+            Align(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: CustomButton(
+                label:
+                    "Siguiente", // Cambia esto por la traducción correspondiente
+                onPress: () {
+                  onStepChanged(
+                      StepsEnum.defaultStep); // Llama al callback
+                },
+              ),
             ),
+          )
           ],
         ),
       ),
