@@ -13,7 +13,8 @@ class DisplayInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      height: 51,
+      padding: const EdgeInsets.only(left:16, bottom: 10, right: 16, top: 10),
       decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -25,14 +26,26 @@ class DisplayInput extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            flex: 45, // equivalente a flex: 0.45
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                // fontFamily: 'SF-Pro-Rounded', // Necesitas configurar esta fuente en pubspec.yaml
+            flex: 48, // equivalente a flex: 0.45
+            child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: label,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
           ),
           Expanded(
             flex: 100, // equivalente a flex: 1

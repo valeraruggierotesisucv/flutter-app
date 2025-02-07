@@ -31,9 +31,7 @@ class ChooseCategoriesView extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppHeader(title: "Categoría", goBack: () {
-                onStepChanged(StepsEnum.defaultStep);
-              }),
+      appBar: AppHeader(title: "Categoría", goBack: () { onStepChanged(StepsEnum.defaultStep);}),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
