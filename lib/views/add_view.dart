@@ -8,7 +8,8 @@ import 'package:eventify/widgets/display_input.dart';
 import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
+
 import 'dart:io';
 
 enum StepsEnum {
@@ -52,6 +53,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _category;
   String? _categoryId;
   String? _music;
+  String? _musicUri;
   String? _latitude;
   String? _longitude;
 
@@ -76,6 +78,18 @@ class _AddViewScreenState extends State<AddViewScreen> {
       });
       debugPrint('Foto seleccionada: ${photo.path}');
       Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _pickMusic() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.audio,
+    );
+    if (result != null) {
+      setState(() {
+        _music = result.files.single.name;
+        _musicUri = result.files.single.path; 
+      });
     }
   }
 
@@ -321,18 +335,15 @@ class _AddViewScreenState extends State<AddViewScreen> {
     );
   }
 
-  String formatTime(DateTime dateTime) {
-    return DateFormat('HH:mm').format(dateTime);
-  }
-
   Widget _addDate({DateTime? date, DateTime? startsAt, DateTime? endsAt}) {
-    debugPrint(date.toString()); 
-    debugPrint(startsAt.toString()); 
-    debugPrint(endsAt.toString()); 
+    debugPrint(date.toString());
+    debugPrint(startsAt.toString());
+    debugPrint(endsAt.toString());
     return (date != null && startsAt != null && endsAt != null)
         ? DisplayInput(
             label: "CUANDO",
-            data: _datePills(formatDateToLocalString(date), formatTime(startsAt), formatTime(endsAt)),
+            data: _datePills(formatDateToLocalString(date),
+                formatTime(startsAt), formatTime(endsAt)),
           )
         : CustomInput(
             label: "CUANDO",
@@ -368,7 +379,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
             label: "MUSICA",
             placeholder: "Agrega música",
             variant: InputVariant.arrow,
-            onPress: () => {},
+            onPress: () => _pickMusic(),
           );
   }
 
