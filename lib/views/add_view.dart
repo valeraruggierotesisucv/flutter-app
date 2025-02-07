@@ -60,41 +60,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _musicUri;
   String? _latitude;
   String? _longitude;
-  final FlutterSoundRecorder _audioRecorder = FlutterSoundRecorder();
-  bool _isRecording = false;
-  String? _recordedAudioPath;
-
-  void startRecording() async {
-    try {
-      var status = await Permission.microphone.request();
-      if (status.isGranted) {
-        await _audioRecorder.startRecorder(
-          toFile: 'audio_recording.aac',
-        );
-        setState(() {
-          _isRecording = true; // Actualiza el estado de grabación
-        });
-        debugPrint("Grabación iniciada");
-        debugPrint("isRecording $_isRecording"); 
-      } else {
-        debugPrint("Permiso de micrófono no concedido");
-      }
-    } catch (e) {
-      debugPrint("Error al iniciar la grabación: $e");
-    }
-  }
-
-  void handleStopRecording() async {
-    try {
-      _recordedAudioPath = await _audioRecorder.stopRecorder();
-      setState(() {
-        _isRecording = false;
-      });
-      debugPrint("Grabación detenida: $_recordedAudioPath");
-    } catch (e) {
-      debugPrint("Error al detener la grabación: $e");
-    }
-  }
 
   Future<void> _takePhoto() async {
     final XFile? photo =
@@ -416,10 +381,14 @@ class _AddViewScreenState extends State<AddViewScreen> {
             label: "MUSICA",
             placeholder: "Agrega música",
             variant: InputVariant.arrow,
-            onPress: () => {
-              showAudioModal(context,
-                  pickMusicFile: _pickMusic,
-                  onClose: () {})
+            onPress: () {
+              showAudioModal(context, pickMusicFile: _pickMusic, onClose: () {},
+                  onRecordingComplete: (recordedPath) {
+                setState(() {
+                  _music = "Recorded audio";
+                  _musicUri = recordedPath; 
+                });
+              });
             },
           );
   }

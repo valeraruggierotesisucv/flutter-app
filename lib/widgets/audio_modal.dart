@@ -5,11 +5,13 @@ import 'package:permission_handler/permission_handler.dart';
 class AudioModal extends StatefulWidget {
   final VoidCallback pickMusicFile;
   final VoidCallback onClose;
+  final Function(String?) onRecordingComplete;
 
   const AudioModal({
     super.key,
     required this.pickMusicFile,
     required this.onClose,
+    required this.onRecordingComplete,
   });
 
   @override
@@ -63,6 +65,7 @@ class _AudioModalState extends State<AudioModal> {
         _isRecording = false;
       });
       debugPrint("Grabación detenida: $_recordedAudioPath");
+      widget.onRecordingComplete(_recordedAudioPath);
     } catch (e) {
       debugPrint("Error al detener la grabación: $e");
     }
@@ -118,12 +121,13 @@ class _AudioModalState extends State<AudioModal> {
 }
 
 // Función para mostrar el AudioModal
-void showAudioModal(BuildContext context, {required VoidCallback pickMusicFile, required VoidCallback onClose}) {
+void showAudioModal(BuildContext context, {required VoidCallback pickMusicFile, required VoidCallback onClose, required Function(String?) onRecordingComplete}) {
   showDialog(
     context: context,
     builder: (context) => AudioModal(
       pickMusicFile: pickMusicFile,
       onClose: onClose,
+      onRecordingComplete: onRecordingComplete,
     ),
   );
 }
