@@ -8,8 +8,15 @@ import 'package:eventify/widgets/calendar.dart';
 class AddDateView extends StatefulWidget {
   final Function(StepsEnum) onStepChanged;
   final Function(DateTime?) onDateChanged;
+  final Function(DateTime?) onStartsAtChanged;
+  final Function(DateTime?) onEndsAtChanged;
 
-  const AddDateView({super.key, required this.onStepChanged, required this.onDateChanged});
+  const AddDateView(
+      {super.key,
+      required this.onStepChanged,
+      required this.onDateChanged,
+      required this.onStartsAtChanged,
+      required this.onEndsAtChanged});
 
   @override
   State createState() => _AddDateViewState();
@@ -24,7 +31,11 @@ class _AddDateViewState extends State<AddDateView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeader(title: "Cuando", goBack: () {widget.onStepChanged(StepsEnum.defaultStep);}),
+      appBar: AppHeader(
+          title: "Cuando",
+          goBack: () {
+            widget.onStepChanged(StepsEnum.defaultStep);
+          }),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -38,37 +49,35 @@ class _AddDateViewState extends State<AddDateView> {
                 setState(() {
                   selectedDate = date;
                   widget.onDateChanged(selectedDate);
-                  debugPrint(selectedDate.toString()); 
                 });
               },
               onStartTimeChange: (time) {
                 setState(() {
                   startTime = TimeOfDay.fromDateTime(time!);
+                  widget.onStartsAtChanged(time);
                 });
               },
               onEndTimeChange: (time) {
                 setState(() {
                   endTime = TimeOfDay.fromDateTime(time!);
+                  widget.onEndsAtChanged(time); 
                 });
               },
             ),
           ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: CustomButton(
-                  label:
-                      "Siguiente", // Cambia esto por la traducción correspondiente
-                  onPress: () {
-                    widget.onStepChanged(
-                        StepsEnum.defaultStep); // Llama al callback
-                  },
-                ),
+          Align(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: CustomButton(
+                label:
+                    "Siguiente", // Cambia esto por la traducción correspondiente
+                onPress: () {
+                  widget.onStepChanged(
+                      StepsEnum.defaultStep); // Llama al callback
+                },
               ),
             ),
-          ),
+          )
         ],
       ),
     );

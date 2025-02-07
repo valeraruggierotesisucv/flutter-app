@@ -8,6 +8,7 @@ import 'package:eventify/widgets/display_input.dart';
 import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 
 enum StepsEnum {
@@ -46,8 +47,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _title;
   String? _description;
   DateTime? _date;
-  String? _startsAt;
-  String? _endsAt;
+  DateTime? _startsAt;
+  DateTime? _endsAt;
   String? _category;
   String? _categoryId;
   String? _music;
@@ -106,6 +107,16 @@ class _AddViewScreenState extends State<AddViewScreen> {
           onDateChanged: (newDate) {
             setState(() {
               _date = newDate;
+            });
+          },
+          onStartsAtChanged: (newDate) {
+            setState(() {
+              _startsAt = newDate;
+            });
+          },
+          onEndsAtChanged: (newDate) {
+            setState(() {
+              _endsAt = newDate;
             });
           },
         );
@@ -220,6 +231,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
           children: [
             CustomChip(label: startsAt),
             SizedBox(width: 8),
+            CustomChip(label: endsAt),
+            SizedBox(width: 8),
             CustomChip(label: date),
           ],
         ),
@@ -308,13 +321,18 @@ class _AddViewScreenState extends State<AddViewScreen> {
     );
   }
 
-  Widget _addDate({DateTime? date, String? startsAt, String? endsAt}) {
-    debugPrint("This is the date--${date.toString()}");
+  String formatTime(DateTime dateTime) {
+    return DateFormat('HH:mm').format(dateTime);
+  }
 
-    return (date != null)
+  Widget _addDate({DateTime? date, DateTime? startsAt, DateTime? endsAt}) {
+    debugPrint(date.toString()); 
+    debugPrint(startsAt.toString()); 
+    debugPrint(endsAt.toString()); 
+    return (date != null && startsAt != null && endsAt != null)
         ? DisplayInput(
             label: "CUANDO",
-            data: _datePills(formatDateToLocalString(date), "FALTA", ""),
+            data: _datePills(formatDateToLocalString(date), formatTime(startsAt), formatTime(endsAt)),
           )
         : CustomInput(
             label: "CUANDO",

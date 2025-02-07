@@ -19,7 +19,7 @@ class DisplayInput extends StatelessWidget {
         border: Border(
           bottom: BorderSide(
             width: 2,
-            color: Color(0xFFE9E8E8), // Ajusta este color según tu theme
+            color: Color(0xFFD9D9D9), // Use 8-digit hexadecimal format
           ),
         ),
       ),
