@@ -68,7 +68,7 @@ class _CustomInputState extends State<CustomInput> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              flex: widget.placeholder != null ? 25 : 100,
+              flex: widget.placeholder != null ? 35 : 100,
               child: RichText(
                 text: TextSpan(
                   style: const TextStyle(
@@ -122,7 +122,7 @@ class _CustomInputState extends State<CustomInput> {
               )
             else 
               Expanded(
-                flex: 55,
+                flex: 65,
                 child: Text(
                   widget.placeholder!,
                   style: TextStyle(

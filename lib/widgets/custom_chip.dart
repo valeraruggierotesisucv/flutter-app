@@ -32,7 +32,7 @@ class CustomChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(
-        minWidth: 70,
+        minWidth: 60,
       ),
       height: 37,
       padding: const EdgeInsets.all(5),
