@@ -15,6 +15,7 @@ class ProfileCard extends StatelessWidget {
   final VoidCallback? onFollowers;
   final VoidCallback? onFollowed;
   final bool disableFollowButton;
+  final bool isOtherUser;
 
   const ProfileCard({
     super.key,
@@ -32,6 +33,7 @@ class ProfileCard extends StatelessWidget {
     this.onFollowers,
     this.onFollowed,
     this.disableFollowButton = false,
+    this.isOtherUser = false,
   });
 
   @override
@@ -89,32 +91,31 @@ class ProfileCard extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              if (onFollow != null)
+              if (isOtherUser) ...[
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: disableFollowButton ? null : onFollow,
+                    onPressed: onFollow,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isFollowing ? Colors.white : const Color(0xFF050F71),
-                      side: isFollowing
-                          ? const BorderSide(color: Color(0xFF050F71))
-                          : null,
+                      backgroundColor: isFollowing ? Colors.white : const Color(0xFF050F71),
                       padding: const EdgeInsets.symmetric(vertical: 4),
+                      side: BorderSide(
+                        color: const Color(0xFF050F71),
+                        width: 1,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     child: Text(
-                      isFollowing ? 'Unfollow' : 'Follow',
+                      isFollowing ? 'Following' : 'Follow',
                       style: TextStyle(
-                        color: isFollowing
-                            ? const Color(0xFF050F71)
-                            : Colors.white,
+                        color: isFollowing ? const Color(0xFF050F71) : Colors.white,
                         fontSize: 13,
                       ),
                     ),
                   ),
                 ),
+              ],
               if (onEditProfile != null) ...[
                 const SizedBox(width: 8),
                 Expanded(

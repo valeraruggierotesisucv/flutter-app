@@ -1,6 +1,7 @@
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/views/event_details_view.dart';
+import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/event_card.dart';
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
+
  @override
   void didUpdateWidget(covariant HomeScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -54,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     widget.viewModel.load.addListener(_onResult);
     oldWidget.viewModel.handleLike.removeListener(_onLike);
     widget.viewModel.handleLike.addListener(_onLike);
+
   }
   
   @override
@@ -90,7 +93,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               isLiked: event.isLiked,
                               date: event.date,
                               userComment: {},
-                              onPressUser: () {},
+                              onPressUser: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfileDetailsView(
+                                      userId: event['userId'], 
+                                    ),
+                                  ),
+                                );
+                              },
                               onComment: (eventId, comment) async {
                                 debugPrint(eventId);
                                 debugPrint(comment);

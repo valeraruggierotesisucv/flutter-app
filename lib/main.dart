@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
                 const ForgotPasswordLoginView(),
             '/${AppScreens.success.name}': (context) => const SuccessView(),
             '/${AppScreens.profileDetails.name}': (context) =>
-                const ProfileDetailsView(),
+                const ProfileDetailsView(userId: ''),
             '/${AppScreens.folowers.name}': (context) => const FollowersView(),
             '/${AppScreens.folowed.name}': (context) => const FollowedView(),
             '/${AppScreens.editProfile.name}': (context) => const EditProfileView(),
