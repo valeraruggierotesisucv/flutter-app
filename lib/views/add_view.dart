@@ -4,6 +4,7 @@ import 'package:eventify/views/add_date_view.dart';
 import 'package:eventify/views/choose_category_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/audio_modal.dart';
+import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/custom_chip.dart';
 import 'package:eventify/widgets/custom_input.dart';
 import 'package:eventify/widgets/display_input.dart';
@@ -47,6 +48,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
   StepsEnum currentStep = StepsEnum.defaultStep;
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
+  String? _imageUri;
   String? _title;
   String? _description;
   DateTime? _date;
@@ -65,6 +67,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
     if (photo != null && mounted) {
       setState(() {
         _image = photo;
+        _imageUri = photo.path; 
       });
       debugPrint('Foto tomada: ${photo.path}');
     }
@@ -76,6 +79,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
     if (photo != null && mounted) {
       setState(() {
         _image = photo;
+         _imageUri = photo.path; 
       });
       debugPrint('Foto seleccionada: ${photo.path}');
     }
@@ -170,7 +174,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
             _addDate(date: _date, startsAt: _startsAt, endsAt: _endsAt),
             _addCategory(category: _category),
             _addMusic(music: _music),
-            _addLocation(latitude: _latitude, longitude: _longitude)
+            _addLocation(latitude: _latitude, longitude: _longitude),
+            _addPublishButton(),
           ],
         ),
       ),
@@ -374,7 +379,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
 
   Widget _addMusic({String? music}) {
     return (music != null)
-        ? DisplayInput(label: "CATEGORIA", data: _musicPill(music))
+        ? DisplayInput(label: "MUSICA", data: _musicPill(music))
         : CustomInput(
             label: "MUSICA",
             placeholder: "Agrega música",
@@ -384,7 +389,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
                   onRecordingComplete: (recordedPath) {
                 setState(() {
                   _music = "Recorded audio";
-                  _musicUri = recordedPath; 
+                  _musicUri = recordedPath;
                 });
               });
             },
@@ -401,5 +406,20 @@ class _AddViewScreenState extends State<AddViewScreen> {
             variant: InputVariant.arrow,
             onPress: () => {},
           );
+  }
+
+  Widget _addPublishButton() {
+    return CustomButton(
+      label: "Publicar",
+      onPress: () {
+        debugPrint("Título: $_title");
+        debugPrint("Descripción: $_description");
+        debugPrint("Fecha: $_date, $_startsAt, $_endsAt");
+        debugPrint("Categoría: $_category, $_categoryId");
+        debugPrint("Música: $_music, $_musicUri");
+        debugPrint("Imagen: $_imageUri");
+        debugPrint("Ubicación: $_latitude, $_longitude");
+      },
+    );
   }
 }
