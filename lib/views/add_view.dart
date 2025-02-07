@@ -64,22 +64,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
   bool _isRecording = false;
   String? _recordedAudioPath;
 
-  @override
-  void initState() {
-    super.initState();
-    _initializeRecorder();
-  }
-
-  Future<void> _initializeRecorder() async {
-    await _audioRecorder.openRecorder();
-  }
-
-  @override
-  void dispose() {
-    _audioRecorder.closeRecorder();
-    super.dispose();
-  }
-
   void startRecording() async {
     try {
       var status = await Permission.microphone.request();
@@ -435,10 +419,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
             onPress: () => {
               showAudioModal(context,
                   pickMusicFile: _pickMusic,
-                  startRecording: startRecording,
-                  handleStopRecording: handleStopRecording,
-                  onClose: () {},
-                  isRecording: _isRecording)
+                  onClose: () {})
             },
           );
   }
