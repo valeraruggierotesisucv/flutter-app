@@ -11,6 +11,8 @@ import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'dart:io';
 
@@ -58,6 +60,57 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _musicUri;
   String? _latitude;
   String? _longitude;
+  final FlutterSoundRecorder _audioRecorder = FlutterSoundRecorder();
+  bool _isRecording = false;
+  String? _recordedAudioPath;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeRecorder();
+  }
+
+  Future<void> _initializeRecorder() async {
+    await _audioRecorder.openRecorder();
+  }
+
+  @override
+  void dispose() {
+    _audioRecorder.closeRecorder();
+    super.dispose();
+  }
+
+  void startRecording() async {
+    try {
+      var status = await Permission.microphone.request();
+      if (status.isGranted) {
+        await _audioRecorder.startRecorder(
+          toFile: 'audio_recording.aac',
+        );
+        setState(() {
+          _isRecording = true; // Actualiza el estado de grabación
+        });
+        debugPrint("Grabación iniciada");
+        debugPrint("isRecording $_isRecording"); 
+      } else {
+        debugPrint("Permiso de micrófono no concedido");
+      }
+    } catch (e) {
+      debugPrint("Error al iniciar la grabación: $e");
+    }
+  }
+
+  void handleStopRecording() async {
+    try {
+      _recordedAudioPath = await _audioRecorder.stopRecorder();
+      setState(() {
+        _isRecording = false;
+      });
+      debugPrint("Grabación detenida: $_recordedAudioPath");
+    } catch (e) {
+      debugPrint("Error al detener la grabación: $e");
+    }
+  }
 
   Future<void> _takePhoto() async {
     final XFile? photo =
@@ -77,7 +130,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
       setState(() {
         _image = photo;
       });
-      debugPrint('Foto seleccionada: ${photo.path}');      
+      debugPrint('Foto seleccionada: ${photo.path}');
     }
   }
 
@@ -184,9 +237,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
           context,
           onTakePhoto: _takePhoto,
           onChooseFromGallery: _chooseFromGallery,
-          onClose: () {
-            
-          },
+          onClose: () {},
         );
       },
       child: image != null
@@ -383,10 +434,11 @@ class _AddViewScreenState extends State<AddViewScreen> {
             variant: InputVariant.arrow,
             onPress: () => {
               showAudioModal(context,
-                pickMusicFile: _pickMusic,
-                startRecording: () {},
-                handleStopRecording: () {}, onClose: () {
-                }, isRecording: false)
+                  pickMusicFile: _pickMusic,
+                  startRecording: startRecording,
+                  handleStopRecording: handleStopRecording,
+                  onClose: () {},
+                  isRecording: _isRecording)
             },
           );
   }

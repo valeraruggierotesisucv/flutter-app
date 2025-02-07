@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AudioModal extends StatelessWidget {
+class AudioModal extends StatefulWidget {
   final VoidCallback pickMusicFile;
   final VoidCallback startRecording;
   final VoidCallback handleStopRecording;
@@ -16,6 +16,11 @@ class AudioModal extends StatelessWidget {
     required this.isRecording,
   });
 
+  @override
+  State createState() => _AudioModalState();
+}
+
+class _AudioModalState extends State<AudioModal> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -35,7 +40,7 @@ class AudioModal extends StatelessWidget {
             Column(
               children: [
                 TextButton(
-                  onPressed: pickMusicFile,
+                  onPressed: widget.pickMusicFile,
                   child: Text(
                     "Elegir de archivos",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
@@ -43,15 +48,16 @@ class AudioModal extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 TextButton(
-                  onPressed: isRecording ? handleStopRecording : startRecording,
+                  onPressed: widget.isRecording ? widget.handleStopRecording : widget.startRecording,
                   child: Text(
-                    isRecording ? "Detener grabación" : "Grabar audio",
+                    widget.isRecording ? "Detener grabación" : "Grabar audio",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
                 const SizedBox(height: 10),
+                TextButton(onPressed: () {}, child: Text(widget.isRecording.toString())), 
                 TextButton(
-                  onPressed: onClose,
+                  onPressed: widget.onClose,
                   child: Text(
                     "Cancelar",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
