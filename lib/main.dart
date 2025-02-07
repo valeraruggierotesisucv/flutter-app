@@ -25,21 +25,30 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:eventify/data/services/api_client.dart';
 
 void main() async {
-  // supabase setup
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
   await Supabase.initialize(
-      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
-      url: dotenv.env['SUPABASE_URL']!
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: dotenv.env['SUPABASE_URL']!
   );
+  
+  final apiClient = ApiClient(
+    baseUrl: dotenv.env['API_URL']!,
+  );
+
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => UserProvider(), 
+    MultiProvider(
+      providers: [
+        Provider.value(value: apiClient),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
       child: const MyApp(),
-    )
+    ),
   );
 }
 

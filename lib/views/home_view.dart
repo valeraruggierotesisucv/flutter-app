@@ -1,4 +1,5 @@
 import 'package:eventify/services/auth_service.dart';
+import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
@@ -7,14 +8,17 @@ import 'package:eventify/widgets/event_card.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key}); 
+  const HomeView({super.key,
+  required this.viewModel,
+  }); 
 
+  final HomeViewModel viewModel;
   @override
   Widget build(BuildContext context) {
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => HomeScreen(viewModel: viewModel),
         );
       },
     );
@@ -23,7 +27,9 @@ class HomeView extends StatelessWidget {
 
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.viewModel});
+
+  final HomeViewModel viewModel;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -32,41 +38,31 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final authService = AuthService();
 
-  Future<void> onComment(String eventId, String comment) async {
-    // Implementar lógica para manejar comentarios
-    debugPrint('Nuevo comentario en evento $eventId: $comment');
+  @override
+  void initState() {
+    super.initState();
+    print('HomeScreen initialized');
+    widget.viewModel.load.addListener(_onResult);
+    widget.viewModel.handleLike.addListener(_onLike);
+    widget.viewModel.load.execute();
   }
 
-  Future<List<dynamic>> fetchEvents() async {
-    // Add artificial delay of 2 seconds
-    await Future.delayed(const Duration(seconds: 8));
 
-    return [
-      {
-        'id': '1',
-        'title': 'Evento 1',
-        'description': 'Descripción del evento 1',
-        'image':
-            'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
-        'location': 'Ciudad, País',
-        'date': DateTime.now(),
-        'userId': '1',
-      },
-      {
-        'id': '2',
-        'title': 'Evento 2',
-        'description': 'Descripción del evento 2',
-        'image':
-            'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
-        'location': 'Ciudad, País',
-        'date': DateTime.now(),
-        'userId': '2',
-      },
-    ];
+
+ @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    oldWidget.viewModel.load.removeListener(_onResult);
+    widget.viewModel.load.addListener(_onResult);
+    oldWidget.viewModel.handleLike.removeListener(_onLike);
+    widget.viewModel.handleLike.addListener(_onLike);
+
   }
-
-  void handleLike() {
-    debugPrint('Like presionado');
+  
+  @override
+  void dispose() {
+    widget.viewModel.load.removeListener(_onResult);
+    super.dispose();
   }
 
   @override
@@ -79,24 +75,23 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FutureBuilder(
-                future: fetchEvents(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
+              ListenableBuilder(
+                listenable: widget.viewModel,
+                builder: (context, child) {
+                  if (widget.viewModel.load.running) {
                     return Loading();
                   }
-
                   return Column(
-                    children: snapshot.data!
+                    children: widget.viewModel.events
                         .map((event) => EventCard(
-                              eventId: event['id'],
-                              profileImage: event['image'],
-                              username: 'Usuario 1',
-                              eventImage: event['image'],
-                              title: event['title'],
-                              description: 'Descripción del evento 1',
-                              isLiked: false,
-                              date: '2024-01-01',
+                              eventId: event.eventId,
+                              profileImage: event.profileImage,
+                              username: event.username,
+                              eventImage: event.eventImage,
+                              title: event.title,
+                              description: event.description,
+                              isLiked: event.isLiked,
+                              date: event.date,
                               userComment: {},
                               onPressUser: () {
                                 Navigator.push(
@@ -117,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EventDetailsView(
-                                      eventId: event['id'], 
+                                      eventId: event.eventId, 
                                       canEdit: false,
                                     ),
                                   ),
@@ -125,7 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               }, 
                               onShare: () {},
                               fetchComments: () async => [],
-                              handleLike: () {},
+                              handleLike: () async {
+                                await widget.viewModel.handleLike.execute(event.eventId);
+                                
+                              },
                             ))
                         .toList(),
                   );
@@ -137,4 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  void _onResult() {
+    
+  }
+
+  void _onLike() {
+    
+  }
+
 }
