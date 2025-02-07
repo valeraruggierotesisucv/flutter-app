@@ -42,33 +42,24 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     print('HomeScreen initialized');
     widget.viewModel.load.addListener(_onResult);
+    widget.viewModel.handleLike.addListener(_onLike);
     widget.viewModel.load.execute();
   }
 
-  void _onResult() {
-    print('Command completed');
-    if (widget.viewModel.events.isNotEmpty) {
-      print('Events loaded: ${widget.viewModel.events.length}');
-    } else {
-      print('No events loaded');
-    }
-  }
 
  @override
   void didUpdateWidget(covariant HomeScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     oldWidget.viewModel.load.removeListener(_onResult);
     widget.viewModel.load.addListener(_onResult);
+    oldWidget.viewModel.handleLike.removeListener(_onLike);
+    widget.viewModel.handleLike.addListener(_onLike);
   }
   
   @override
   void dispose() {
     widget.viewModel.load.removeListener(_onResult);
     super.dispose();
-  }
-
-  void handleLike() {
-    debugPrint('Like presionado');
   }
 
   @override
@@ -84,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ListenableBuilder(
                 listenable: widget.viewModel,
                 builder: (context, child) {
-                  print('Building with ${widget.viewModel.events.length} events');
                   if (widget.viewModel.load.running) {
                     return Loading();
                   }
@@ -97,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               eventImage: event.eventImage,
                               title: event.title,
                               description: event.description,
-                              isLiked: false,
+                              isLiked: event.isLiked,
                               date: event.date,
                               userComment: {},
                               onPressUser: () {},
@@ -118,7 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               }, 
                               onShare: () {},
                               fetchComments: () async => [],
-                              handleLike: () {},
+                              handleLike: () async {
+                                await widget.viewModel.handleLike.execute(event.eventId);
+                                
+                              },
                             ))
                         .toList(),
                   );
@@ -130,4 +123,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  void _onResult() {
+    
+  }
+
+  void _onLike() {
+    
+  }
+
 }

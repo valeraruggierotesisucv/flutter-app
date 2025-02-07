@@ -14,7 +14,7 @@ class EventModel {
   final String category;
   final String categoryId;
   final String musicUrl;
-  final bool isLiked;
+  bool isLiked;
   final String userId;
 
   EventModel({

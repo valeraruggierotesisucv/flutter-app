@@ -1,5 +1,6 @@
 import 'package:eventify/models/event_model.dart';
 import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/utils/result.dart' show Result, Ok, Error;
 
 class EventRepository {
@@ -22,5 +23,12 @@ class EventRepository {
     }else{
       return Result.ok(_cachedEvents!);
     }
+  }
+
+  Future<Result<SocialInteractions>> likeEvent({required String eventId, required String userId}) async {
+    
+      final result = await _apiClient.likeEvent(eventId, userId);
+      return result;
+
   }
 } 

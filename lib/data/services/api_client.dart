@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -47,7 +48,7 @@ class ApiClient {
           // Transform nested data into flat structure
           final user = element['user'] as Map<String, dynamic>;
           final location = element['location'] as Map<String, dynamic>;
-
+          print(element);
           return EventModel.fromJson({
             'event_id': element['eventId'],
             'user_id': element['userId'],
@@ -65,7 +66,7 @@ class ApiClient {
             'category': element['category'] ?? '',
             'category_id': element['categoryId'].toString(),
             'music_url': element['eventMusic'],
-            'is_liked': false,
+            'is_liked': element['isLiked'] ?? false,
           });
         }).toList());
         
@@ -82,16 +83,27 @@ class ApiClient {
     }
   }
 
-  Future<Result<void>> likeEvent(String eventId) async {
+  Future<Result<SocialInteractions>> likeEvent(String eventId, String userId) async {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/events/$eventId/like');
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+      request.write(jsonEncode({'userId': userId}));
       final response = await request.close();
       
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return const Result.ok(null);
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as Map<String, dynamic>;
+        
+        return Result.ok(SocialInteractions.fromJson({
+          'userId': jsonData['userId'],
+          'eventId': jsonData['eventId'],
+          'isActive': jsonData['isActive'],
+          'createdAt': DateTime.parse(jsonData['createdAt']),
+        }));
       } else {
         return Result.error(HttpException("Failed to like event: ${response.statusCode}"));
       }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/widgets/social_interactions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -17,8 +18,21 @@ class HomeViewModel extends ChangeNotifier {
     required EventRepository eventRepository,
   }) : _eventRepository = eventRepository,
        _context = context {
-    load = Command0(() async {
-      try {
+    load = Command0(_loadEvents)..execute();
+    handleLike = Command1<void, String>(_handleLike);
+  }
+
+  final EventRepository _eventRepository;
+  final BuildContext _context;
+  final _log = Logger('HomeViewModel');
+  List<EventModel> _events = [];
+  late final Command0<dynamic> load;
+  late final Command1<void, String> handleLike;
+  List<EventModel> get events => _events;
+
+
+  Future<Result<List<EventModel>>> _loadEvents() async {
+    try {
         print('Loading events...');
         final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
         if (userId == null) {
@@ -40,15 +54,35 @@ class HomeViewModel extends ChangeNotifier {
       } finally {
         notifyListeners();
       }
-    })..execute();
   }
 
-  final EventRepository _eventRepository;
-  final BuildContext _context;
-  final _log = Logger('HomeViewModel');
-  List<EventModel> _events = [];
+  Future<Result<void>> _handleLike(String eventId) async {
+    try {
+      final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
+      if (userId == null) {
+        return Result.error(Exception('User not logged in'));
+      }
 
-  late Command0<dynamic> load;
+      final result = await _eventRepository.likeEvent(
+        eventId: eventId, 
+        userId: userId
+      );
 
-  List<EventModel> get events => _events;
+      final event = _events.firstWhere((e) => e.eventId == eventId);
+      
+      switch (result) {
+        case Ok():
+          event.isLiked = !event.isLiked;
+          notifyListeners();
+          return const Result.ok(null);
+        case Error():
+          _log.warning('Failed to like event', result.error);
+          return Result.error(result.error);
+      }
+    } catch (e) {
+      _log.severe('Error in handleLike', e);
+      return Result.error(Exception('Failed to like event'));
+    }
+  }
+ 
 } 
