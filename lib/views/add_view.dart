@@ -149,7 +149,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
           });
         }, onStepChanged: (newStep) {
           setState(() {
-            currentStep = newStep;
+            currentStep = StepsEnum.defaultStep;
           });
         });
       default:
