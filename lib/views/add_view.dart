@@ -1,7 +1,9 @@
 import 'package:eventify/utils/date_formatter.dart';
+import 'package:eventify/utils/string_formatter.dart';
 import 'package:eventify/views/add_date_view.dart';
 import 'package:eventify/views/choose_category_view.dart';
 import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/audio_modal.dart';
 import 'package:eventify/widgets/custom_chip.dart';
 import 'package:eventify/widgets/custom_input.dart';
 import 'package:eventify/widgets/display_input.dart';
@@ -65,7 +67,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
         _image = photo;
       });
       debugPrint('Foto tomada: ${photo.path}');
-      Navigator.of(context).pop();
     }
   }
 
@@ -76,8 +77,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
       setState(() {
         _image = photo;
       });
-      debugPrint('Foto seleccionada: ${photo.path}');
-      Navigator.of(context).pop();
+      debugPrint('Foto seleccionada: ${photo.path}');      
     }
   }
 
@@ -87,8 +87,9 @@ class _AddViewScreenState extends State<AddViewScreen> {
     );
     if (result != null) {
       setState(() {
-        _music = result.files.single.name;
-        _musicUri = result.files.single.path; 
+        _music = truncateString(result.files.single.name);
+        _musicUri = result.files.single.path!;
+        debugPrint("Archivo de musica-->$_musicUri");
       });
     }
   }
@@ -184,7 +185,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
           onTakePhoto: _takePhoto,
           onChooseFromGallery: _chooseFromGallery,
           onClose: () {
-            Navigator.of(context).pop(); // Cierra el modal
+            
           },
         );
       },
@@ -302,6 +303,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
           onPressed: () {
             setState(() {
               _music = null;
+              _musicUri = null;
             });
           },
         ),
@@ -379,7 +381,13 @@ class _AddViewScreenState extends State<AddViewScreen> {
             label: "MUSICA",
             placeholder: "Agrega música",
             variant: InputVariant.arrow,
-            onPress: () => _pickMusic(),
+            onPress: () => {
+              showAudioModal(context,
+                pickMusicFile: _pickMusic,
+                startRecording: () {},
+                handleStopRecording: () {}, onClose: () {
+                }, isRecording: false)
+            },
           );
   }
 
