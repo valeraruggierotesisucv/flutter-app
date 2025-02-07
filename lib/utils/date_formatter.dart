@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String formatDate(DateTime date) {
   final now = DateTime.now();
   final difference = now.difference(date);
@@ -31,3 +33,13 @@ DateTime parseDate(String date) {
   final parts = date.split("/").reversed.toList();
   return DateTime.parse("${parts.join("-")}T16:00:00.000Z");
 } 
+
+String formatDateToLocalString(DateTime dateTime){
+  String formattedDate = "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}";
+  
+  return formattedDate;
+}
+
+String formatTime(DateTime dateTime) {
+  return DateFormat('HH:mm').format(dateTime);
+}
