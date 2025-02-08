@@ -65,15 +65,27 @@ class _AddDateViewState extends State<AddDateView> {
               },
             ),
           ),
+          if (showError)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text(
+                "Por favor proporciona la fecha y hora de tu evento",
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
           Align(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: CustomButton(
-                label:
-                    "Siguiente", // Cambia esto por la traducción correspondiente
+                label: "Siguiente",
                 onPress: () {
-                  widget.onStepChanged(
-                      StepsEnum.defaultStep); // Llama al callback
+                  if (selectedDate != null && startTime != null && endTime != null) {
+                    widget.onStepChanged(StepsEnum.defaultStep);
+                  } else {
+                    setState(() {
+                      showError = true;
+                    });
+                  }
                 },
               ),
             ),
