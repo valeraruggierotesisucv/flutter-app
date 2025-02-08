@@ -1,18 +1,18 @@
+import 'package:eventify/utils/string_formatter.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AudioModal extends StatefulWidget {
-  final VoidCallback pickMusicFile;
   final VoidCallback onClose;
   final Function(String?) onRecordingComplete;
+  final Function(String, String) onPickMusicFile;
 
-  const AudioModal({
-    super.key,
-    required this.pickMusicFile,
+  const AudioModal({super.key,
     required this.onClose,
     required this.onRecordingComplete,
-  });
+    required this.onPickMusicFile});
 
   @override
   State createState() => _AudioModalState();
@@ -71,6 +71,17 @@ class _AudioModalState extends State<AudioModal> {
     }
   }
 
+  Future<void> _pickMusic() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.audio,
+    );
+    if (result != null && result.files.single.path != null) {
+      String musicName = truncateString(result.files.single.name);
+      String musicPath = result.files.single.path!;
+      widget.onPickMusicFile(musicName, musicPath);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -89,7 +100,7 @@ class _AudioModalState extends State<AudioModal> {
             Column(
               children: [
                 TextButton(
-                  onPressed: widget.pickMusicFile,
+                  onPressed: _pickMusic,
                   child: Text(
                     "Elegir de archivos",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
@@ -97,7 +108,8 @@ class _AudioModalState extends State<AudioModal> {
                 ),
                 const SizedBox(height: 10),
                 TextButton(
-                  onPressed: _isRecording ? handleStopRecording : startRecording,
+                  onPressed:
+                      _isRecording ? handleStopRecording : startRecording,
                   child: Text(
                     _isRecording ? "Detener grabación" : "Grabar audio",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
@@ -121,11 +133,15 @@ class _AudioModalState extends State<AudioModal> {
 }
 
 // Función para mostrar el AudioModal
-void showAudioModal(BuildContext context, {required VoidCallback pickMusicFile, required VoidCallback onClose, required Function(String?) onRecordingComplete}) {
+void showAudioModal(BuildContext context, {
+  required VoidCallback onClose,
+  required Function(String?) onRecordingComplete,
+  required Function(String, String) onPickMusicFile
+}) {
   showDialog(
     context: context,
     builder: (context) => AudioModal(
-      pickMusicFile: pickMusicFile,
+      onPickMusicFile: onPickMusicFile,
       onClose: onClose,
       onRecordingComplete: onRecordingComplete,
     ),

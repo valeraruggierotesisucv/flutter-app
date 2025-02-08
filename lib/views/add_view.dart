@@ -99,19 +99,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
     }
   }
 
-  Future<void> _pickMusic() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.audio,
-    );
-    if (result != null) {
-      setState(() {
-        _music = truncateString(result.files.single.name);
-        _musicUri = result.files.single.path!;
-        debugPrint("Archivo de musica-->$_musicUri");
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -391,11 +378,16 @@ class _AddViewScreenState extends State<AddViewScreen> {
             placeholder: "Agrega música",
             variant: InputVariant.arrow,
             onPress: () {
-              showAudioModal(context, pickMusicFile: _pickMusic, onClose: () {},
+              showAudioModal(context, onClose: () {},
                   onRecordingComplete: (recordedPath) {
                 setState(() {
                   _music = "Recorded audio";
                   _musicUri = recordedPath;
+                });
+              }, onPickMusicFile: (music, musicUri) {
+                setState(() {
+                  _music = music;
+                  _musicUri = musicUri;
                 });
               });
             },
@@ -427,6 +419,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
     _viewModel.longitude = "60";
 
     debugPrint("[add_view] Creando evento...");
+    debugPrint("music--> $_music, $_musicUri");
     await _viewModel.createEvent();
   }
 
