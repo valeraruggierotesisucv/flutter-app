@@ -2,51 +2,35 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+enum FileType {
+  image,
+  audio
+}
 
 class StorageService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  Future<String?> uploadEventImage(String filePath) async {
+  Future<String?> uploadFile(String filePath, FileType type) async {
     try {
+      final String bucketName = type == FileType.image ? 'EventImages' : 'EventMusic';
+      
       final String fileName = '${DateTime.now().millisecondsSinceEpoch}';
       final file = File(filePath);
 
-      final response =
-          await _supabase.storage.from('EventImages').upload(fileName, file);
-
-      debugPrint("this is the response $response");
-      // Obtener la URL pública de la imagen
-      final String imageUrl =
-          _supabase.storage.from('EventImages').getPublicUrl(fileName);
-
-      debugPrint("url-->$imageUrl");
-      return imageUrl;
-    } catch (e) {
-      print('Error uploading image: $e');
-      return null;
-    }
-  }
-
-  Future<String?> uploadEventAudio(String filePath) async {
-    try {
-      final String fileName = 'audio_${DateTime.now().millisecondsSinceEpoch}';
-      
-      final file = File(filePath);
-      
       await _supabase
           .storage
-          .from('EventMusic')
+          .from(bucketName)
           .upload(fileName, file);
 
-      // Obtener la URL pública del audio
-      final String audioUrl = _supabase
+      final String fileUrl = _supabase
           .storage
-          .from('EventMusic')
+          .from(bucketName)
           .getPublicUrl(fileName);
 
-      return audioUrl;
+      debugPrint("url-->$fileUrl");
+      return fileUrl;
     } catch (e) {
-      print('Error uploading audio: $e');
+      debugPrint('Error uploading ${type.name}: $e');
       return null;
     }
   }

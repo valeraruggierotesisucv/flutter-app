@@ -6,6 +6,7 @@ import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/data/repositories/location_repository.dart';
 import 'package:eventify/models/location_model.dart';
 import 'package:eventify/services/storage_service.dart';
+import 'package:eventify/services/storage_service.dart';
 
 class AddViewModel extends ChangeNotifier {
   AddViewModel({
@@ -59,8 +60,10 @@ class AddViewModel extends ChangeNotifier {
 
       // Subir imagen si existe
       if (imageUri != null) {
-        publicImageUrl = await _storageService.uploadEventImage(imageUri!);
-        debugPrint("imageUrl-->$publicImageUrl");
+        publicImageUrl =
+            await _storageService.uploadFile(imageUri!, FileType.image);
+        
+        debugPrint("image url --> $publicImageUrl"); 
         if (publicImageUrl == null) {
           throw Exception('Failed to upload image');
         }
@@ -68,8 +71,9 @@ class AddViewModel extends ChangeNotifier {
 
       // Subir audio si existe
       if (musicUri != null) {
-        publicAudioUrl = await _storageService.uploadEventAudio(musicUri!);
-        debugPrint("publicAudioURL-->$publicAudioUrl"); 
+        publicAudioUrl =
+            await _storageService.uploadFile(musicUri!, FileType.audio);
+        debugPrint("audio url --> $publicAudioUrl"); 
         if (publicAudioUrl == null) {
           throw Exception('Failed to upload audio');
         }
