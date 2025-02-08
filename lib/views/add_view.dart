@@ -120,7 +120,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
           setState(() {
             _category = newCategory;
             _categoryId = newCategoryId;
-            debugPrint("CategoryId $_categoryId");
           });
         }, onStepChanged: (newStep) {
           setState(() {
