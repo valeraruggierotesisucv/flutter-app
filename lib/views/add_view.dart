@@ -1,5 +1,4 @@
 import 'package:eventify/utils/date_formatter.dart';
-import 'package:eventify/utils/string_formatter.dart';
 import 'package:eventify/view_models/add_event_view_model.dart';
 import 'package:eventify/views/add_date_view.dart';
 import 'package:eventify/views/choose_category_view.dart';
@@ -12,7 +11,6 @@ import 'package:eventify/widgets/display_input.dart';
 import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 
 import 'dart:io';
 
@@ -186,7 +184,9 @@ class _AddViewScreenState extends State<AddViewScreen> {
           context,
           onTakePhoto: _takePhoto,
           onChooseFromGallery: _chooseFromGallery,
-          onClose: () {},
+          onClose: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
         );
       },
       child: image != null
@@ -378,8 +378,9 @@ class _AddViewScreenState extends State<AddViewScreen> {
             placeholder: "Agrega música",
             variant: InputVariant.arrow,
             onPress: () {
-              showAudioModal(context, onClose: () {},
-                  onRecordingComplete: (recordedPath) {
+              showAudioModal(context, onClose: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }, onRecordingComplete: (recordedPath) {
                 setState(() {
                   _music = "Recorded audio";
                   _musicUri = recordedPath;
@@ -415,8 +416,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
     _viewModel.endsAt = _endsAt;
     _viewModel.categoryId = _categoryId;
     _viewModel.musicUri = _musicUri;
-    _viewModel.latitude = "30";
-    _viewModel.longitude = "60";
+    _viewModel.latitude = "30"; // TO-DO: falta geolocation
+    _viewModel.longitude = "60"; // TO-DO: falta geoLocation
 
     debugPrint("[add_view] Creando evento...");
     debugPrint("music--> $_music, $_musicUri");
