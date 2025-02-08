@@ -13,10 +13,10 @@ class PhotoModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ImagePicker _picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
     
     Future<void> takePhoto() async {
-      final XFile? photo = await _picker.pickImage(source: ImageSource.camera, maxHeight: 250);
+      final XFile? photo = await picker.pickImage(source: ImageSource.camera, maxHeight: 250);
       if (photo != null) {
         onPhotoSelected(photo);
         onClose();
@@ -24,7 +24,7 @@ class PhotoModal extends StatelessWidget {
     }
 
     Future<void> chooseFromGallery() async {
-      final XFile? photo = await _picker.pickImage(source: ImageSource.gallery, maxHeight: 250);
+      final XFile? photo = await picker.pickImage(source: ImageSource.gallery, maxHeight: 250);
       if (photo != null) {
         onPhotoSelected(photo);
         onClose();

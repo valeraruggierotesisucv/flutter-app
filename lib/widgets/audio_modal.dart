@@ -9,10 +9,11 @@ class AudioModal extends StatefulWidget {
   final Function(String?) onRecordingComplete;
   final Function(String, String) onPickMusicFile;
 
-  const AudioModal({super.key,
-    required this.onClose,
-    required this.onRecordingComplete,
-    required this.onPickMusicFile});
+  const AudioModal(
+      {super.key,
+      required this.onClose,
+      required this.onRecordingComplete,
+      required this.onPickMusicFile});
 
   @override
   State createState() => _AudioModalState();
@@ -66,6 +67,7 @@ class _AudioModalState extends State<AudioModal> {
       });
       debugPrint("Grabación detenida: $_recordedAudioPath");
       widget.onRecordingComplete(_recordedAudioPath);
+      widget.onClose();
     } catch (e) {
       debugPrint("Error al detener la grabación: $e");
     }
@@ -75,10 +77,11 @@ class _AudioModalState extends State<AudioModal> {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.audio,
     );
-    if (result != null && result.files.single.path != null) {
+    if (result != null && result.files.single.path != null && mounted) {
       String musicName = truncateString(result.files.single.name);
       String musicPath = result.files.single.path!;
       widget.onPickMusicFile(musicName, musicPath);
+      widget.onClose(); 
     }
   }
 
@@ -133,11 +136,10 @@ class _AudioModalState extends State<AudioModal> {
 }
 
 // Función para mostrar el AudioModal
-void showAudioModal(BuildContext context, {
-  required VoidCallback onClose,
-  required Function(String?) onRecordingComplete,
-  required Function(String, String) onPickMusicFile
-}) {
+void showAudioModal(BuildContext context,
+    {required VoidCallback onClose,
+    required Function(String?) onRecordingComplete,
+    required Function(String, String) onPickMusicFile}) {
   showDialog(
     context: context,
     builder: (context) => AudioModal(
