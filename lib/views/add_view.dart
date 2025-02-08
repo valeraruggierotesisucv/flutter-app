@@ -52,7 +52,7 @@ class AddViewScreen extends StatefulWidget {
 class _AddViewScreenState extends State<AddViewScreen> {
   late AddViewModel _viewModel;
   StepsEnum currentStep = StepsEnum.defaultStep;
-  final ImagePicker _picker = ImagePicker();
+
   XFile? _image;
   String? _imageUri;
   String? _title;
@@ -71,30 +71,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
   void initState() {
     super.initState();
     _viewModel = widget.viewModel;
-  }
-
-  Future<void> _takePhoto() async {
-    final XFile? photo =
-        await _picker.pickImage(source: ImageSource.camera, maxHeight: 250);
-    if (photo != null && mounted) {
-      setState(() {
-        _image = photo;
-        _imageUri = photo.path;
-      });
-      debugPrint('Foto tomada: ${photo.path}');
-    }
-  }
-
-  Future<void> _chooseFromGallery() async {
-    final XFile? photo =
-        await _picker.pickImage(source: ImageSource.gallery, maxHeight: 250);
-    if (photo != null && mounted) {
-      setState(() {
-        _image = photo;
-        _imageUri = photo.path;
-      });
-      debugPrint('Foto seleccionada: ${photo.path}');
-    }
   }
 
   @override
@@ -182,8 +158,12 @@ class _AddViewScreenState extends State<AddViewScreen> {
       onTap: () {
         showPhotoModal(
           context,
-          onTakePhoto: _takePhoto,
-          onChooseFromGallery: _chooseFromGallery,
+          onPhotoSelected: (photo) {
+            setState(() {
+              _image = photo;
+              _imageUri = photo.path;
+            });
+          },
           onClose: () {
             Navigator.of(context, rootNavigator: true).pop();
           },
@@ -421,6 +401,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
 
     debugPrint("[add_view] Creando evento...");
     debugPrint("music--> $_music, $_musicUri");
+    debugPrint("image-->$_image, $_imageUri"); 
     await _viewModel.createEvent();
   }
 
