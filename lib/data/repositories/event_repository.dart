@@ -31,4 +31,30 @@ class EventRepository {
       return result;
 
   }
+
+  Future<Result<EventModel>> createEvent({
+    required String userId,
+    required String eventImage,
+    required String categoryId,
+    required String locationId,
+    required String title,
+    required String description,
+    required DateTime date,
+    required DateTime startsAt,
+    required DateTime endsAt,
+    String? eventMusic,
+  }) async {
+    return await _apiClient.createEvent(
+      userId: userId,
+      eventImage: eventImage,
+      categoryId: categoryId,
+      locationId: locationId,
+      title: title,
+      description: description,
+      date: date,
+      startsAt: startsAt,
+      endsAt: endsAt,
+      eventMusic: eventMusic,
+    );
+  }
 } 

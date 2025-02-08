@@ -1,5 +1,6 @@
 import 'package:eventify/utils/date_formatter.dart';
 import 'package:eventify/utils/string_formatter.dart';
+import 'package:eventify/view_models/add_event_view_model.dart';
 import 'package:eventify/views/add_date_view.dart';
 import 'package:eventify/views/choose_category_view.dart';
 import 'package:eventify/widgets/app_header.dart';
@@ -23,14 +24,19 @@ enum StepsEnum {
 }
 
 class AddView extends StatelessWidget {
-  const AddView({super.key});
+  const AddView({
+    super.key,
+    required this.viewModel,
+  });
+
+  final AddViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-          builder: (context) => const AddViewScreen(),
+          builder: (context) => AddViewScreen(viewModel: viewModel),
         );
       },
     );
@@ -38,13 +44,15 @@ class AddView extends StatelessWidget {
 }
 
 class AddViewScreen extends StatefulWidget {
-  const AddViewScreen({super.key});
+  const AddViewScreen({super.key, required this.viewModel});
+  final AddViewModel viewModel;
 
   @override
   State<AddViewScreen> createState() => _AddViewScreenState();
 }
 
 class _AddViewScreenState extends State<AddViewScreen> {
+  late AddViewModel _viewModel;
   StepsEnum currentStep = StepsEnum.defaultStep;
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
@@ -61,13 +69,19 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _latitude;
   String? _longitude;
 
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = widget.viewModel;
+  }
+
   Future<void> _takePhoto() async {
     final XFile? photo =
         await _picker.pickImage(source: ImageSource.camera, maxHeight: 250);
     if (photo != null && mounted) {
       setState(() {
         _image = photo;
-        _imageUri = photo.path; 
+        _imageUri = photo.path;
       });
       debugPrint('Foto tomada: ${photo.path}');
     }
@@ -79,7 +93,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
     if (photo != null && mounted) {
       setState(() {
         _image = photo;
-         _imageUri = photo.path; 
+        _imageUri = photo.path;
       });
       debugPrint('Foto seleccionada: ${photo.path}');
     }
@@ -254,13 +268,11 @@ class _AddViewScreenState extends State<AddViewScreen> {
             CustomChip(label: date),
           ],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
           onPressed: () {
             setState(() {
-              // Limpiar los valores de fecha
               _date = null;
               _startsAt = null;
               _endsAt = null;
@@ -278,13 +290,13 @@ class _AddViewScreenState extends State<AddViewScreen> {
         Row(
           children: [CustomChip(label: category), SizedBox(width: 8)],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
           onPressed: () {
             setState(() {
               _category = null;
+              _categoryId = null;
             });
           },
         ),
@@ -299,7 +311,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
         Row(
           children: [CustomChip(label: music), SizedBox(width: 8)],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
@@ -325,7 +336,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
             CustomChip(label: longitude)
           ],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
@@ -408,18 +418,26 @@ class _AddViewScreenState extends State<AddViewScreen> {
           );
   }
 
+  void _handlePublish() async {
+    _viewModel.imageUri = _imageUri;
+    _viewModel.title = _title;
+    _viewModel.description = _description;
+    _viewModel.date = _date;
+    _viewModel.startsAt = _startsAt;
+    _viewModel.endsAt = _endsAt;
+    _viewModel.categoryId = _categoryId;
+    _viewModel.musicUri = _musicUri;
+    _viewModel.latitude = "30";
+    _viewModel.longitude = "60";
+
+    debugPrint("[add_view] Creando evento...");
+    await _viewModel.createEvent();
+  }
+
   Widget _addPublishButton() {
     return CustomButton(
       label: "Publicar",
-      onPress: () {
-        debugPrint("Título: $_title");
-        debugPrint("Descripción: $_description");
-        debugPrint("Fecha: $_date, $_startsAt, $_endsAt");
-        debugPrint("Categoría: $_category, $_categoryId");
-        debugPrint("Música: $_music, $_musicUri");
-        debugPrint("Imagen: $_imageUri");
-        debugPrint("Ubicación: $_latitude, $_longitude");
-      },
+      onPress: _handlePublish,
     );
   }
 }
