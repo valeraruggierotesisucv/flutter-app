@@ -26,4 +26,28 @@ class StorageService {
       return null;
     }
   }
+
+  Future<String?> uploadEventAudio(String filePath) async {
+    try {
+      final String fileName = 'audio_${DateTime.now().millisecondsSinceEpoch}';
+      
+      final file = File(filePath);
+      
+      await _supabase
+          .storage
+          .from('EventMusic')
+          .upload(fileName, file);
+
+      // Obtener la URL pública del audio
+      final String audioUrl = _supabase
+          .storage
+          .from('EventMusic')
+          .getPublicUrl(fileName);
+
+      return audioUrl;
+    } catch (e) {
+      print('Error uploading audio: $e');
+      return null;
+    }
+  }
 }

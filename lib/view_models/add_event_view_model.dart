@@ -55,13 +55,23 @@ class AddViewModel extends ChangeNotifier {
 
     try {
       String? publicImageUrl;
+      String? publicAudioUrl;
 
-      // Si hay una imagen seleccionada, súbela primero
+      // Subir imagen si existe
       if (imageUri != null) {
         publicImageUrl = await _storageService.uploadEventImage(imageUri!);
-        debugPrint("imageUrl-->$publicImageUrl"); 
+        debugPrint("imageUrl-->$publicImageUrl");
         if (publicImageUrl == null) {
           throw Exception('Failed to upload image');
+        }
+      }
+
+      // Subir audio si existe
+      if (musicUri != null) {
+        publicAudioUrl = await _storageService.uploadEventAudio(musicUri!);
+        debugPrint("publicAudioURL-->$publicAudioUrl"); 
+        if (publicAudioUrl == null) {
+          throw Exception('Failed to upload audio');
         }
       }
 
@@ -92,6 +102,7 @@ class AddViewModel extends ChangeNotifier {
       final result = await _eventRepository.createEvent(
         userId: userId,
         eventImage: publicImageUrl ?? imageUri!,
+        eventMusic: publicAudioUrl ?? musicUri!,
         categoryId: categoryId!,
         locationId: location.locationId,
         title: title!,
@@ -99,7 +110,6 @@ class AddViewModel extends ChangeNotifier {
         date: date!,
         startsAt: startsAt!,
         endsAt: endsAt!,
-        eventMusic: musicUri,
       );
 
       debugPrint("[AddViewModel] Event created succesfully");

@@ -172,7 +172,7 @@ class ApiClient {
         'date': date.toUtc().toIso8601String(),
         'startsAt': startsAt.toUtc().toIso8601String(),
         'endsAt': endsAt.toUtc().toIso8601String(),
-        'eventMusic': "https://crnarpvpafbywvdzfukp.supabase.co/storage/v1/object/public/EventImages/1738529176438",
+        'eventMusic': eventMusic,
       };
       debugPrint("body $body"); 
 
