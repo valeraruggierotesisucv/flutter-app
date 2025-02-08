@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/data/repositories/location_repository.dart';
 import 'package:eventify/models/location_model.dart';
+import 'package:eventify/services/storage_service.dart';
 
 class AddViewModel extends ChangeNotifier {
   AddViewModel({
@@ -18,6 +19,8 @@ class AddViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
   final LocationRepository _locationRepository;
   final BuildContext _context;
+
+  final StorageService _storageService = StorageService();
 
   // Form data
   String? imageUri;
@@ -39,7 +42,7 @@ class AddViewModel extends ChangeNotifier {
         startsAt != null &&
         endsAt != null &&
         categoryId != null &&
-        musicUri != null  &&
+        musicUri != null &&
         latitude != null &&
         longitude != null;
   }
@@ -51,6 +54,17 @@ class AddViewModel extends ChangeNotifier {
     }
 
     try {
+      String? publicImageUrl;
+
+      // Si hay una imagen seleccionada, súbela primero
+      if (imageUri != null) {
+        publicImageUrl = await _storageService.uploadEventImage(imageUri!);
+        debugPrint("imageUrl-->$publicImageUrl"); 
+        if (publicImageUrl == null) {
+          throw Exception('Failed to upload image');
+        }
+      }
+
       final userId =
           Provider.of<UserProvider>(_context, listen: false).user?.id;
       if (userId == null) {
@@ -77,7 +91,7 @@ class AddViewModel extends ChangeNotifier {
 
       final result = await _eventRepository.createEvent(
         userId: userId,
-        eventImage: imageUri!,
+        eventImage: publicImageUrl ?? imageUri!,
         categoryId: categoryId!,
         locationId: location.locationId,
         title: title!,

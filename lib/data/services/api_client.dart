@@ -164,7 +164,7 @@ class ApiClient {
 
       final body = {
         'userId': userId,
-        'eventImage': "https://crnarpvpafbywvdzfukp.supabase.co/storage/v1/object/public/EventImages/1738529176438",
+        'eventImage': eventImage,
         'categoryId': categoryId,
         'locationId': locationId,
         'title': title,
