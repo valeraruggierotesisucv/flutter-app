@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/utils/result.dart';
-import 'package:eventify/models/event_model.dart';
 import 'package:provider/provider.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/data/repositories/location_repository.dart';
@@ -35,16 +34,17 @@ class AddViewModel extends ChangeNotifier {
   bool get isValid {
     return imageUri != null &&
         title != null &&
-        title!.isNotEmpty &&
         description != null &&
-        description!.isNotEmpty &&
         date != null &&
         startsAt != null &&
         endsAt != null &&
-        categoryId != null;
+        categoryId != null &&
+        musicUri != null  &&
+        latitude != null &&
+        longitude != null;
   }
 
-  Future<Result<EventModel>> createEvent() async {
+  Future<Result<void>> createEvent() async {
     if (!isValid) {
       debugPrint("[AddViewModel] Validation failed");
       return Result.error(Exception('Please fill all required fields'));
@@ -58,7 +58,7 @@ class AddViewModel extends ChangeNotifier {
         return Result.error(Exception('User not logged in'));
       }
 
-      print("[AddViewModel] Creating location...");
+      debugPrint("[AddViewModel] Creating location...");
       final locationResult = await _locationRepository.createLocation(
         latitude: latitude!,
         longitude: longitude!,
@@ -71,11 +71,10 @@ class AddViewModel extends ChangeNotifier {
       }
 
       final location = (locationResult as Ok<LocationModel>).value;
-      print(
+      debugPrint(
           "[AddViewModel] Location created successfully: ${location.locationId}");
+      debugPrint("[AddViewModel] Creating event...");
 
-      print("[AddViewModel] Creating event...");
-      
       final result = await _eventRepository.createEvent(
         userId: userId,
         eventImage: imageUri!,
@@ -89,20 +88,14 @@ class AddViewModel extends ChangeNotifier {
         eventMusic: musicUri,
       );
 
-      debugPrint("[AddViewModel] Event creation result: $result");
+      debugPrint("[AddViewModel] Event created succesfully");
       if (result is Ok) {
         _clearForm();
       }
-       
+
       return result;
     } catch (e) {
       debugPrint("[AddViewModel] Error in createEvent: $e");
-      debugPrint("titulo: $title");
-      debugPrint("image: $imageUri");
-      debugPrint("description: $description");
-      debugPrint("category: $categoryId");
-      debugPrint("date: $date, $startsAt, $endsAt");
-      debugPrint("music $musicUri"); 
       return Result.error(Exception('Failed to create event: $e'));
     }
   }

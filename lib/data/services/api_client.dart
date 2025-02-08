@@ -141,7 +141,7 @@ class ApiClient {
     }
   }
 
-  Future<Result<EventModel>> createEvent({
+  Future<Result<void>> createEvent({
     required String userId,
     required String eventImage,
     required int categoryId,
@@ -185,7 +185,7 @@ class ApiClient {
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
         final jsonData = jsonResponse['data'] as Map<String, dynamic>;
         debugPrint("API created event: $jsonData");
-        return Result.ok(EventModel.fromJson(jsonData));
+        return Result.ok(null);
       } else {
         debugPrint("not ok--> Failed to create event: ${response.statusCode}");
         return Result.error(

@@ -1,7 +1,7 @@
 import 'package:eventify/models/event_model.dart';
 import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/models/social_interactions.dart';
-import 'package:eventify/utils/result.dart' show Result, Ok, Error;
+import 'package:eventify/utils/result.dart' show Result, Ok;
 
 class EventRepository {
 
@@ -32,7 +32,7 @@ class EventRepository {
 
   }
 
-  Future<Result<EventModel>> createEvent({
+  Future<Result<void>> createEvent({
     required String userId,
     required String eventImage,
     required int categoryId,
