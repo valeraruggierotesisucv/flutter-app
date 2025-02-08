@@ -9,6 +9,7 @@ import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:eventify/models/location_model.dart';
 
 /// Adds the `Authentication` header to a header configuration.
 typedef AuthHeaderProvider = String? Function();
@@ -143,7 +144,7 @@ class ApiClient {
   Future<Result<EventModel>> createEvent({
     required String userId,
     required String eventImage,
-    required String categoryId,
+    required int categoryId,
     required String locationId,
     required String title,
     required String description,
@@ -156,39 +157,81 @@ class ApiClient {
     debugPrint("[api_client]");
     try {
       final uri = Uri.parse('$_baseUrl/events');
+      debugPrint(uri.toString());
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
       request.headers.contentType = ContentType.json;
 
       final body = {
         'userId': userId,
-        'eventImage': eventImage,
+        'eventImage': "https://crnarpvpafbywvdzfukp.supabase.co/storage/v1/object/public/EventImages/1738529176438",
         'categoryId': categoryId,
         'locationId': locationId,
         'title': title,
         'description': description,
-        'date': date.toIso8601String(),
-        'startsAt': startsAt.toIso8601String(),
-        'endsAt': endsAt.toIso8601String(),
-        if (eventMusic != null) 'eventMusic': eventMusic,
+        'date': date.toUtc().toIso8601String(),
+        'startsAt': startsAt.toUtc().toIso8601String(),
+        'endsAt': endsAt.toUtc().toIso8601String(),
+        'eventMusic': "https://crnarpvpafbywvdzfukp.supabase.co/storage/v1/object/public/EventImages/1738529176438",
       };
+      debugPrint("body $body"); 
 
       request.write(jsonEncode(body));
       final response = await request.close();
       debugPrint("result--->$response");
-      if (response.statusCode == 201) {
+
+      if (response.statusCode == 200) {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
         final jsonData = jsonResponse['data'] as Map<String, dynamic>;
-        debugPrint("ok");
+        debugPrint("API created event: $jsonData");
         return Result.ok(EventModel.fromJson(jsonData));
       } else {
-        debugPrint("not ok"); 
+        debugPrint("not ok--> Failed to create event: ${response.statusCode}");
         return Result.error(
             HttpException("Failed to create event: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<LocationModel>> createLocation({
+    required String latitude,
+    required String longitude,
+  }) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/locations');
+      debugPrint(uri.toString());
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {
+        'latitude': double.parse(latitude),
+        'longitude': double.parse(longitude),
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as Map<String, dynamic>;
+        debugPrint("[API LOCATION] $jsonData");
+        return Result.ok(LocationModel.fromJson(jsonData));
+      } else {
+        debugPrint(
+            "[API LOCATION] Failed to create location: ${response.statusCode}");
+        return Result.error(
+            HttpException("Failed to create location: ${response.statusCode}"));
+      }
+    } on Exception catch (e) {
+      return Result.error(e);
     } finally {
       client.close();
     }

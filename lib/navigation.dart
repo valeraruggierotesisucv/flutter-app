@@ -9,6 +9,7 @@ import 'package:eventify/views/notifications_view.dart';
 import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/views/home_view.dart';
 import 'package:provider/provider.dart';
+import 'package:eventify/data/repositories/location_repository.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -37,6 +38,9 @@ class _MainViewState extends State<MainView> {
         viewModel: AddViewModel(
           context: context,
           eventRepository: EventRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
+          locationRepository: LocationRepository(
             Provider.of<ApiClient>(context, listen: false),
           ),
         ),

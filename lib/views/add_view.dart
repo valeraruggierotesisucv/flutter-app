@@ -63,7 +63,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
   DateTime? _startsAt;
   DateTime? _endsAt;
   String? _category;
-  String? _categoryId;
+  int? _categoryId;
   String? _music;
   String? _musicUri;
   String? _latitude;
@@ -155,15 +155,11 @@ class _AddViewScreenState extends State<AddViewScreen> {
         );
       case StepsEnum.categoryStep:
         return ChooseCategoriesView(
-            onCategoryChanged: (newCategory, newCategoryId) {
+            onCategoryChanged: (newCategoryId, newCategory) {
           setState(() {
             _category = newCategory;
             _categoryId = newCategoryId;
             debugPrint("CategoryId $_categoryId");
-          });
-        }, onCategoryIdChanged: (newCategoryId) {
-          setState(() {
-            _categoryId = newCategoryId;
           });
         }, onStepChanged: (newStep) {
           setState(() {

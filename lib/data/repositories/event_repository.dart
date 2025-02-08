@@ -35,7 +35,7 @@ class EventRepository {
   Future<Result<EventModel>> createEvent({
     required String userId,
     required String eventImage,
-    required String categoryId,
+    required int categoryId,
     required String locationId,
     required String title,
     required String description,
