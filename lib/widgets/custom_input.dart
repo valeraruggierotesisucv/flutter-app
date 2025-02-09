@@ -122,7 +122,7 @@ class _CustomInputState extends State<CustomInput> {
               Expanded(
                 flex: 65,
                 child: Text(
-                  widget.placeholder!,
+                  widget.placeholder ?? '',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.grey,

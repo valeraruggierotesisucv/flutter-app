@@ -72,32 +72,34 @@ class ConfigurationView extends StatelessWidget {
         title: t.configTitle,
         goBack: () => Navigator.pop(context),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 20.0),
-        child: Consumer<LocaleModel>(
-          builder: (context, localeModel, child) => Column(
-            children: [
-              CustomInput(
-                label: t.configLanguage,
-                variant: InputVariant.arrow,
-                onPress: () => _showLanguageDialog(context, localeModel),
-              ),
-              const SizedBox(height: 20),
-              CustomInput(
-                label: t.configChangePassword,
-                variant: InputVariant.arrow,
-                onPress: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChangePasswordView()),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 20.0),
+          child: Consumer<LocaleModel>(
+            builder: (context, localeModel, child) => Column(
+              children: [
+                CustomInput(
+                  label: t.configLanguage,
+                  variant: InputVariant.arrow,
+                  onPress: () => _showLanguageDialog(context, localeModel),
                 ),
-              ),
-              const SizedBox(height: 20),
-              CustomInput(
-                label: t.configLogout,
-                variant: InputVariant.arrow,
-                onPress: () => authService.signOut(context),
-              ),
-            ],
+                const SizedBox(height: 20),
+                CustomInput(
+                  label: t.configChangePassword,
+                  variant: InputVariant.arrow,
+                  onPress: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChangePasswordView()),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CustomInput(
+                  label: t.configLogout,
+                  variant: InputVariant.arrow,
+                  onPress: () => authService.signOut(context),
+                ),
+              ],
+            ),
           ),
         ),
       ),
