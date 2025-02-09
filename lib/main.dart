@@ -102,7 +102,7 @@ class MyApp extends StatelessWidget {
             // AppTabs routes
             '/${AppTabs.home.name}': (context) => const MainView(),
             '/${AppTabs.search.name}': (context) => const SearchView(),
-            '/${AppTabs.add.name}': (context) => const AddView(),
+            //'/${AppTabs.add.name}': (context) => const AddView(),
             '/${AppTabs.profile.name}': (context) => const ProfileView(),
           },
         ),
