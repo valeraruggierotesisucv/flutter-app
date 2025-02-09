@@ -44,7 +44,7 @@ class AuthViewModel extends ChangeNotifier {
           followersCounter: 0,
           followingCounter: 0));
 
-      debugPrint("result--> $result");
+      debugPrint("SignUp success--> $result");
     } catch (e) {
       errorMessage = e.toString();
       ScaffoldMessenger.of(_context)

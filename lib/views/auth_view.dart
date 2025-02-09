@@ -26,6 +26,7 @@ class _AuthViewState extends State<AuthView> {
   final _confirmPasswordController = TextEditingController();
   DateTime _dateOfBirthController = DateTime.now();
   bool passwordVisibility = false;
+  bool confirmPasswordVisibility = false; 
 
   final tabs = [
     TabItem(id: 1, title: 'Iniciar Sesión'),
@@ -140,6 +141,7 @@ class _AuthViewState extends State<AuthView> {
                                   hint: 'Correo electrónico',
                                   error: '',
                                   controller: _emailController,
+                                  icon: Icons.email,
                                 ),
                                 const SizedBox(height: 20),
                                 InputField(
@@ -149,8 +151,8 @@ class _AuthViewState extends State<AuthView> {
                                   controller: _passwordControler,
                                   secureText: !passwordVisibility,
                                   icon: passwordVisibility
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
                                   onIconTap: () {
                                     setState(() {
                                       passwordVisibility = !passwordVisibility;
@@ -183,18 +185,21 @@ class _AuthViewState extends State<AuthView> {
                                 hint: 'Nombre de Usuario',
                                 error: '',
                                 controller: _nameController,
+                                icon: Icons.person,
                               ),
                               InputField(
                                 label: 'Nombre Completo',
                                 hint: 'Nombre Completo',
                                 error: '',
                                 controller: _fullNameController,
+                                icon: Icons.person_add,
                               ),
                               InputField(
                                   label: 'Correo electrónico',
                                   hint: 'Correo electrónico',
                                   error: '',
-                                  controller: _emailController),
+                                  controller: _emailController,
+                                  icon: Icons.email),
                               DateTimePickerField(
                                   label: 'Fecha de nacimiento',
                                   value: _dateOfBirthController,
@@ -202,15 +207,36 @@ class _AuthViewState extends State<AuthView> {
                                         _dateOfBirthController = value;
                                       })),
                               InputField(
-                                  label: 'Contraseña',
-                                  hint: 'Contraseña',
-                                  error: '',
-                                  controller: _passwordControler),
+                                label: 'Contraseña',
+                                hint: 'Contraseña',
+                                error: '',
+                                controller: _passwordControler,
+                                secureText: !passwordVisibility,
+                                icon: passwordVisibility
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                onIconTap: () {
+                                  setState(() {
+                                    passwordVisibility = !passwordVisibility;
+                                  });
+                                },
+                              ),
                               InputField(
                                   label: 'Confirmar contraseña',
                                   hint: 'Confirmar contraseña',
                                   error: '',
-                                  controller: _confirmPasswordController),
+                                  controller: _confirmPasswordController, 
+                                  secureText: confirmPasswordVisibility,
+                                  icon: confirmPasswordVisibility
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                  onIconTap: () {
+                                  setState(() {
+                                    confirmPasswordVisibility = !confirmPasswordVisibility;
+                                  });
+                                },
+                                  
+                                  ),
                               const SizedBox(height: 10),
                               CustomButton(
                                   label: 'Registrarse', onPress: register),
