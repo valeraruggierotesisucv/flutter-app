@@ -1,12 +1,7 @@
 import 'package:eventify/utils/date_formatter.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:flutter/material.dart';
 
-
-enum NotificationType {
-  follow,
-  likeEvent,
-  commentEvent,
-}
 
 const Map<NotificationType, String> notificationMessages = {
   NotificationType.follow: 'Comenzó a seguirte',

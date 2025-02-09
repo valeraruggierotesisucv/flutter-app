@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:eventify/models/location_model.dart';
@@ -232,6 +234,34 @@ class ApiClient {
       }
     } on Exception catch (e) {
       return Result.error(e);
+    } finally {
+      client.close();
+    }
+  }
+
+    Future<Result<List<NotificationModel>>> getNotifications(
+      String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/notifications');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        debugPrint(" notifications data $jsonData");
+        return Result.ok(
+            jsonData.map((item) => NotificationModel.fromJson(item)).toList());
+      } else {
+        return Result.error(HttpException(
+            "Failed to load notifications: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
     } finally {
       client.close();
     }

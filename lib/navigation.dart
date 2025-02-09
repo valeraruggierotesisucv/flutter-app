@@ -9,6 +9,8 @@ import 'package:eventify/views/notifications_view.dart';
 import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/views/home_view.dart';
 import 'package:provider/provider.dart';
+import 'package:eventify/view_models/notifications_view_model.dart';
+import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/data/repositories/location_repository.dart';
 
 class MainView extends StatefulWidget {
@@ -46,7 +48,16 @@ class _MainViewState extends State<MainView> {
         ),
       ),
     ),
-    const NotificationsView(),
+     Builder(
+      builder: (context) => NotificationsView(
+        viewModel: NotificationsViewModel(
+          context: context,
+          notificationRepository: NotificationRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
+        ),
+      ),
+    ),
     const ProfileView(),
   ];
 
