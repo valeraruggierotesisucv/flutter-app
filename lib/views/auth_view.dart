@@ -24,9 +24,9 @@ class _AuthViewState extends State<AuthView> {
   final _nameController = TextEditingController();
   final _fullNameController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  DateTime _dateOfBirthController = DateTime.now();
+  late DateTime _dateOfBirthController;
   bool passwordVisibility = false;
-  bool confirmPasswordVisibility = false; 
+  bool confirmPasswordVisibility = false;
 
   final tabs = [
     TabItem(id: 1, title: 'Iniciar Sesión'),
@@ -38,13 +38,13 @@ class _AuthViewState extends State<AuthView> {
   void initState() {
     super.initState();
     _viewModel = widget.viewModel;
+    DateTime now = DateTime.now();
+    _dateOfBirthController = DateTime(now.year - 18, now.month, now.day);
   }
 
   @override
   Widget build(BuildContext context) {
-    // login button pressed
     void login() async {
-      // prepare data
       final email = _emailController.text;
       final password = _passwordControler.text;
 
@@ -62,12 +62,10 @@ class _AuthViewState extends State<AuthView> {
     }
 
     void register() async {
-      final name = _nameController.text;
-      final fullName = _fullNameController.text;
-      final email = _emailController.text;
-      final password = _passwordControler.text;
-      final confirmPassword = _confirmPasswordController.text;
-      final dateOfBirth = _dateOfBirthController;
+      //bool name_error = false;
+      //bool fullName_error = false;
+      //bool email_error = false; 
+      
 
       _viewModel.name = _nameController.text;
       _viewModel.fullName = _fullNameController.text;
@@ -78,13 +76,13 @@ class _AuthViewState extends State<AuthView> {
             _emailController.text, _passwordControler.text, context);
 
         debugPrint("Datos del registro");
-        debugPrint(
-            "$name, $fullName, $email, $password, $confirmPassword, $dateOfBirth");
         await _viewModel.signUp();
       } catch (e) {
         debugPrint(e.toString());
       }
     }
+
+    
 
     return Scaffold(
       backgroundColor: const Color(0xFFD9D9D9),
@@ -222,21 +220,21 @@ class _AuthViewState extends State<AuthView> {
                                 },
                               ),
                               InputField(
-                                  label: 'Confirmar contraseña',
-                                  hint: 'Confirmar contraseña',
-                                  error: '',
-                                  controller: _confirmPasswordController, 
-                                  secureText: confirmPasswordVisibility,
-                                  icon: confirmPasswordVisibility
+                                label: 'Confirmar contraseña',
+                                hint: 'Confirmar contraseña',
+                                error: '',
+                                controller: _confirmPasswordController,
+                                secureText: confirmPasswordVisibility,
+                                icon: confirmPasswordVisibility
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                  onIconTap: () {
+                                onIconTap: () {
                                   setState(() {
-                                    confirmPasswordVisibility = !confirmPasswordVisibility;
+                                    confirmPasswordVisibility =
+                                        !confirmPasswordVisibility;
                                   });
                                 },
-                                  
-                                  ),
+                              ),
                               const SizedBox(height: 10),
                               CustomButton(
                                   label: 'Registrarse', onPress: register),
