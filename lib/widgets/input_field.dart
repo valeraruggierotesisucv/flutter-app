@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
+enum InputFieldVariant {
+  normal,
+  grayBackground,
+}
+
 class InputField extends StatefulWidget {
   final String label;
   final String hint;
   final String? error;
   final IconData? icon;
   final Function()? onIconTap;
+
   final Function(String)? onChanged;
   final TextEditingController? controller;
   final bool? secureText;
+  final InputFieldVariant? variant;
 
 
   const InputField({
@@ -21,6 +28,7 @@ class InputField extends StatefulWidget {
     this.onChanged,
     this.controller,
     this.secureText = false,
+    this.variant = InputFieldVariant.normal,
   });
 
   @override
@@ -57,7 +65,7 @@ class _InputFieldState extends State<InputField> {
             obscureText: widget.secureText ?? false,
             decoration: InputDecoration(
               filled: true,
-              fillColor: Colors.white,
+              fillColor: widget.variant == InputFieldVariant.grayBackground ? Color(0xFFDFDADA) : Colors.white,
 
 
               hintText: widget.hint,
@@ -70,6 +78,7 @@ class _InputFieldState extends State<InputField> {
 
                   ? IconButton(
                       icon: Icon(widget.icon),
+                      color: widget.variant == InputFieldVariant.grayBackground ? Colors.black : Colors.black,
                       onPressed: () {
                         widget.onIconTap?.call();
                       },

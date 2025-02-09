@@ -21,7 +21,7 @@ class CustomInput extends StatefulWidget {
     this.placeholder,
     this.multiline = true,
     this.variant = InputVariant.defaultInput,
-    this.required = true,
+    this.required = false,
     this.onPress,
     this.value,
     this.onChangeValue,
@@ -50,14 +50,12 @@ class _CustomInputState extends State<CustomInput> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onPress,
-      
       child: Container(
         height: 51,
         padding: const EdgeInsets.only(left: 16, bottom: 6, right: 16),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-
               width: 2,
               color: Colors.grey.shade300,
             ),
@@ -73,9 +71,9 @@ class _CustomInputState extends State<CustomInput> {
                 text: TextSpan(
                   style: const TextStyle(
                     fontSize: 17,
+                    fontFamily: 'SFProText',
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
-                    
                   ),
                   children: [
                     TextSpan(
@@ -98,7 +96,7 @@ class _CustomInputState extends State<CustomInput> {
                 ),
               ),
             ),
-            if (widget.variant == InputVariant.defaultInput)
+            if (widget.variant == InputVariant.defaultInput && widget.placeholder != null)
               Expanded(
                 flex: 75,
                 child: TextField(
@@ -124,7 +122,7 @@ class _CustomInputState extends State<CustomInput> {
               Expanded(
                 flex: 65,
                 child: Text(
-                  widget.placeholder!,
+                  widget.placeholder ?? '',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.grey,
@@ -132,10 +130,10 @@ class _CustomInputState extends State<CustomInput> {
                 ),
               ),
             if (widget.variant == InputVariant.arrow)
-              Icon(
+              const Icon(
                 Icons.keyboard_arrow_right,
                 size: 24,
-                color: Colors.grey.shade600,
+                color: Colors.grey,
               ),
           ],
         ),
