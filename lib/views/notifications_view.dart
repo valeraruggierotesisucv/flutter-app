@@ -54,7 +54,7 @@ class NotificationsView extends StatelessWidget {
                     timestamp: notification.createdAt,
                     userAvatar: notification.profileImage,
                     type: notification.type,
-                    eventImage: "https://loremflickr.com/2473/394?lock=2577142348110770",
+                    eventImage: notification.eventImage ?? "https://placehold.co/600x400/png",
                     onFollow: () => debugPrint("SEGUIR"),
                   );
                 },
