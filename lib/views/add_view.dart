@@ -1,16 +1,16 @@
 import 'package:eventify/utils/date_formatter.dart';
-import 'package:eventify/utils/string_formatter.dart';
+import 'package:eventify/view_models/add_event_view_model.dart';
 import 'package:eventify/views/add_date_view.dart';
 import 'package:eventify/views/choose_category_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/audio_modal.dart';
+import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/custom_chip.dart';
 import 'package:eventify/widgets/custom_input.dart';
 import 'package:eventify/widgets/display_input.dart';
 import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 
 import 'dart:io';
 
@@ -22,14 +22,19 @@ enum StepsEnum {
 }
 
 class AddView extends StatelessWidget {
-  const AddView({super.key});
+  const AddView({
+    super.key,
+    required this.viewModel,
+  });
+
+  final AddViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-          builder: (context) => const AddViewScreen(),
+          builder: (context) => AddViewScreen(viewModel: viewModel),
         );
       },
     );
@@ -37,61 +42,35 @@ class AddView extends StatelessWidget {
 }
 
 class AddViewScreen extends StatefulWidget {
-  const AddViewScreen({super.key});
+  const AddViewScreen({super.key, required this.viewModel});
+  final AddViewModel viewModel;
 
   @override
   State<AddViewScreen> createState() => _AddViewScreenState();
 }
 
 class _AddViewScreenState extends State<AddViewScreen> {
+  late AddViewModel _viewModel;
   StepsEnum currentStep = StepsEnum.defaultStep;
-  final ImagePicker _picker = ImagePicker();
+
   XFile? _image;
+  String? _imageUri;
   String? _title;
   String? _description;
   DateTime? _date;
   DateTime? _startsAt;
   DateTime? _endsAt;
   String? _category;
-  String? _categoryId;
+  int? _categoryId;
   String? _music;
   String? _musicUri;
   String? _latitude;
   String? _longitude;
 
-  Future<void> _takePhoto() async {
-    final XFile? photo =
-        await _picker.pickImage(source: ImageSource.camera, maxHeight: 250);
-    if (photo != null && mounted) {
-      setState(() {
-        _image = photo;
-      });
-      debugPrint('Foto tomada: ${photo.path}');
-    }
-  }
-
-  Future<void> _chooseFromGallery() async {
-    final XFile? photo =
-        await _picker.pickImage(source: ImageSource.gallery, maxHeight: 250);
-    if (photo != null && mounted) {
-      setState(() {
-        _image = photo;
-      });
-      debugPrint('Foto seleccionada: ${photo.path}');      
-    }
-  }
-
-  Future<void> _pickMusic() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.audio,
-    );
-    if (result != null) {
-      setState(() {
-        _music = truncateString(result.files.single.name);
-        _musicUri = result.files.single.path!;
-        debugPrint("Archivo de musica-->$_musicUri");
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = widget.viewModel;
   }
 
   @override
@@ -137,14 +116,9 @@ class _AddViewScreenState extends State<AddViewScreen> {
         );
       case StepsEnum.categoryStep:
         return ChooseCategoriesView(
-            onCategoryChanged: (newCategory, newCategoryId) {
+            onCategoryChanged: (newCategoryId, newCategory) {
           setState(() {
             _category = newCategory;
-            _categoryId = newCategoryId;
-            debugPrint("CategoryId $_categoryId");
-          });
-        }, onCategoryIdChanged: (newCategoryId) {
-          setState(() {
             _categoryId = newCategoryId;
           });
         }, onStepChanged: (newStep) {
@@ -170,7 +144,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
             _addDate(date: _date, startsAt: _startsAt, endsAt: _endsAt),
             _addCategory(category: _category),
             _addMusic(music: _music),
-            _addLocation(latitude: _latitude, longitude: _longitude)
+            _addLocation(latitude: _latitude, longitude: _longitude),
+            _addPublishButton(),
           ],
         ),
       ),
@@ -182,10 +157,14 @@ class _AddViewScreenState extends State<AddViewScreen> {
       onTap: () {
         showPhotoModal(
           context,
-          onTakePhoto: _takePhoto,
-          onChooseFromGallery: _chooseFromGallery,
+          onPhotoSelected: (photo) {
+            setState(() {
+              _image = photo;
+              _imageUri = photo.path;
+            });
+          },
           onClose: () {
-            
+            Navigator.of(context, rootNavigator: true).pop();
           },
         );
       },
@@ -251,13 +230,11 @@ class _AddViewScreenState extends State<AddViewScreen> {
             CustomChip(label: date),
           ],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
           onPressed: () {
             setState(() {
-              // Limpiar los valores de fecha
               _date = null;
               _startsAt = null;
               _endsAt = null;
@@ -275,13 +252,13 @@ class _AddViewScreenState extends State<AddViewScreen> {
         Row(
           children: [CustomChip(label: category), SizedBox(width: 8)],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
           onPressed: () {
             setState(() {
               _category = null;
+              _categoryId = null;
             });
           },
         ),
@@ -296,7 +273,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
         Row(
           children: [CustomChip(label: music), SizedBox(width: 8)],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
@@ -322,7 +298,6 @@ class _AddViewScreenState extends State<AddViewScreen> {
             CustomChip(label: longitude)
           ],
         ),
-        // Icono de borrar
         IconButton(
           icon:
               Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
@@ -376,17 +351,25 @@ class _AddViewScreenState extends State<AddViewScreen> {
 
   Widget _addMusic({String? music}) {
     return (music != null)
-        ? DisplayInput(label: "CATEGORIA", data: _musicPill(music))
+        ? DisplayInput(label: "MUSICA", data: _musicPill(music))
         : CustomInput(
             label: "MUSICA",
             placeholder: "Agrega música",
             variant: InputVariant.arrow,
-            onPress: () => {
-              showAudioModal(context,
-                pickMusicFile: _pickMusic,
-                startRecording: () {},
-                handleStopRecording: () {}, onClose: () {
-                }, isRecording: false)
+            onPress: () {
+              showAudioModal(context, onClose: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }, onRecordingComplete: (recordedPath) {
+                setState(() {
+                  _music = "Recorded audio";
+                  _musicUri = recordedPath;
+                });
+              }, onPickMusicFile: (music, musicUri) {
+                setState(() {
+                  _music = music;
+                  _musicUri = musicUri;
+                });
+              });
             },
           );
   }
@@ -401,5 +384,30 @@ class _AddViewScreenState extends State<AddViewScreen> {
             variant: InputVariant.arrow,
             onPress: () => {},
           );
+  }
+
+  void _handlePublish() async {
+    _viewModel.imageUri = _imageUri;
+    _viewModel.title = _title;
+    _viewModel.description = _description;
+    _viewModel.date = _date;
+    _viewModel.startsAt = _startsAt;
+    _viewModel.endsAt = _endsAt;
+    _viewModel.categoryId = _categoryId;
+    _viewModel.musicUri = _musicUri;
+    _viewModel.latitude = "30"; // TO-DO: falta geolocation
+    _viewModel.longitude = "60"; // TO-DO: falta geoLocation
+
+    debugPrint("[add_view] Creando evento...");
+    debugPrint("music--> $_music, $_musicUri");
+    debugPrint("image-->$_image, $_imageUri"); 
+    await _viewModel.createEvent();
+  }
+
+  Widget _addPublishButton() {
+    return CustomButton(
+      label: "Publicar",
+      onPress: _handlePublish,
+    );
   }
 }

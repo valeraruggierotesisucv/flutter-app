@@ -7,7 +7,9 @@ import 'dart:io';
 import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:eventify/models/location_model.dart';
 
 /// Adds the `Authentication` header to a header configuration.
 typedef AuthHeaderProvider = String? Function();
@@ -24,7 +26,7 @@ class ApiClient {
 
   Future<void> _authHeader(HttpHeaders headers) async {
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
-    
+
     if (token != null) {
       headers.add(HttpHeaders.authorizationHeader, 'Bearer $token');
     }
@@ -36,9 +38,9 @@ class ApiClient {
       final uri = Uri.parse('$_baseUrl/home/$userId/events');
       final request = await client.getUrl(uri);
       await _authHeader(request.headers);
-      
+
       final response = await request.close();
-      
+
       if (response.statusCode == 200) {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
@@ -69,11 +71,11 @@ class ApiClient {
             'is_liked': element['isLiked'] ?? false,
           });
         }).toList());
-        
       } else {
         final errorBody = await response.transform(utf8.decoder).join();
         print('Error response: $errorBody');
-        return Result.error(HttpException("Failed to load events: ${response.statusCode}"));
+        return Result.error(
+            HttpException("Failed to load events: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       print('Error: $error');
@@ -83,7 +85,8 @@ class ApiClient {
     }
   }
 
-  Future<Result<SocialInteractions>> likeEvent(String eventId, String userId) async {
+  Future<Result<SocialInteractions>> likeEvent(
+      String eventId, String userId) async {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/events/$eventId/like');
@@ -92,12 +95,12 @@ class ApiClient {
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode({'userId': userId}));
       final response = await request.close();
-      
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
         final jsonData = jsonResponse['data'] as Map<String, dynamic>;
-        
+
         return Result.ok(SocialInteractions.fromJson({
           'userId': jsonData['userId'],
           'eventId': jsonData['eventId'],
@@ -105,7 +108,8 @@ class ApiClient {
           'createdAt': DateTime.parse(jsonData['createdAt']),
         }));
       } else {
-        return Result.error(HttpException("Failed to like event: ${response.statusCode}"));
+        return Result.error(
+            HttpException("Failed to like event: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
@@ -122,15 +126,112 @@ class ApiClient {
       await _authHeader(request.headers);
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode({'content': comment}));
-      
+
       final response = await request.close();
       if (response.statusCode == 201) {
         return const Result.ok(null);
       } else {
-        return Result.error(HttpException("Failed to add comment: ${response.statusCode}"));
+        return Result.error(
+            HttpException("Failed to add comment: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<void>> createEvent({
+    required String userId,
+    required String eventImage,
+    required int categoryId,
+    required String locationId,
+    required String title,
+    required String description,
+    required DateTime date,
+    required DateTime startsAt,
+    required DateTime endsAt,
+    String? eventMusic,
+  }) async {
+    final client = _clientFactory();
+    debugPrint("[api_client]");
+    try {
+      final uri = Uri.parse('$_baseUrl/events');
+      debugPrint(uri.toString());
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {
+        'userId': userId,
+        'eventImage': eventImage,
+        'categoryId': categoryId,
+        'locationId': locationId,
+        'title': title,
+        'description': description,
+        'date': date.toUtc().toIso8601String(),
+        'startsAt': startsAt.toUtc().toIso8601String(),
+        'endsAt': endsAt.toUtc().toIso8601String(),
+        'eventMusic': eventMusic,
+      };
+      debugPrint("body $body"); 
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+      debugPrint("result--->$response");
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as Map<String, dynamic>;
+        debugPrint("API created event: $jsonData");
+        return Result.ok(null);
+      } else {
+        debugPrint("not ok--> Failed to create event: ${response.statusCode}");
+        return Result.error(
+            HttpException("Failed to create event: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<LocationModel>> createLocation({
+    required String latitude,
+    required String longitude,
+  }) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/locations');
+      debugPrint(uri.toString());
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {
+        'latitude': double.parse(latitude),
+        'longitude': double.parse(longitude),
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as Map<String, dynamic>;
+        debugPrint("[API LOCATION] $jsonData");
+        return Result.ok(LocationModel.fromJson(jsonData));
+      } else {
+        debugPrint(
+            "[API LOCATION] Failed to create location: ${response.statusCode}");
+        return Result.error(
+            HttpException("Failed to create location: ${response.statusCode}"));
+      }
+    } on Exception catch (e) {
+      return Result.error(e);
     } finally {
       client.close();
     }

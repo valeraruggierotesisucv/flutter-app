@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PhotoModal extends StatelessWidget {
-  final VoidCallback onTakePhoto;
-  final VoidCallback onChooseFromGallery;
+  final Function(XFile photo) onPhotoSelected;
   final VoidCallback onClose;
 
   const PhotoModal({
     super.key,
-    required this.onTakePhoto,
-    required this.onChooseFromGallery,
+    required this.onPhotoSelected,
     required this.onClose,
   });
 
   @override
   Widget build(BuildContext context) {
+    final ImagePicker picker = ImagePicker();
+    
+    Future<void> takePhoto() async {
+      final XFile? photo = await picker.pickImage(source: ImageSource.camera, maxHeight: 250);
+      if (photo != null) {
+        onPhotoSelected(photo);
+        onClose();
+      }
+    }
+
+    Future<void> chooseFromGallery() async {
+      final XFile? photo = await picker.pickImage(source: ImageSource.gallery, maxHeight: 250);
+      if (photo != null) {
+        onPhotoSelected(photo);
+        onClose();
+      }
+    }
+    
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -31,18 +48,18 @@ class PhotoModal extends StatelessWidget {
             Column(
               children: [
                 TextButton(
-                  onPressed: onTakePhoto,
+                  onPressed: takePhoto,
                   child: Text(
                     "Tomar foto",
-                    style: TextStyle(color: Colors.blue, fontSize: 18), // Cambia el color y tamaño
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextButton(
-                  onPressed: onChooseFromGallery,
+                  onPressed: chooseFromGallery,
                   child: Text(
                     "Elegir de la galería",
-                    style: TextStyle(color: Colors.blue, fontSize: 18), // Cambia el color y tamaño
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -63,12 +80,11 @@ class PhotoModal extends StatelessWidget {
 }
 
 // Función para mostrar el PhotoModal
-void showPhotoModal(BuildContext context, {required VoidCallback onTakePhoto, required VoidCallback onChooseFromGallery, required VoidCallback onClose}) {
+void showPhotoModal(BuildContext context, {required Function(XFile photo) onPhotoSelected, required VoidCallback onClose}) {
   showDialog(
     context: context,
     builder: (context) => PhotoModal(
-      onTakePhoto: onTakePhoto,
-      onChooseFromGallery: onChooseFromGallery,
+      onPhotoSelected: onPhotoSelected,
       onClose: onClose,
     ),
   );

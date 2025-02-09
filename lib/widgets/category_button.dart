@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CategoryButton extends StatefulWidget {
-  final Function(String, String) onPress;
+  final Function(int, String) onPress;
   final String category;
   final IconData icon;
-  final String categoryId;
+  final int categoryId;
 
   const CategoryButton({
     super.key,
@@ -38,7 +38,7 @@ class _CategoryButtonState extends State<CategoryButton> {
           setState(() {
             isSelected = !isSelected;
           }),
-          widget.onPress(widget.category, widget.categoryId)
+          widget.onPress(widget.categoryId, widget.category)
         }, icon: Icon(widget.icon, color: isSelected ? Colors.white : Color(0xFF050F71), size: 50,)),
       ),
       Text(widget.category, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),),

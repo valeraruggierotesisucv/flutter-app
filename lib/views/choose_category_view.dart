@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 
 class ChooseCategoriesView extends StatelessWidget {
   final Function(StepsEnum) onStepChanged;
-  final Function(String, String) onCategoryChanged;
-  final Function(String) onCategoryIdChanged;
+  final Function(int, String) onCategoryChanged;
 
   const ChooseCategoriesView({
     super.key,
     required this.onCategoryChanged,
-    required this.onCategoryIdChanged,
     required this.onStepChanged,
   });
 
@@ -53,7 +51,7 @@ class ChooseCategoriesView extends StatelessWidget {
                   return CategoryButton(
                     category: categoryData['label'] as String,
                     icon: categoryData['icon'] as IconData,
-                    categoryId: categoryData['id'].toString(),
+                    categoryId: categoryData['id'] as int,
                     onPress: (id, label) {
                       onCategoryChanged(id, label);
                     },
