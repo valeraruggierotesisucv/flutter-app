@@ -111,9 +111,9 @@ class MyApp extends StatelessWidget {
                       Provider.of<ApiClient>(context, listen: false)),
                   eventRepository: EventRepository(
                       Provider.of<ApiClient>(context, listen: false)))),
-            '/${AppTabs.add.name}': (context) => const AddView(),
-            '/${AppTabs.notifications.name}': (context) =>
-                const NotificationsView(),
+            // '/${AppTabs.add.name}': (context) => const AddView(),
+            // '/${AppTabs.notifications.name}': (context) =>
+                // const NotificationsView(),
             '/${AppTabs.profile.name}': (context) => const ProfileView(),
           },
         ),
