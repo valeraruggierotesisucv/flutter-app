@@ -79,79 +79,57 @@ class _HomeScreenState extends State<HomeScreen> {
               ListenableBuilder(
                 listenable: widget.viewModel,
                 builder: (context, child) {
+                  
                   if (widget.viewModel.load.running) {
                     return Loading();
                   }
+                  
                   return Column(
                     children: widget.viewModel.events
-                        .map((event) => EventCard(
-                              eventId: event.eventId,
-                              profileImage: event.profileImage,
-                              username: event.username,
-                              eventImage: event.eventImage,
-                              title: event.title,
-                              description: event.description,
-                              isLiked: event.isLiked,
-                              date: event.date,
-                              userComment: {},
-                              onPressUser: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfileDetailsView(
-                                      userId: event.userId, 
-                                    ),
+                        .map((event) {
+                          
+                          return EventCard(
+                            eventId: event.eventId,
+                            profileImage: event.profileImage,
+                            username: event.username,
+                            eventImage: event.eventImage,
+                            title: event.title,
+                            description: event.description,
+                            isLiked: event.isLiked,
+                            date: event.date,
+                            userComment: {},
+                            onPressUser: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfileDetailsView(
+                                    userId: event.userId, 
                                   ),
-                                );
-                              },
-                              fetchComments: widget.viewModel.loadComments,
-                              onComment: () async {
-                                final response = await widget.viewModel.loadComments.execute(event.eventId);
-                                
-                                
-
-                                final userInfo = User(
-                                  username: 'Miguel', 
-                                  imageUrl: 'https://example.com/avatar.jpg' // Use a valid image URL
-                                );
-                                
-                                showCommentsModal(
-                                  context, 
-                                  widget.viewModel.comments, 
-                                  userInfo, 
-                                  (comment) async {
-                                    // Here you would implement the logic to save the comment
-                                    debugPrint(comment.toString());
-                                  },
-                                  isLoading: widget.viewModel.loadComments.running,
-                                  
-                                );
-                              },                              
-                              onMoreDetails: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EventDetailsView(
-                                      eventId: event.eventId, 
-                                      canEdit: false,
-                                    ),
+                                ),
+                              );
+                            },
+                            fetchComments: widget.viewModel.loadComments,
+                            commentsListenable: widget.viewModel.commentsListenable,       
+                            onMoreDetails: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EventDetailsView(
+                                    eventId: event.eventId, 
+                                    canEdit: false,
                                   ),
-                                );
-                              }, 
-                              onShare: () {},
-                              handleLike: () async {
-                                await widget.viewModel.handleLike.execute(event.eventId);
-                              },
-                              comments: widget.viewModel.comments,
-                              isLoadingComments: widget.viewModel.loadComments.running,
-                              onCommentPress: () {
-                                widget.viewModel.loadComments.execute(event.eventId);
-                              },
-                              onCommentSubmit: (comment) async {
-                                // Here implement the logic to submit a new comment
-                                debugPrint('New comment: $comment');
-                              },
-                            ))
+                                ),
+                              );
+                            }, 
+                            onShare: () {},
+                            handleLike: () async {
+                              await widget.viewModel.handleLike.execute(event.eventId);
+                            },
+                            onCommentSubmit: (message) async {
+                              await widget.viewModel.submitComment.execute(event.eventId, message);
+                            },
+                          );
+                        })
                         .toList(),
                   );
                 },

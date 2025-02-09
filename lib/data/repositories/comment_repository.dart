@@ -16,7 +16,7 @@ class CommentRepository {
       if(result is Ok<List<CommentModel>>) {
         _cachedComments = result.value;
       }
-      print("result $result");
+      // print("result $result");
       return result;
 
     } else {
@@ -24,7 +24,14 @@ class CommentRepository {
     }
   }
 
-
+  Future<Result<void>> submitComment(String eventId, String userId, CommentModel comment) async {
+    print("submitComment");
+    print(eventId);
+    print(userId);
+    print(comment);
+    final result = await _apiClient.submitComment(eventId, userId, comment);
+    return result;
+  }
   
   
 

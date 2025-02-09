@@ -31,6 +31,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   void initState() {
     super.initState();
+    widget.viewModel.handleLike.addListener(_onLike);
     widget.viewModel.searchEvents.addListener(_onSearch);
     widget.viewModel.searchUsers.addListener(_onSearch);
     widget.viewModel.getCategories.execute();
@@ -48,6 +49,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   void dispose( ) {
     _searchController.dispose();
+    widget.viewModel.handleLike.removeListener(_onLike);
     widget.viewModel.searchEvents.removeListener(_onSearch);
     widget.viewModel.searchUsers.removeListener(_onSearch);
     _debounce?.cancel();
@@ -152,30 +154,38 @@ class _SearchViewState extends State<SearchView> {
                                 return Center(child: Text(t.searchViewNoEvents));
                               }
                               return Column(
-                                children: widget.viewModel.events.map((event) => EventCard(
-                                  eventId: event.eventId,
-                                  profileImage: event.profileImage,
-                                  username: event.username,
-                                  eventImage: event.eventImage,
-                                  title: event.title,
-                                  description: event.description,
-                                  isLiked: event.isLiked,
-                                  date: event.date,
-                                  userComment: {},
-                                  onPressUser: () {},
-                                  onComment: () => debugPrint("OnComment"),
-                                  onMoreDetails: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/${AppScreens.eventDetails.name}',
-                                    );
-                                  },
-                                  onShare: () {},
-                                  handleLike: () {},
-                                  comments: [],
-                                  onCommentSubmit: (message) {},
-                                  onCommentPress: () {},
-                                )).toList(),
+                                children: widget.viewModel.events
+                                    .map((event) {
+                                      print(event.isLiked);
+                                      return EventCard(
+                                        eventId: event.eventId,
+                                        profileImage: event.profileImage,
+                                        username: event.username,
+                                        eventImage: event.eventImage,
+                                        title: event.title,
+                                        description: event.description,
+                                        isLiked: event.isLiked,
+                                        date: event.date,
+                                        userComment: {},
+                                        commentsListenable: widget.viewModel.commentsListenable,
+                                        fetchComments: widget.viewModel.loadComments,
+                                        onPressUser: () {},
+                                        onMoreDetails: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            '/${AppScreens.eventDetails.name}',
+                                          );
+                                        },
+                                        onShare: () {},
+                                        handleLike: () async {
+                                          await widget.viewModel.handleLike.execute(event.eventId);
+                                        },
+                                        onCommentSubmit: (message) async {
+                                          await widget.viewModel.submitComment.execute(event.eventId, message);
+                                        },
+                                      );
+                                    })
+                                    .toList(),
                               );
                             },
                           ),
@@ -224,6 +234,12 @@ class _SearchViewState extends State<SearchView> {
         ),
       ),
     );
+  }
+
+  void _onLike() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _onSearch() {

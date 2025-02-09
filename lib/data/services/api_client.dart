@@ -56,7 +56,13 @@ class ApiClient {
           
           final user = element['user'] as Map<String, dynamic>;
           final location = element['location'] as Map<String, dynamic>;
-          
+          bool isLiked = false;
+          if (element['socialInteractions'] != null) {
+            final socialInteractions = element['socialInteractions'] as List<dynamic>;
+            if (socialInteractions.isNotEmpty) {
+              isLiked = (socialInteractions[0] as Map<String, dynamic>)['isActive'] ?? false;
+            }
+          }
           return EventModel.fromJson({
             'event_id': element['eventId'],
             'user_id': element['userId'],
@@ -74,7 +80,7 @@ class ApiClient {
             'category': element['category'] ?? '',
             'category_id': element['categoryId'].toString(),
             'music_url': element['eventMusic'],
-            'is_liked': element['isLiked'] ?? false,
+            'is_liked': isLiked,
           });
         }).toList());
       } else {
@@ -140,10 +146,18 @@ class ApiClient {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
         final jsonData = jsonResponse['data'] as List<dynamic>;
-        print(jsonData);
         return Result.ok(jsonData.map((element) {
           final user = element['user'] as Map<String, dynamic>;
           final location = element['location'] as Map<String, dynamic>;
+          
+          bool isLiked = false;
+          if (element['socialInteractions'] != null) {
+            final socialInteractions = element['socialInteractions'] as List<dynamic>;
+            print(socialInteractions);
+            if (socialInteractions.isNotEmpty) {
+              isLiked = (socialInteractions[0] as Map<String, dynamic>)['isActive'] ?? false;
+            }
+          }
           
           return EventModel.fromJson({
             'event_id': element['eventId'],
@@ -162,7 +176,7 @@ class ApiClient {
             'category': element['category'] ?? '',
             'category_id': element['categoryId'].toString(),
             'music_url': element['eventMusic'],
-            'is_liked': element['isLiked'] ?? false,
+            'is_liked': isLiked,
           });
         }).toList());
         
@@ -530,15 +544,6 @@ class ApiClient {
         
         return Result.ok(jsonData.map((element) {
           final user = element['user'] as Map<String, dynamic>;
-          
-          print({
-            'username': user['username'],
-            'comment': element['text'],
-            'profileImage': user['profileImage'],
-            'timestamp': DateTime.parse(element['createdAt']),
-          });
-          
-          
 
           return CommentModel.fromJson({
             'username': user['username'],
@@ -549,6 +554,34 @@ class ApiClient {
         }).toList());  
       } else {
         return Result.error(HttpException("Failed to get comments: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<void>> submitComment(String eventId, String userId, CommentModel comment) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/events/$eventId/comment');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {
+        'userId': userId,
+        'text': comment.comment,
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        return Result.ok(null);
+      } else {
+        return Result.error(HttpException("Failed to submit comment: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);

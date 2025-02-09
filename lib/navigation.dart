@@ -33,6 +33,9 @@ class _MainViewState extends State<MainView> {
       builder: (context) => HomeView(
         viewModel: HomeViewModel(
           context: context,
+          userRepository: UserRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
           eventRepository: EventRepository(
             Provider.of<ApiClient>(context, listen: false),
           ),
@@ -50,6 +53,9 @@ class _MainViewState extends State<MainView> {
             Provider.of<ApiClient>(context, listen: false),
           ),
           eventRepository: EventRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
+          commentRepository: CommentRepository(
             Provider.of<ApiClient>(context, listen: false),
           ),
           categoryRepository: CategoryRepository(

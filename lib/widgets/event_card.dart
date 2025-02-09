@@ -3,6 +3,7 @@ import 'package:eventify/utils/command.dart';
 import 'package:eventify/widgets/audio_player.dart';
 import 'package:eventify/widgets/comment_input.dart';
 import 'package:eventify/widgets/comment_item.dart';
+import 'package:eventify/widgets/comments_section.dart';
 import 'package:flutter/material.dart';
 import 'custom_chip.dart';
 import 'display_input.dart';
@@ -135,16 +136,15 @@ class EventCard extends StatefulWidget {
   final EventCardVariant variant;
   final Map<String, String> userComment;
   final VoidCallback onPressUser;
-  final VoidCallback onComment;
+  
   final VoidCallback onShare;
   final VoidCallback? onMoreDetails;
   final String? musicUrl;
   final VoidCallback handleLike;
-  final List<CommentModel> comments;
-  final bool isLoadingComments;
   final Function(String) onCommentSubmit;
-  final VoidCallback onCommentPress;
-  final Command1<void, String> fetchComments;
+
+  final Command1<void, String>? fetchComments;
+  final ValueNotifier<List<CommentModel>>? commentsListenable;
 
   const EventCard({
     super.key,
@@ -164,16 +164,14 @@ class EventCard extends StatefulWidget {
     this.variant = EventCardVariant.defaultCard,
     required this.userComment,
     required this.onPressUser,
-    required this.onComment,
     required this.onShare,
     this.onMoreDetails,
     this.musicUrl,
     required this.handleLike,
-    required this.comments,
-    this.isLoadingComments = false,
+
     required this.onCommentSubmit,
-    required this.onCommentPress,
-    required this.fetchComments,
+    this.fetchComments,
+    this.commentsListenable,
   });
 
   @override
@@ -181,75 +179,6 @@ class EventCard extends StatefulWidget {
 }
 
 class _EventCardState extends State<EventCard> {
-  
-  @override
-  void initState() {
-    super.initState();
-    widget.fetchComments.execute(widget.eventId);
-  }
-  
-
-  void _showCommentsModal() {
-    showModalBottomSheet(
-      context: context,
-      useSafeArea: true,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(10.0)
-        ),
-      ),
-      constraints: BoxConstraints.tight(Size(
-        MediaQuery.of(context).size.width,
-        MediaQuery.of(context).size.height * .8
-      )),
-      builder: (context) => StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Container(
-                  height: 5,
-                  width: 50,
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[500],
-                  ),
-                ),
-                const Text("Comments"),
-                Expanded(
-                  child: widget.isLoadingComments 
-                    ? const Center(child: CircularProgressIndicator())
-                    : widget.comments.isEmpty
-                      ? const Center(child: Text('No comments yet'))
-                      : ListView.builder(
-                          itemCount: widget.comments.length,
-                          itemBuilder: (ctx, index) => CommentItem(
-                            username: widget.comments[index].username,
-                            timeAgo: widget.comments[index].timestamp,
-                            comment: widget.comments[index].comment,
-                            profileImage: widget.comments[index].profileImage,
-                          ),
-                        ),
-                ),
-                CommentInput(
-                  onSubmit: (message) async {
-                    widget.onCommentSubmit(message);
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,8 +202,11 @@ class _EventCardState extends State<EventCard> {
           isLiked: widget.isLiked,
           onLike: widget.handleLike,
           onComment: () {
-            widget.onCommentPress();
-            _showCommentsModal();
+            if(widget.fetchComments != null) {
+              showCommentsModal(context, widget.eventId, widget.fetchComments!, widget.commentsListenable!, (comment) {
+                widget.onCommentSubmit(comment);
+              });
+            }
           },
           onShare: widget.onShare,
         ),
