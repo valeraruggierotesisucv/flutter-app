@@ -1,4 +1,8 @@
+import 'package:eventify/models/comment_model.dart';
+import 'package:eventify/utils/command.dart';
 import 'package:eventify/widgets/audio_player.dart';
+import 'package:eventify/widgets/comment_input.dart';
+import 'package:eventify/widgets/comment_item.dart';
 import 'package:flutter/material.dart';
 import 'custom_chip.dart';
 import 'display_input.dart';
@@ -9,21 +13,6 @@ import 'social_interactions.dart';
 enum EventCardVariant {
   defaultCard,
   details,
-}
-
-// Models
-class Comment {
-  final String username;
-  final String comment;
-  final String profileImage;
-  final DateTime timestamp;
-
-  Comment({
-    required this.username,
-    required this.comment,
-    required this.profileImage,
-    required this.timestamp,
-  });
 }
 
 // Widgets auxiliares
@@ -146,12 +135,16 @@ class EventCard extends StatefulWidget {
   final EventCardVariant variant;
   final Map<String, String> userComment;
   final VoidCallback onPressUser;
-  final Future<void> Function(String eventId, String comment) onComment;
+  final VoidCallback onComment;
   final VoidCallback onShare;
   final VoidCallback? onMoreDetails;
-  final Future<List<Comment>> Function() fetchComments;
   final String? musicUrl;
   final VoidCallback handleLike;
+  final List<CommentModel> comments;
+  final bool isLoadingComments;
+  final Function(String) onCommentSubmit;
+  final VoidCallback onCommentPress;
+  final Command1<void, String> fetchComments;
 
   const EventCard({
     super.key,
@@ -174,9 +167,13 @@ class EventCard extends StatefulWidget {
     required this.onComment,
     required this.onShare,
     this.onMoreDetails,
-    required this.fetchComments,
     this.musicUrl,
     required this.handleLike,
+    required this.comments,
+    this.isLoadingComments = false,
+    required this.onCommentSubmit,
+    required this.onCommentPress,
+    required this.fetchComments,
   });
 
   @override
@@ -184,6 +181,75 @@ class EventCard extends StatefulWidget {
 }
 
 class _EventCardState extends State<EventCard> {
+  
+  @override
+  void initState() {
+    super.initState();
+    widget.fetchComments.execute(widget.eventId);
+  }
+  
+
+  void _showCommentsModal() {
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0)
+        ),
+      ),
+      constraints: BoxConstraints.tight(Size(
+        MediaQuery.of(context).size.width,
+        MediaQuery.of(context).size.height * .8
+      )),
+      builder: (context) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  height: 5,
+                  width: 50,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[500],
+                  ),
+                ),
+                const Text("Comments"),
+                Expanded(
+                  child: widget.isLoadingComments 
+                    ? const Center(child: CircularProgressIndicator())
+                    : widget.comments.isEmpty
+                      ? const Center(child: Text('No comments yet'))
+                      : ListView.builder(
+                          itemCount: widget.comments.length,
+                          itemBuilder: (ctx, index) => CommentItem(
+                            username: widget.comments[index].username,
+                            timeAgo: widget.comments[index].timestamp,
+                            comment: widget.comments[index].comment,
+                            profileImage: widget.comments[index].profileImage,
+                          ),
+                        ),
+                ),
+                CommentInput(
+                  onSubmit: (message) async {
+                    widget.onCommentSubmit(message);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +272,10 @@ class _EventCardState extends State<EventCard> {
         SocialInteractions(
           isLiked: widget.isLiked,
           onLike: widget.handleLike,
-          onComment: () => debugPrint("OnComment"),
+          onComment: () {
+            widget.onCommentPress();
+            _showCommentsModal();
+          },
           onShare: widget.onShare,
         ),
         Padding(

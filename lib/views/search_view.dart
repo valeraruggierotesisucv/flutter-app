@@ -163,9 +163,7 @@ class _SearchViewState extends State<SearchView> {
                                   date: event.date,
                                   userComment: {},
                                   onPressUser: () {},
-                                  onComment: (eventId, comment) async {
-                                    print(eventId);
-                                  },
+                                  onComment: () => debugPrint("OnComment"),
                                   onMoreDetails: () {
                                     Navigator.pushNamed(
                                       context,
@@ -173,8 +171,10 @@ class _SearchViewState extends State<SearchView> {
                                     );
                                   },
                                   onShare: () {},
-                                  fetchComments: () async => [],
                                   handleLike: () {},
+                                  comments: [],
+                                  onCommentSubmit: (message) {},
+                                  onCommentPress: () {},
                                 )).toList(),
                               );
                             },

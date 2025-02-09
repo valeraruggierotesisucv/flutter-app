@@ -59,13 +59,12 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                       userComment: userComment,
                       variant: EventCardVariant.details,
                       onPressUser: () {},
-                      onComment: (eventId, comment) async {
-                        debugPrint(eventId);
-                        debugPrint(comment);
-                      },
+                      onComment: () => debugPrint("OnComment"),
                       onShare: () {},
-                      fetchComments: () async => [],
                       handleLike: () {},
+                      comments: [],
+                      onCommentSubmit: (message) {},
+                      onCommentPress: () {},
                     ),
                     if (widget.canEdit)
                       Padding(

@@ -1,3 +1,4 @@
+import 'package:eventify/models/comment_model.dart';
 import 'package:flutter/material.dart';
 import 'comment_item.dart';
 import 'comment_input.dart';
@@ -9,19 +10,16 @@ class User {
 }
 
 
-class Comment {
-  final String username;
-  final DateTime timeAgo;
-  final String message;
-
-
-  Comment({required this.username, required this.timeAgo, required this.message});
-}
-
-
-void showCommentsModal(BuildContext context, List<Comment> comments, User userInfo, Function(Comment) onSubmit) {
+void showCommentsModal(
+  BuildContext context, 
+  List<CommentModel> comments, 
+  User userInfo, 
+  Function(CommentModel) onSubmit,
+  {bool isLoading = false}
+) {
   showModalBottomSheet(
     context: context,
+
     useSafeArea: true,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
@@ -54,37 +52,39 @@ void showCommentsModal(BuildContext context, List<Comment> comments, User userIn
               ),
               const Text("Comments"),
               Expanded(
-                child: ListView.builder(
-                  itemCount: comments.length,
-                  itemBuilder: (ctx, index) => CommentItem(
-                    username: comments[index].username,
-                    timeAgo: comments[index].timeAgo,
-                    comment: comments[index].message,
-                  ),
-                ),
+                child: isLoading 
+                  ? const Center(child: CircularProgressIndicator())
+                    : comments.isEmpty
+                      ? const Center(
+                          child: Text('No comments yet'),
+                        )
+                      : ListView.builder(
+                          itemCount: comments.length,
+                          itemBuilder: (ctx, index) => CommentItem(
+                            username: comments[index].username,
+                            timeAgo: comments[index].timestamp,
+                            comment: comments[index].comment,
+                            profileImage: comments[index].profileImage,
+                          ),
+                        ),
               ),
-
               CommentInput(
                 onSubmit: (message) async {
                   try {
-                    await onSubmit(Comment(
-                      username: userInfo.username, 
-                      timeAgo: DateTime.now(), 
-                      message: message
-                    ));
+                    final newComment = CommentModel(
+                      username: userInfo.username,
+                      timestamp: DateTime.now(),
+                      comment: message,
+                      profileImage: userInfo.imageUrl
+                    );
+                    await onSubmit(newComment);
                     setState(() {
-                      comments.add(Comment(
-                        username: userInfo.username, 
-                        timeAgo: DateTime.now(), 
-                        message: message
-                      ));
-
-                  });
+                      comments.add(newComment);
+                    });
                   } catch (e) {
-                    print("Error submitting comment: $e");
+                    debugPrint("Error submitting comment: $e");
                   }
                 },
-
               ),
             ],
           ),

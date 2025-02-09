@@ -3,6 +3,7 @@ import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/comments_section.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/event_card.dart';
 import 'package:flutter/material.dart';
@@ -103,9 +104,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 );
                               },
-                              onComment: (eventId, comment) async {
-                                debugPrint(eventId);
-                                debugPrint(comment);
+                              fetchComments: widget.viewModel.loadComments,
+                              onComment: () async {
+                                final response = await widget.viewModel.loadComments.execute(event.eventId);
+                                
+                                
+
+                                final userInfo = User(
+                                  username: 'Miguel', 
+                                  imageUrl: 'https://example.com/avatar.jpg' // Use a valid image URL
+                                );
+                                
+                                showCommentsModal(
+                                  context, 
+                                  widget.viewModel.comments, 
+                                  userInfo, 
+                                  (comment) async {
+                                    // Here you would implement the logic to save the comment
+                                    debugPrint(comment.toString());
+                                  },
+                                  isLoading: widget.viewModel.loadComments.running,
+                                  
+                                );
                               },                              
                               onMoreDetails: () {
                                 Navigator.push(
@@ -119,10 +139,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }, 
                               onShare: () {},
-                              fetchComments: () async => [],
                               handleLike: () async {
                                 await widget.viewModel.handleLike.execute(event.eventId);
-                                
+                              },
+                              comments: widget.viewModel.comments,
+                              isLoadingComments: widget.viewModel.loadComments.running,
+                              onCommentPress: () {
+                                widget.viewModel.loadComments.execute(event.eventId);
+                              },
+                              onCommentSubmit: (comment) async {
+                                // Here implement the logic to submit a new comment
+                                debugPrint('New comment: $comment');
                               },
                             ))
                         .toList(),

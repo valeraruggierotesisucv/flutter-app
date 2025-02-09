@@ -1,3 +1,4 @@
+import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
@@ -33,6 +34,9 @@ class _MainViewState extends State<MainView> {
         viewModel: HomeViewModel(
           context: context,
           eventRepository: EventRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
+          commentRepository: CommentRepository(
             Provider.of<ApiClient>(context, listen: false),
           ),
         ),

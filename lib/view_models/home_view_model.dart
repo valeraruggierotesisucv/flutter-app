@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:eventify/data/repositories/comment_repository.dart';
+import 'package:eventify/models/comment_model.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -14,10 +16,13 @@ class HomeViewModel extends ChangeNotifier {
   HomeViewModel({
     required BuildContext context,
     required EventRepository eventRepository,
+    required CommentRepository commentRepository,
   }) : _eventRepository = eventRepository,
+       _commentRepository = commentRepository,
        _context = context {
     load = Command0(_loadEvents)..execute();
     handleLike = Command1<void, String>(_handleLike);
+    loadComments = Command1<void, String>(_loadComments);
   }
 
   final EventRepository _eventRepository;
@@ -26,7 +31,12 @@ class HomeViewModel extends ChangeNotifier {
   List<EventModel> _events = [];
   late final Command0<dynamic> load;
   late final Command1<void, String> handleLike;
+  late final Command1<void, String> loadComments;
   List<EventModel> get events => _events;
+  final CommentRepository _commentRepository;
+  List<CommentModel> _comments = [];
+  List<CommentModel> get comments => _comments;
+
 
 
   Future<Result<List<EventModel>>> _loadEvents() async {
@@ -79,5 +89,23 @@ class HomeViewModel extends ChangeNotifier {
       return Result.error(Exception('Failed to like event'));
     }
   }
- 
+
+  Future<Result<List<CommentModel>>> _loadComments(String eventId) async {
+    try {
+      final result = await _commentRepository.getComments(eventId);
+      print("result $result");
+      switch (result) {
+        case Ok<List<CommentModel>>():
+          _comments = result.value;
+          notifyListeners();
+          return Result.ok(_comments);
+        case Error<List<CommentModel>>():
+          _log.warning('Failed to load comments', result.error);
+          return Result.error(result.error);
+      } 
+    } catch (e) {
+      _log.severe('Error in loadComments', e);
+      return Result.error(Exception('Failed to load comments'));
+    }
+  }
 } 
