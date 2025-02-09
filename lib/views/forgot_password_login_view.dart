@@ -1,8 +1,12 @@
+import 'package:eventify/data/repositories/user_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 class ForgotPasswordLoginView extends StatelessWidget {
   const ForgotPasswordLoginView({super.key});
 
@@ -59,7 +63,13 @@ class ForgotPasswordLoginView extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 60),
               child: CustomButton(
                 label: t.forgotPasswordLoginViewLogin,
-                onPress: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AuthView())),
+                onPress: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AuthView(
+              viewModel: AuthViewModel(
+                context: context, 
+                userRepository: UserRepository(
+                  Provider.of<ApiClient>(context, listen: false))
+                )
+              ),)),
               ),
             ),
           ],

@@ -3,8 +3,8 @@ import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/view_models/search_view_model.dart';
-import 'package:eventify/views/add_view.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:eventify/views/onboarding_view.dart';
 import 'package:eventify/views/forgot_password_view.dart';
@@ -18,7 +18,6 @@ import 'package:eventify/views/edit_event_view.dart';
 import 'package:eventify/views/configuration_view.dart';
 import 'package:eventify/views/change_password_view.dart';
 import 'package:eventify/views/search_view.dart';
-import 'package:eventify/views/notifications_view.dart';
 import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/navigation.dart';
 import 'package:eventify/routes.dart';
@@ -82,7 +81,13 @@ class MyApp extends StatelessWidget {
           ),
           routes: {
             // AppScreens routes
-            '/${AppScreens.auth.name}': (context) => const AuthView(),
+            '/${AppScreens.auth.name}': (context) => AuthView(
+              viewModel: AuthViewModel(
+                context: context, 
+                userRepository: UserRepository(
+                  Provider.of<ApiClient>(context, listen: false))
+                )
+              ),
             '/${AppScreens.onboarding.name}': (context) =>
                 const OnboardingView(),
             '/${AppScreens.forgotPassword.name}': (context) =>
