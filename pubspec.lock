@@ -41,14 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  audio_session:
-    dependency: transitive
-    description:
-      name: audio_session
-      sha256: "2b7fff16a552486d078bfc09a8cde19f426dc6d6329262b684182597bec5b1ac"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.25"
   audioplayers:
     dependency: "direct main"
     description:
@@ -279,26 +271,26 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_sound
-      sha256: "016ae9c2be7aa32b1d35c2064cb1dd5aaeecff8fd4f21b1202335a5a0e0a2f4c"
+      sha256: a4662bd1bb15a51569b908deb58a3e9ecc14c7080783487202d015644712f1ef
       url: "https://pub.dev"
     source: hosted
-    version: "9.22.0"
+    version: "9.23.1"
   flutter_sound_platform_interface:
     dependency: transitive
     description:
       name: flutter_sound_platform_interface
-      sha256: f98b6c6218ff7041bb16ea88e0e0563556401c0b65c23c5852ea3be87ddf9cfd
+      sha256: "0ebd302180ddc91c993d4bb061f08d71a047ebb0f04b05befd2ee8de59ea947d"
       url: "https://pub.dev"
     source: hosted
-    version: "9.22.0"
+    version: "9.23.1"
   flutter_sound_web:
     dependency: transitive
     description:
       name: flutter_sound_web
-      sha256: c6327679e860009c405b768100dd878946ae67d045760a3e67e239b4fd74c3ec
+      sha256: "0891d977674be94d8c3f4759c6cd11e7f29a1ed29dc287b874a1393666ac831f"
       url: "https://pub.dev"
     source: hosted
-    version: "9.22.0"
+    version: "9.23.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -421,14 +413,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.19.0"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.1"
   jwt_decode:
     dependency: transitive
     description:

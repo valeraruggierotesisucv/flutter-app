@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:eventify/providers/auth_provider.dart';
-import 'package:eventify/widgets/social_interactions.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -33,19 +31,16 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<Result<List<EventModel>>> _loadEvents() async {
     try {
-        print('Loading events...');
+        
         final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
         if (userId == null) {
-          print('No user ID found');
           return Result.error(Exception('User not logged in'));
         }
-        print('User ID: $userId');
 
         final result = await _eventRepository.getEvents(userId);
         switch (result) {
           case Ok<List<EventModel>>():
             _events = result.value;
-            print('Events loaded: ${_events.length}');
             notifyListeners();
           case Error<List<EventModel>>():
             print('Error loading events: ${result.error}');

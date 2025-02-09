@@ -1,3 +1,4 @@
+import 'package:eventify/view_models/search_view_model.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
 import 'package:eventify/widgets/pills.dart';
 import 'package:eventify/widgets/tabs.dart';
@@ -7,9 +8,11 @@ import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/event_card.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/user_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchView extends StatefulWidget {
-  const SearchView({super.key});
+  final SearchViewModel viewModel;
+  const SearchView({super.key, required this.viewModel});
 
   @override
   State<SearchView> createState() => _SearchViewState();
@@ -20,6 +23,7 @@ class _SearchViewState extends State<SearchView> {
   List<String> _searchResults = [];
   bool _isLoading = false;
   int selectedTab = 1;
+  String query = '';
 
 
   Future<List<Category>> fetchCategories() async {
@@ -50,56 +54,44 @@ class _SearchViewState extends State<SearchView> {
     ];
   }
 
-  Future<List<dynamic>> fetchEvents() async {
-    // Add artificial delay of 2 seconds
-    await Future.delayed(const Duration(seconds: 8));
-
-    return [
-      {
-        'id': '1',
-        'title': 'Evento 1',
-        'description': 'Descripción del evento 1',
-        'image':
-            'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
-        'location': 'Ciudad, País',
-        'date': DateTime.now(),
-      },
-      {
-        'id': '2',
-        'title': 'Evento 2',
-        'description': 'Descripción del evento 2',
-        'image':
-            'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
-        'location': 'Ciudad, País',
-        'date': DateTime.now(),
-      },
-    ];
+  
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.searchEvents.addListener(_onSearch);
+    widget.viewModel.searchUsers.addListener(_onSearch);
   }
 
   @override
-  void dispose() {
+  void didUpdateWidget(covariant SearchView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    oldWidget.viewModel.searchEvents.removeListener(_onSearch);
+    oldWidget.viewModel.searchUsers.removeListener(_onSearch);
+    widget.viewModel.searchEvents.addListener(_onSearch);
+    widget.viewModel.searchUsers.addListener(_onSearch);
+  }
+
+  @override
+  void dispose( ) {
     _searchController.dispose();
+    widget.viewModel.searchEvents.removeListener(_onSearch);
+    widget.viewModel.searchUsers.removeListener(_onSearch);
     super.dispose();
   }
 
   void _performSearch(String query) {
+    
     setState(() {
-      _isLoading = true;
+      this.query = query;
     });
-
-    // Simulando una búsqueda con datos de ejemplo
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _searchResults = [
-          'Resultado 1: $query',
-          'Resultado 2: $query',
-          'Resultado 3: $query',
-          'Resultado 4: $query',
-          'Resultado 5: $query',
-        ];
-        _isLoading = false;
-      });
-    });
+    switch (selectedTab) {
+      case 1:
+        widget.viewModel.searchEvents.execute(query);
+        break;
+      case 2:
+        widget.viewModel.searchUsers.execute(query);
+        break;
+    }
   }
   final tabs = [
     TabItem(id: 1, title: 'Eventos'),
@@ -110,11 +102,13 @@ class _SearchViewState extends State<SearchView> {
     setState(() {
       selectedTab = id;
     });
+    widget.viewModel.searchUsers.execute(query);
   }
   
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppHeader(),
       body: SafeArea(
@@ -148,27 +142,42 @@ class _SearchViewState extends State<SearchView> {
                       const SizedBox(height: 16),
                       _isLoading 
                         ? const Center(child: CircularProgressIndicator())
-                        : FutureBuilder(
-                            future: fetchEvents(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const Center(child: Loading());
+                        : ListenableBuilder(
+                            listenable: widget.viewModel.searchEvents,
+                            builder: (context, child) {
+                              if (widget.viewModel.searchEvents.running) {
+                                return Loading();
+                              }
+                              
+                              if (query.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    t.searchViewInitialEvents,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              if(widget.viewModel.events.isEmpty) {
+                                return Center(child: Text(t.searchViewNoEvents));
                               }
                               return Column(
-                                children: snapshot.data!.map((event) => EventCard(
-                                  eventId: event['id'],
-                                  profileImage: event['image'],
-                                  username: 'Usuario 1',
-                                  eventImage: event['image'],
-                                  title: event['title'],
-                                  description: 'Descripción del evento 1',
-                                  isLiked: false,
-                                  date: '2024-01-01',
+                                children: widget.viewModel.events.map((event) => EventCard(
+                                  eventId: event.eventId,
+                                  profileImage: event.profileImage,
+                                  username: event.username,
+                                  eventImage: event.eventImage,
+                                  title: event.title,
+                                  description: event.description,
+                                  isLiked: event.isLiked,
+                                  date: event.date,
                                   userComment: {},
                                   onPressUser: () {},
                                   onComment: (eventId, comment) async {
                                     print(eventId);
-                                    print(comment);
                                   },
                                   onMoreDetails: () {
                                     Navigator.pushNamed(
@@ -185,16 +194,36 @@ class _SearchViewState extends State<SearchView> {
                           ),
                     ],
                   )
-                : FutureBuilder(  // Users tab content
-                    future: fetchUsers(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return const Center(child: Loading());
+                : ListenableBuilder(  // Users tab content
+                    listenable: widget.viewModel.searchUsers,
+                    builder: (context, child) {
+                      if (widget.viewModel.searchUsers.running) {
+                        return Loading();
+                      }
+
+                      if (query.isEmpty) {
+                        return Center(
+                            child: Text(
+                              t.searchViewInitialUsers,
+                              style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        );
+                      } 
+
+                      if(widget.viewModel.users.isEmpty) {
+                        return Center(child: Text(t.searchViewNoUsers));
+                      }
+
                       return Column(
                         spacing: 10,
-                        children: snapshot.data!.map((user) => UserCard(
-                          username: user['name'],
-                          profileImage: user['image'],
+                        children: widget.viewModel.users.map((user) => UserCard(
+                          username: user.username,
+                          profileImage: user.profileImage,
                           onPressUser: () {
+
                           },
                           variant: UserCardVariant.withButton,
                           onPressButton: () {},
@@ -208,5 +237,9 @@ class _SearchViewState extends State<SearchView> {
         ),
       ),
     );
+  }
+
+  void _onSearch() {
+    
   }
 }

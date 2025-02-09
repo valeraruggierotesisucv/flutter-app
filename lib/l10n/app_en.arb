@@ -25,5 +25,9 @@
   "configEnglish": "English",
   "configLogout": "Log out",
   "configLanguage": "Change language",
-  "configChangePassword": "Change password"
+  "configChangePassword": "Change password",
+  "searchViewNoUsers": "No users found",
+  "searchViewNoEvents": "No events found",
+  "searchViewInitialEvents": "Search for an event",
+  "searchViewInitialUsers": "Search for a user"
 }

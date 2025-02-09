@@ -1,4 +1,4 @@
-import 'package:eventify/models/user_model.dart';
+import 'package:eventify/models/supabase_user_model.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,7 +18,7 @@ class AuthService {
     
     if (response.user != null) {
       // Crear un modelo de usuario
-      final user = UserModel(
+      final user = SupabaseUserModel(
         id: response.user!.id, 
         email: response.user!.email!,
         accessToken: response.session!.accessToken
@@ -39,7 +39,7 @@ class AuthService {
 
     if (response.user != null) {
       // Crear un modelo de usuario
-      final user = UserModel(
+      final user = SupabaseUserModel(
         id: response.user!.id, 
         email: response.user!.email!,
         accessToken: response.session!.accessToken
@@ -64,7 +64,7 @@ class AuthService {
   }
 
    // Obtener el usuario actual
-  UserModel? getCurrentUser(BuildContext context) {
+  SupabaseUserModel? getCurrentUser(BuildContext context) {
     return Provider.of<UserProvider>(context, listen: false).user;
   }
 }
