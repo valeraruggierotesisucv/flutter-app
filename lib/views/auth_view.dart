@@ -28,6 +28,12 @@ class _AuthViewState extends State<AuthView> {
   bool passwordVisibility = false;
   bool confirmPasswordVisibility = false;
 
+  String nameError = '';
+  String fullNameError = '';
+  String emailError = '';
+  String passwordError = '';
+  String confirmPasswordError = '';
+
   final tabs = [
     TabItem(id: 1, title: 'Iniciar Sesión'),
     TabItem(id: 2, title: 'Registrarse'),
@@ -62,11 +68,56 @@ class _AuthViewState extends State<AuthView> {
     }
 
     void register() async {
-      //bool name_error = false;
-      //bool fullName_error = false;
-      //bool email_error = false; 
-      
+      setState(() {
+        nameError = '';
+        fullNameError = '';
+        emailError = '';
+        passwordError = '';
+        confirmPasswordError = '';
+      });
 
+      bool isValid = true;
+
+    // Validación de campos
+    if (_nameController.text.isEmpty) {
+      nameError = 'Este campo es obligatorio';
+      isValid = false;
+    }
+
+    if (_fullNameController.text.isEmpty) {
+      fullNameError = 'Este campo es obligatorio';
+      isValid = false;
+    }
+
+    if (_emailController.text.isEmpty) {
+      emailError = 'Este campo es obligatorio';
+      isValid = false;
+    } else {
+      // Validación de formato de correo electrónico
+      String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+      RegExp regex = RegExp(pattern);
+      if (!regex.hasMatch(_emailController.text)) {
+        emailError = 'Ingrese un correo electrónico válido';
+        isValid = false;
+      }
+    }
+
+    if (_passwordControler.text.isEmpty) {
+      passwordError = 'Este campo es obligatorio';
+      isValid = false;
+    }
+
+    if (_confirmPasswordController.text.isEmpty) {
+      confirmPasswordError = 'Este campo es obligatorio';
+      isValid = false;
+    } 
+    
+    if (_confirmPasswordController.text != _passwordControler.text) {
+      confirmPasswordError = 'Las contraseñas no coinciden';
+      isValid = false;
+    }
+
+    if(isValid){
       _viewModel.name = _nameController.text;
       _viewModel.fullName = _fullNameController.text;
       _viewModel.email = _emailController.text;
@@ -81,8 +132,7 @@ class _AuthViewState extends State<AuthView> {
         debugPrint(e.toString());
       }
     }
-
-    
+  }
 
     return Scaffold(
       backgroundColor: const Color(0xFFD9D9D9),
@@ -181,21 +231,21 @@ class _AuthViewState extends State<AuthView> {
                               InputField(
                                 label: 'Nombre de Usuario',
                                 hint: 'Nombre de Usuario',
-                                error: '',
+                                error: nameError,
                                 controller: _nameController,
                                 icon: Icons.person,
                               ),
                               InputField(
                                 label: 'Nombre Completo',
                                 hint: 'Nombre Completo',
-                                error: '',
+                                error: fullNameError,
                                 controller: _fullNameController,
                                 icon: Icons.person_add,
                               ),
                               InputField(
                                   label: 'Correo electrónico',
                                   hint: 'Correo electrónico',
-                                  error: '',
+                                  error: emailError,
                                   controller: _emailController,
                                   icon: Icons.email),
                               DateTimePickerField(
@@ -207,7 +257,7 @@ class _AuthViewState extends State<AuthView> {
                               InputField(
                                 label: 'Contraseña',
                                 hint: 'Contraseña',
-                                error: '',
+                                error: passwordError,
                                 controller: _passwordControler,
                                 secureText: !passwordVisibility,
                                 icon: passwordVisibility
@@ -222,7 +272,7 @@ class _AuthViewState extends State<AuthView> {
                               InputField(
                                 label: 'Confirmar contraseña',
                                 hint: 'Confirmar contraseña',
-                                error: '',
+                                error: confirmPasswordError,
                                 controller: _confirmPasswordController,
                                 secureText: confirmPasswordVisibility,
                                 icon: confirmPasswordVisibility
