@@ -18,7 +18,6 @@ class EventRepository {
       if (result is Ok<List<EventModel>>) {
         _cachedEvents = result.value;
       }
-      print(result);
       return result;
     }else{
       return Result.ok(_cachedEvents!);
@@ -26,10 +25,17 @@ class EventRepository {
   }
 
   Future<Result<SocialInteractions>> likeEvent({required String eventId, required String userId}) async {
-    
       final result = await _apiClient.likeEvent(eventId, userId);
       return result;
+  }
 
+  Future<Result<List<EventModel>>> searchEvents(String query, String userId) async {
+    try {
+      final result = await _apiClient.searchEvents(query, userId);
+      return result;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
   }
 
   Future<Result<void>> createEvent({

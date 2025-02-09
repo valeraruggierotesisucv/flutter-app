@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/social_interactions.dart';
+import 'package:eventify/models/user_model.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
 import 'package:flutter/material.dart';
@@ -49,10 +50,10 @@ class ApiClient {
         final jsonData = jsonResponse['data'] as List<dynamic>;
 
         return Result.ok(jsonData.map((element) {
-          // Transform nested data into flat structure
+          
           final user = element['user'] as Map<String, dynamic>;
           final location = element['location'] as Map<String, dynamic>;
-          print(element);
+          
           return EventModel.fromJson({
             'event_id': element['eventId'],
             'user_id': element['userId'],
@@ -120,21 +121,97 @@ class ApiClient {
     }
   }
 
-  Future<Result<void>> addComment(String eventId, String comment) async {
+  Future<Result<List<EventModel>>> searchEvents(String query, String userId) async {
     final client = _clientFactory();
     try {
-      final uri = Uri.parse('$_baseUrl/events/$eventId/comments');
+      final uri = Uri.parse('$_baseUrl/search/events');
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
+      
       request.headers.contentType = ContentType.json;
-      request.write(jsonEncode({'content': comment}));
-
+      request.write(jsonEncode({'search': query, 'userId': userId}));
+      
       final response = await request.close();
-      if (response.statusCode == 201) {
-        return const Result.ok(null);
+
+      if(response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        print(jsonData);
+        return Result.ok(jsonData.map((element) {
+          final user = element['user'] as Map<String, dynamic>;
+          final location = element['location'] as Map<String, dynamic>;
+          
+          return EventModel.fromJson({
+            'event_id': element['eventId'],
+            'user_id': element['userId'],
+            'username': user['username'],
+            'profile_image': user['profileImage'],
+            'event_image': element['eventImage'],
+            'title': element['title'],
+            'description': element['description'],
+            'location_id': element['locationId'],
+            'latitude': location['latitude'].toString(),
+            'longitude': location['longitude'].toString(),
+            'starts_at': element['startsAt'],
+            'ends_at': element['endsAt'],
+            'date': element['date'],
+            'category': element['category'] ?? '',
+            'category_id': element['categoryId'].toString(),
+            'music_url': element['eventMusic'],
+            'is_liked': element['isLiked'] ?? false,
+          });
+        }).toList());
+        
       } else {
-        return Result.error(
-            HttpException("Failed to add comment: ${response.statusCode}"));
+        return Result.error(HttpException("Failed to search events: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+
+  Future<Result<List<UserModel>>> searchUsers(String query) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/search/users');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      
+      request.headers.contentType = ContentType.json;
+      request.write(jsonEncode({'search': query}));
+      
+      final response = await request.close();
+      
+      if(response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        
+        return Result.ok(jsonData.map((element) {
+          print("ELEMENT");
+          print(element);
+
+          return UserModel.fromJson({
+            'userId': element['userId'],
+            'username': element['username'],
+            'fullname': "test",
+            'email': "test",
+            'profileImage': element['profileImage'],
+            'birthDate': DateTime.now(),
+            'biography': "test",
+            'followersCounter': 0,
+            'followingCounter': 0,
+            'eventsCounter': 0,
+          });
+        }).toList());
+        
+      } else {
+        return Result.error(HttpException("Failed to search events: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
@@ -266,4 +343,5 @@ class ApiClient {
       client.close();
     }
   }
+
 }

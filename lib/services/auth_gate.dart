@@ -1,6 +1,6 @@
 /* This will constinuosly listen for auth changes */
 
-import 'package:eventify/models/user_model.dart';
+import 'package:eventify/models/supabase_user_model.dart';
 import 'package:eventify/navigation.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/views/auth_view.dart';
@@ -33,7 +33,7 @@ class AuthGate extends StatelessWidget {
 
           if (session != null) {
             // Si hay sesión activa, actualizamos el estado del usuario
-            final user = UserModel(
+            final user = SupabaseUserModel(
               id: session.user.id, 
               email: session.user.email!,
               accessToken: session.accessToken

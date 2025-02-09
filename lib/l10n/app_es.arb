@@ -25,5 +25,10 @@
   "configEnglish": "Inglés",
   "configLogout": "Cerrar sesión",
   "configLanguage": "Cambiar idioma",
-  "configChangePassword": "Cambiar contraseña"
+  "configChangePassword": "Cambiar contraseña",
+
+  "searchViewNoEvents": "No se encontraron eventos",
+  "searchViewNoUsers": "No se encontraron usuarios",
+  "searchViewInitialEvents": "Busca un evento",
+  "searchViewInitialUsers": "Busca un usuario"
 }

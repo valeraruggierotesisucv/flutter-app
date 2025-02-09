@@ -1,6 +1,9 @@
+import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/view_models/search_view_model.dart';
 import 'package:eventify/views/add_view.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:eventify/views/onboarding_view.dart';
@@ -32,14 +35,12 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   await Supabase.initialize(
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
-    url: dotenv.env['SUPABASE_URL']!
-  );
-  
+      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+      url: dotenv.env['SUPABASE_URL']!);
+
   final apiClient = ApiClient(
     baseUrl: dotenv.env['API_URL']!,
   );
-
 
   runApp(
     MultiProvider(
@@ -75,14 +76,15 @@ class MyApp extends StatelessWidget {
           ],
           locale: localeModel.locale,
           home: const AuthGate(),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: true,
-      ),
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+            useMaterial3: true,
+          ),
           routes: {
             // AppScreens routes
             '/${AppScreens.auth.name}': (context) => const AuthView(),
-            '/${AppScreens.onboarding.name}': (context) => const OnboardingView(),
+            '/${AppScreens.onboarding.name}': (context) =>
+                const OnboardingView(),
             '/${AppScreens.forgotPassword.name}': (context) =>
                 const ForgotPasswordView(),
             '/${AppScreens.forgotPasswordLogin.name}': (context) =>
@@ -92,7 +94,8 @@ class MyApp extends StatelessWidget {
                 const ProfileDetailsView(userId: ''),
             '/${AppScreens.folowers.name}': (context) => const FollowersView(),
             '/${AppScreens.folowed.name}': (context) => const FollowedView(),
-            '/${AppScreens.editProfile.name}': (context) => const EditProfileView(),
+            '/${AppScreens.editProfile.name}': (context) =>
+                const EditProfileView(),
             '/${AppScreens.editEvent.name}': (context) => const EditEventView(),
             '/${AppScreens.configuration.name}': (context) =>
                 const ConfigurationView(),
@@ -101,8 +104,16 @@ class MyApp extends StatelessWidget {
 
             // AppTabs routes
             '/${AppTabs.home.name}': (context) => const MainView(),
-            '/${AppTabs.search.name}': (context) => const SearchView(),
-            //'/${AppTabs.add.name}': (context) => const AddView(),
+            '/${AppTabs.search.name}': (context) =>  SearchView(
+                viewModel: SearchViewModel(
+                  context: context,
+                  userRepository: UserRepository(
+                      Provider.of<ApiClient>(context, listen: false)),
+                  eventRepository: EventRepository(
+                      Provider.of<ApiClient>(context, listen: false)))),
+            '/${AppTabs.add.name}': (context) => const AddView(),
+            '/${AppTabs.notifications.name}': (context) =>
+                const NotificationsView(),
             '/${AppTabs.profile.name}': (context) => const ProfileView(),
           },
         ),
@@ -110,5 +121,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-

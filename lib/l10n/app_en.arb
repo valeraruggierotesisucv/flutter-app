@@ -11,7 +11,7 @@
   "forgotPasswordLoginViewTitle": "Email sent successfully!",
   "forgotPasswordLoginViewLogin": "Login",
   "forgotPasswordLoginViewDescription": "Please check your email for a link to reset your password. Don't forget to check your spam folder if you don't see it.",
-  "forgotPasswordLoginViewSendLink": "Send link",
+  "forgotPasswordLoginViewSendLink": "Send link",,
 
   "editProfileTitle": "Edit Profile",
   "editProfileName": "Name",
@@ -25,5 +25,9 @@
   "configEnglish": "English",
   "configLogout": "Log out",
   "configLanguage": "Change language",
-  "configChangePassword": "Change password"
+  "configChangePassword": "Change password"  "searchViewNoEvents": "No events found",
+  "searchViewNoUsers": "No users found",
+  "searchViewNoEvents": "No events found",
+  "searchViewInitialEvents": "Search for an event",
+  "searchViewInitialUsers": "Search for a user"
 }
