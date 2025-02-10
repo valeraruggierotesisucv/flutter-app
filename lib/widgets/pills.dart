@@ -1,3 +1,4 @@
+import 'package:eventify/models/category_model.dart';
 import 'package:flutter/material.dart';
 
 class Category {
@@ -8,9 +9,10 @@ class Category {
 }
 
 class Pills extends StatefulWidget {
-  final List<Category> categories;
-  final Function(List<String>)? onSelectCategories;
-  final List<String> selectedCategories;
+  final List<CategoryModel> categories;
+  final Function(List<int>)? onSelectCategories;
+  final List<int> selectedCategories;
+
 
   const Pills({
     super.key,
@@ -24,7 +26,8 @@ class Pills extends StatefulWidget {
 }
 
 class _PillsState extends State<Pills> {
-  late List<String> selected;
+  late List<int> selected;
+
 
   @override
   void initState() {
@@ -32,7 +35,7 @@ class _PillsState extends State<Pills> {
     selected = List.from(widget.selectedCategories);
   }
 
-  void handlePress(String categoryId) {
+  void handlePress(int categoryId) {
     setState(() {
       if (selected.contains(categoryId)) {
         selected.remove(categoryId);
@@ -70,12 +73,13 @@ class _PillsState extends State<Pills> {
                   minimumSize: const Size(0, 40),
                 ),
                 child: Text(
-                  category.label,
+                  category.nameEn,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),
+
               ),
             );
           }).toList(),

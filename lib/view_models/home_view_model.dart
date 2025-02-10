@@ -43,7 +43,7 @@ class HomeViewModel extends ChangeNotifier {
             _events = result.value;
             notifyListeners();
           case Error<List<EventModel>>():
-            print('Error loading events: ${result.error}');
+            _log.severe('Error loading events: ${result.error}');
         }
         return result;
       } finally {

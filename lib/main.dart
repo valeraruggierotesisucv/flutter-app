@@ -1,3 +1,4 @@
+import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
@@ -124,6 +125,8 @@ class MyApp extends StatelessWidget {
                   userRepository: UserRepository(
                       Provider.of<ApiClient>(context, listen: false)),
                   eventRepository: EventRepository(
+                      Provider.of<ApiClient>(context, listen: false)),
+                  categoryRepository: CategoryRepository(
                       Provider.of<ApiClient>(context, listen: false)))),
             // '/${AppTabs.add.name}': (context) => const AddView(),
             // '/${AppTabs.notifications.name}': (context) =>
