@@ -345,6 +345,38 @@ class ApiClient {
     }
   }
 
+  Future<Result<void>> registerUser(UserModel user) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/signUp');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {
+        'userId': user.userId,
+        'username': user.username,
+        'fullName': user.fullname,
+        'email': user.email,
+        'birthDate': user.birthDate.toIso8601String(),
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Result.ok(null);
+      } else {
+        return Result.error(
+            HttpException("Failed to register user: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
   Future<Result<UserModel>> getUser(String userId) async {
     final client = _clientFactory();
     try {
@@ -442,37 +474,6 @@ class ApiClient {
         }));
       } else {
         return Result.error(HttpException("Failed to update profile: ${response.statusCode}"));
-      }
-    } on Exception catch (error) {
-      return Result.error(error);
-    } finally {
-      client.close();
-    }
-  }
-  Future<Result<void>> registerUser(UserModel user) async {
-    final client = _clientFactory();
-    try {
-      final uri = Uri.parse('$_baseUrl/signUp');
-      final request = await client.postUrl(uri);
-      await _authHeader(request.headers);
-      request.headers.contentType = ContentType.json;
-
-      final body = {
-        'userId': user.userId,
-        'username': user.username,
-        'fullName': user.fullname,
-        'email': user.email,
-        'birthDate': user.birthDate.toIso8601String(),
-      };
-
-      request.write(jsonEncode(body));
-      final response = await request.close();
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return Result.ok(null);
-      } else {
-        return Result.error(
-            HttpException("Failed to register user: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
