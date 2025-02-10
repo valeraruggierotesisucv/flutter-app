@@ -393,6 +393,57 @@ class ApiClient {
     }
   }
 
+  Future<Result<EventModel>> getEventDetails(String eventId, String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/events/$eventId/$userId');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as Map<String, dynamic>;
+        print("jsonData $jsonData");
+        
+        bool isLiked = false;
+          if (jsonData['socialInteractions'] != null) {
+            final socialInteractions = jsonData['socialInteractions'] as List<dynamic>;
+            if (socialInteractions.isNotEmpty) {
+              isLiked = (socialInteractions[0] as Map<String, dynamic>)['isActive'] ?? false;
+            }
+          }
+        return Result.ok(EventModel.fromJson({
+          'event_id': jsonData['eventId'],
+          'user_id': jsonData['userId'],
+          'username': jsonData['user']['username'],
+          'profile_image': jsonData['user']['profileImage'],
+          'event_image': jsonData['eventImage'],
+          'title': jsonData['title'],
+          'description': jsonData['description'],
+          'location_id': jsonData['location']['locationId'],
+          'latitude': jsonData['location']['latitude'].toString(),
+          'longitude': jsonData['location']['longitude'].toString(),
+          'starts_at': jsonData['startsAt'],
+          'ends_at': jsonData['endsAt'],
+          'date': jsonData['date'],
+          'category': jsonData['category']['nameEs'],
+          'category_id': jsonData['categoryId'].toString(),
+          'music_url': jsonData['eventMusic'],
+          'is_liked': isLiked,
+        }));
+      } else {
+        return Result.error(HttpException("Failed to get event details: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
   Future<Result<UserModel>> getUser(String userId) async {
     final client = _clientFactory();
     try {
