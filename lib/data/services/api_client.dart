@@ -365,7 +365,7 @@ class ApiClient {
           'email': jsonData['email'],
           'profileImage': jsonData['profileImage'],
           'birthDate': DateTime.parse(jsonData['birthDate']),
-          'biography': "",
+          'biography': jsonData['biography'] ?? "",
           'followersCounter': jsonData['followers_counter'],
           'followingCounter': jsonData['following_counter'],
           'eventsCounter': 0,
@@ -398,6 +398,50 @@ class ApiClient {
         })).toList());
       } else {
         return Result.error(HttpException("Failed to get user events: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<UserModel>> updateProfile(UserModel user) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/${user.userId}');
+      final request = await client.putUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {
+        'fullName': user.fullname,
+        if (user.profileImage != null) 'profileImage': user.profileImage,
+        if (user.biography != null) 'biography': user.biography,
+      };
+      print("body $body");
+      print(user.userId);
+      request.write(jsonEncode(body));
+      final response = await request.close();
+      
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as Map<String, dynamic>;
+        print("API updated profile: $jsonData");
+        return Result.ok(UserModel.fromJson({
+          'userId': jsonData['userId'],
+          'username': jsonData['username'],
+          'fullname': jsonData['fullName'],
+          'email': jsonData['email'],
+          'profileImage': jsonData['profileImage'],
+          'birthDate': DateTime.parse(jsonData['birthDate']),
+          'biography': jsonData['biography'],
+          'followersCounter': jsonData['followers_counter'],
+          'followingCounter': jsonData['following_counter'],
+        }));
+      } else {
+        return Result.error(HttpException("Failed to update profile: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);

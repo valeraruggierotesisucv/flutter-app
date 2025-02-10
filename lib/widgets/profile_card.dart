@@ -49,8 +49,12 @@ class ProfileCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              
               CircleAvatar(
                 radius: 40,
+                backgroundImage: profileImage != null
+                    ? NetworkImage(profileImage!)
+                    : null,
                 child: profileImage == null
                     ? const Icon(Icons.person, size: 40)
                     : null,

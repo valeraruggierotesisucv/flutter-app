@@ -28,6 +28,15 @@ class UserRepository {
     }
   }
 
+  Future<Result<UserModel>> updateProfile(UserModel user) async {
+    try {
+      final result = await _apiClient.updateProfile(user);
+      return result;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
+
   Future<Result<void>> registerUser(UserModel user) async {
     final result = await _apiClient.registerUser(user);
     return result;

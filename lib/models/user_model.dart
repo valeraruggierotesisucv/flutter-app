@@ -3,12 +3,12 @@ class UserModel {
   final String username;
   final String fullname;
   final String email;
-  final String? profileImage;
+  String? profileImage;
   final DateTime birthDate;
   final String? biography;
   final int followersCounter;
   final int followingCounter;
-  final int? eventsCounter;
+  int? eventsCounter;
 
   UserModel(
       {required this.userId,

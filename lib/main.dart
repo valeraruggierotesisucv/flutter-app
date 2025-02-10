@@ -3,6 +3,7 @@ import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/view_models/edit_profile_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/view_models/search_view_model.dart';
@@ -102,7 +103,13 @@ class MyApp extends StatelessWidget {
             '/${AppScreens.folowers.name}': (context) => const FollowersView(),
             '/${AppScreens.folowed.name}': (context) => const FollowedView(),
             '/${AppScreens.editProfile.name}': (context) =>
-                const EditProfileView(),
+                EditProfileView(
+                  viewModel: EditProfileViewModel(
+                    context: context,
+                    userRepository: UserRepository(
+                        Provider.of<ApiClient>(context, listen: false)),
+                  ),
+                ),
             '/${AppScreens.editEvent.name}': (context) => const EditEventView(),
             '/${AppScreens.configuration.name}': (context) =>
                 const ConfigurationView(),

@@ -31,17 +31,16 @@ class ProfileViewModel extends ChangeNotifier {
     Future<Result<UserModel>> _initLoad(String userId) async {
       try {
         final result = await _userRepository.getUser(userId);
-        
-
 
         switch (result) {
           case Ok<UserModel>():
             _user = result.value;
-
+            print("user ${_user!.profileImage}");
             final eventsResult = await _eventRepository.getUserEvents(userId);
             switch (eventsResult) {
               case Ok<List<EventSummaryModel>>():
                 _events = eventsResult.value;
+                _user!.eventsCounter = _events.length;
               case Error<List<EventSummaryModel>>():
                 _log.warning('Failed to load user events', eventsResult.error);
             }

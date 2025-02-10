@@ -1,4 +1,7 @@
+import 'package:eventify/data/repositories/user_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/view_models/edit_profile_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/views/configuration_view.dart';
 import 'package:eventify/views/edit_profile_view.dart';
@@ -86,11 +89,12 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
             child: Column(
               children: [
                 ProfileCard(
-                  username: user.username,
+                  username: user.fullname,
                   biography: user.biography ?? "",
                   events: user.eventsCounter ?? 0,
                   followers: user.followersCounter,
                   following: user.followingCounter,
+                  profileImage: user.profileImage,
                   onFollowers: () {
                     Navigator.push(
                       context,
@@ -112,7 +116,22 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                   onEditProfile: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const EditProfileView()),
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileView(
+                          viewModel: EditProfileViewModel(
+                            context: context,
+                            userRepository: UserRepository(
+                              Provider.of<ApiClient>(context, listen: false)
+                            )
+                          ),
+                          onProfileUpdated: () {
+                            final userId = Provider.of<UserProvider>(context, listen: false).user?.id;
+                            if (userId != null) {
+                              widget.viewModel.initLoad.execute(userId);
+                            }
+                          },
+                        ),
+                      ),
                     );
                   },
                 ),
