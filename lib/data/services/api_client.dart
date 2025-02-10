@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:eventify/models/event_summary_model.dart';
 import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/models/user_model.dart';
@@ -344,6 +345,66 @@ class ApiClient {
     }
   }
 
+  Future<Result<UserModel>> getUser(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+
+      if(response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as Map<String, dynamic>;
+        final user = UserModel.fromJson({
+          'userId': jsonData['userId'],
+          'username': jsonData['username'],
+          'fullname': jsonData['fullName'],
+          'email': jsonData['email'],
+          'profileImage': jsonData['profileImage'],
+          'birthDate': DateTime.parse(jsonData['birthDate']),
+          'biography': "",
+          'followersCounter': jsonData['followers_counter'],
+          'followingCounter': jsonData['following_counter'],
+          'eventsCounter': 0,
+        });
+        return Result.ok(user);
+      } else {
+        return Result.error(HttpException("Failed to get user: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }  
+
+  Future<Result<List<EventSummaryModel>>> getUserEvents(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/events');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+
+      if(response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        return Result.ok(jsonData.map((element) => EventSummaryModel.fromJson({
+          'eventId': element['eventId'],
+          'imageUrl': element['eventImage'],
+        })).toList());
+      } else {
+        return Result.error(HttpException("Failed to get user events: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
   Future<Result<void>> registerUser(UserModel user) async {
     final client = _clientFactory();
     try {

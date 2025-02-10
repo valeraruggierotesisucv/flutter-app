@@ -1,3 +1,4 @@
+import 'package:eventify/models/event_summary_model.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
@@ -52,8 +53,8 @@ class ProfileDetailsView extends StatelessWidget {
           ),
           Expanded(
             child: EventThumbnailList(
-              events: sampleEvents.map((event) => Event(
-                id: event['id'] as String,
+              events: sampleEvents.map((event) => EventSummaryModel(
+                eventId: event['id'] as String,
                 imageUrl: event['imageUrl'] as String,
               )).toList(),
               onEventTap: (String eventId) {

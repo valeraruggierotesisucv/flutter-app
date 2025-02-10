@@ -37,7 +37,7 @@ class HomeViewModel extends ChangeNotifier {
           return Result.error(Exception('User not logged in'));
         }
 
-        final result = await _eventRepository.getEvents(userId);
+        final result = await _eventRepository.getHomeEvents(userId);
         switch (result) {
           case Ok<List<EventModel>>():
             _events = result.value;

@@ -3,6 +3,7 @@ import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/view_models/search_view_model.dart';
 import 'package:eventify/views/auth_view.dart';
@@ -28,6 +29,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/view_models/profile_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -119,7 +121,14 @@ class MyApp extends StatelessWidget {
             // '/${AppTabs.add.name}': (context) => const AddView(),
             // '/${AppTabs.notifications.name}': (context) =>
                 // const NotificationsView(),
-            '/${AppTabs.profile.name}': (context) => const ProfileView(),
+            '/${AppTabs.profile.name}': (context) => ProfileView(
+                  viewModel: ProfileViewModel(
+                    context: context,
+                    userRepository: UserRepository(
+                        Provider.of<ApiClient>(context, listen: false)),
+                    eventRepository: EventRepository(
+                        Provider.of<ApiClient>(context, listen: false)))),
+            
           },
         ),
       ),
