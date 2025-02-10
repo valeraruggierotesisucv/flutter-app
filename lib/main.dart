@@ -8,6 +8,7 @@ import 'package:eventify/view_models/edit_profile_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/view_models/search_view_model.dart';
+import 'package:eventify/views/add_event_view.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:eventify/views/onboarding_view.dart';
 import 'package:eventify/views/forgot_password_view.dart';
