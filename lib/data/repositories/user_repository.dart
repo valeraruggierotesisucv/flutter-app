@@ -19,4 +19,9 @@ class UserRepository {
     }
 
   }
+
+  Future<Result<void>> registerUser(UserModel user) async {
+    final result = await _apiClient.registerUser(user);
+    return result;
+  }
 } 

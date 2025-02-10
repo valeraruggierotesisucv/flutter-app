@@ -6,7 +6,6 @@ import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/data/repositories/location_repository.dart';
 import 'package:eventify/models/location_model.dart';
 import 'package:eventify/services/storage_service.dart';
-import 'package:eventify/services/storage_service.dart';
 
 class AddViewModel extends ChangeNotifier {
   AddViewModel({

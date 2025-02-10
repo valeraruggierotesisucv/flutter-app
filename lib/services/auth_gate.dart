@@ -1,8 +1,11 @@
 /* This will constinuosly listen for auth changes */
 
+import 'package:eventify/data/repositories/user_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/models/supabase_user_model.dart';
 import 'package:eventify/navigation.dart';
 import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +25,7 @@ class AuthGate extends StatelessWidget {
         builder: (context, snapshot) {
           // loading
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // TO-DO: cambiar por Loading component 
+            // TO-DO: cambiar por Loading component
             return const Scaffold(
               body: Center(child: CircularProgressIndicator()),
             );
@@ -34,16 +37,19 @@ class AuthGate extends StatelessWidget {
           if (session != null) {
             // Si hay sesión activa, actualizamos el estado del usuario
             final user = SupabaseUserModel(
-              id: session.user.id, 
-              email: session.user.email!,
-              accessToken: session.accessToken
-            );
-            
+                id: session.user.id,
+                email: session.user.email!,
+                accessToken: session.accessToken);
+
             Provider.of<UserProvider>(context, listen: false).setUser(user);
 
             return MainView();
           } else {
-            return AuthView(); 
+            return AuthView(
+                viewModel: AuthViewModel(
+                    context: context,
+                    userRepository: UserRepository(
+                        Provider.of<ApiClient>(context, listen: false))));
           }
         });
   }

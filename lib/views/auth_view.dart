@@ -1,5 +1,5 @@
 import 'package:eventify/services/auth_service.dart';
-import 'package:eventify/views/forgot_password_view.dart';
+import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/date_time_picker_field.dart';
 import 'package:eventify/widgets/icon_logo.dart';
@@ -7,46 +7,58 @@ import 'package:eventify/widgets/input_field.dart';
 import 'package:eventify/widgets/tabs.dart';
 import 'package:flutter/material.dart';
 
-
-
-
-
 class AuthView extends StatefulWidget {
-  const AuthView({super.key});
+  final AuthViewModel viewModel;
+
+  const AuthView({super.key, required this.viewModel});
 
   @override
   State<AuthView> createState() => _AuthViewState();
 }
 
 class _AuthViewState extends State<AuthView> {
+  late AuthViewModel _viewModel;
   final authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordControler = TextEditingController();
   final _nameController = TextEditingController();
   final _fullNameController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  DateTime _dateOfBirthController = DateTime.now();
+  late DateTime _dateOfBirthController;
   bool passwordVisibility = false;
+  bool confirmPasswordVisibility = false;
+
+  String nameError = '';
+  String fullNameError = '';
+  String emailError = '';
+  String passwordError = '';
+  String confirmPasswordError = '';
+
   final tabs = [
     TabItem(id: 1, title: 'Iniciar Sesión'),
     TabItem(id: 2, title: 'Registrarse'),
   ];
   int selectedTab = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = widget.viewModel;
+    DateTime now = DateTime.now();
+    _dateOfBirthController = DateTime(now.year - 18, now.month, now.day);
+  }
+
   @override
   Widget build(BuildContext context) {
-   
-    // login button pressed
     void login() async {
-      // prepare data
       final email = _emailController.text;
       final password = _passwordControler.text;
 
-      print(email);
-      print(password);
+      debugPrint(email);
+      debugPrint(password);
 
       try {
         await authService.signInWithEmailPassword(email, password, context);
-
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context)
@@ -56,12 +68,71 @@ class _AuthViewState extends State<AuthView> {
     }
 
     void register() async {
-      final name = _nameController.text;
-      final fullName = _fullNameController.text;
-      final email = _emailController.text;
-      final password = _passwordControler.text;
-      final confirmPassword = _confirmPasswordController.text;
+      setState(() {
+        nameError = '';
+        fullNameError = '';
+        emailError = '';
+        passwordError = '';
+        confirmPasswordError = '';
+      });
+
+      bool isValid = true;
+
+    // Validación de campos
+    if (_nameController.text.isEmpty) {
+      nameError = 'Este campo es obligatorio';
+      isValid = false;
     }
+
+    if (_fullNameController.text.isEmpty) {
+      fullNameError = 'Este campo es obligatorio';
+      isValid = false;
+    }
+
+    if (_emailController.text.isEmpty) {
+      emailError = 'Este campo es obligatorio';
+      isValid = false;
+    } else {
+      // Validación de formato de correo electrónico
+      String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+      RegExp regex = RegExp(pattern);
+      if (!regex.hasMatch(_emailController.text)) {
+        emailError = 'Ingrese un correo electrónico válido';
+        isValid = false;
+      }
+    }
+
+    if (_passwordControler.text.isEmpty) {
+      passwordError = 'Este campo es obligatorio';
+      isValid = false;
+    }
+
+    if (_confirmPasswordController.text.isEmpty) {
+      confirmPasswordError = 'Este campo es obligatorio';
+      isValid = false;
+    } 
+    
+    if (_confirmPasswordController.text != _passwordControler.text) {
+      confirmPasswordError = 'Las contraseñas no coinciden';
+      isValid = false;
+    }
+
+    if(isValid){
+      _viewModel.name = _nameController.text;
+      _viewModel.fullName = _fullNameController.text;
+      _viewModel.email = _emailController.text;
+      _viewModel.dateOfBirth = _dateOfBirthController;
+      try {
+        await authService.signUpWithEmailPassword(
+            _emailController.text, _passwordControler.text, context);
+
+        debugPrint("Datos del registro");
+        await _viewModel.signUp();
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
+  }
 
     return Scaffold(
       backgroundColor: const Color(0xFFD9D9D9),
@@ -91,20 +162,22 @@ class _AuthViewState extends State<AuthView> {
                           height: 200,
                         ),
                       ),
-                      Tabs(tabs: tabs, onTabTap: (id) {
-                        setState(() {
-                          selectedTab = id;
-                        });
-                      })
+                      Tabs(
+                          tabs: tabs,
+                          onTabTap: (id) {
+                            setState(() {
+                              selectedTab = id;
+                            });
+                          })
                     ],
                   ),
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-                child: selectedTab == 1 
-                  ? LayoutBuilder(
-                      builder: (context, constraints) {
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                child: selectedTab == 1
+                    ? LayoutBuilder(builder: (context, constraints) {
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,6 +189,7 @@ class _AuthViewState extends State<AuthView> {
                                   hint: 'Correo electrónico',
                                   error: '',
                                   controller: _emailController,
+                                  icon: Icons.email,
                                 ),
                                 const SizedBox(height: 20),
                                 InputField(
@@ -124,7 +198,9 @@ class _AuthViewState extends State<AuthView> {
                                   error: '',
                                   controller: _passwordControler,
                                   secureText: !passwordVisibility,
-                                  icon: passwordVisibility ? Icons.visibility_off : Icons.visibility,
+                                  icon: passwordVisibility
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
                                   onIconTap: () {
                                     setState(() {
                                       passwordVisibility = !passwordVisibility;
@@ -132,8 +208,10 @@ class _AuthViewState extends State<AuthView> {
                                   },
                                 ),
                                 TextButton(
-                                  onPressed: () => Navigator.pushNamed(context, '/forgot_password'),
-                                  child: const Text('¿Olvidaste tu contraseña?'),
+                                  onPressed: () => Navigator.pushNamed(
+                                      context, '/forgot_password'),
+                                  child:
+                                      const Text('¿Olvidaste tu contraseña?'),
                                 ),
                                 const SizedBox(height: 20),
                               ],
@@ -144,59 +222,76 @@ class _AuthViewState extends State<AuthView> {
                             ),
                           ],
                         );
-                      }
-                    )
-                  : Column(
-                      children: [
-                        Column(
-                          spacing: 30,
-                          children: [
-                            InputField(
-                              label: 'Nombre de Usuario',
-                              hint: 'Nombre de Usuario',
-                              error: '',
-                              controller: _nameController,
-                            ),
-                            InputField(
-                              label: 'Nombre Completo',
-                              hint: 'Nombre Completo',
-                              error: '',
-                              controller: _fullNameController,
-                            ),
-                            InputField(
-                              label: 'Correo electrónico',
-                              hint: 'Correo electrónico',
-                              error: '',
-                              controller: _emailController
-                            ),
-                            DateTimePickerField(
-                              label: 'Fecha de nacimiento',
-                              value: _dateOfBirthController,
-                              onChange: (value) => setState(() {
-                                _dateOfBirthController = value;
-                              })
-                            ),
-                            InputField(
-                              label: 'Contraseña',
-                              hint: 'Contraseña',
-                              error: '',
-                              controller: _passwordControler
-                            ),
-                            InputField(
-                              label: 'Confirmar contraseña',
-                              hint: 'Confirmar contraseña',
-                              error: '',
-                              controller: _confirmPasswordController
-                            ),
-                            const SizedBox(height: 10),
-                            CustomButton(
-                              label: 'Registrarse',
-                              onPress: register
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      })
+                    : Column(
+                        children: [
+                          Column(
+                            spacing: 30,
+                            children: [
+                              InputField(
+                                label: 'Nombre de Usuario',
+                                hint: 'Nombre de Usuario',
+                                error: nameError,
+                                controller: _nameController,
+                                icon: Icons.person,
+                              ),
+                              InputField(
+                                label: 'Nombre Completo',
+                                hint: 'Nombre Completo',
+                                error: fullNameError,
+                                controller: _fullNameController,
+                                icon: Icons.person_add,
+                              ),
+                              InputField(
+                                  label: 'Correo electrónico',
+                                  hint: 'Correo electrónico',
+                                  error: emailError,
+                                  controller: _emailController,
+                                  icon: Icons.email),
+                              DateTimePickerField(
+                                  label: 'Fecha de nacimiento',
+                                  value: _dateOfBirthController,
+                                  onChange: (value) => setState(() {
+                                        _dateOfBirthController = value;
+                                      })),
+                              InputField(
+                                label: 'Contraseña',
+                                hint: 'Contraseña',
+                                error: passwordError,
+                                controller: _passwordControler,
+                                secureText: !passwordVisibility,
+                                icon: passwordVisibility
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                onIconTap: () {
+                                  setState(() {
+                                    passwordVisibility = !passwordVisibility;
+                                  });
+                                },
+                              ),
+                              InputField(
+                                label: 'Confirmar contraseña',
+                                hint: 'Confirmar contraseña',
+                                error: confirmPasswordError,
+                                controller: _confirmPasswordController,
+                                secureText: confirmPasswordVisibility,
+                                icon: confirmPasswordVisibility
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                onIconTap: () {
+                                  setState(() {
+                                    confirmPasswordVisibility =
+                                        !confirmPasswordVisibility;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                              CustomButton(
+                                  label: 'Registrarse', onPress: register),
+                            ],
+                          ),
+                        ],
+                      ),
               ),
             ],
           ),
