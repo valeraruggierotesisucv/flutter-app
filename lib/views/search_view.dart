@@ -1,7 +1,16 @@
+import 'package:eventify/data/repositories/comment_repository.dart';
+import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/follow_user_repository.dart';
+import 'package:eventify/data/repositories/user_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/view_models/event_details_model_view.dart';
+import 'package:eventify/view_models/profile_details_view_model.dart';
 import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/view_models/search_view_model.dart';
+import 'package:eventify/views/event_details_view.dart';
+import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
 import 'package:eventify/widgets/pills.dart';
 import 'package:eventify/widgets/tabs.dart';
@@ -176,9 +185,25 @@ class _SearchViewState extends State<SearchView> {
                                         fetchComments: widget.viewModel.loadComments,
                                         onPressUser: () {},
                                         onMoreDetails: () {
-                                          Navigator.pushNamed(
+                                          Navigator.push(
                                             context,
-                                            '/${AppScreens.eventDetails.name}',
+                                            MaterialPageRoute(
+                                              builder: (context) => EventDetailsView(
+                                                eventId: event.eventId, 
+                                                canEdit: false,
+                                                viewModel: EventDetailsViewModel(context: context, eventRepository: 
+                                                  EventRepository(
+                                                    Provider.of<ApiClient>(context, listen: false)
+                                                  ),
+                                                  commentRepository: CommentRepository(
+                                                    Provider.of<ApiClient>(context, listen: false)
+                                                  ),
+                                                  userRepository: UserRepository(
+                                                    Provider.of<ApiClient>(context, listen: false)
+                                                  )
+                                                  )
+                                              ),
+                                            ),
                                           );
                                         },
                                         onShare: () {},
@@ -229,10 +254,28 @@ class _SearchViewState extends State<SearchView> {
                           username: user.username,
                           profileImage: user.profileImage,
                           onPressUser: () {
-
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileDetailsView(
+                                  userId: user.userId,
+                                  viewModel: ProfileDetailsViewModel(
+                                    context: context,
+                                    userRepository: UserRepository(
+                                      Provider.of<ApiClient>(context, listen: false)
+                                    ),
+                                    eventRepository: EventRepository(
+                                      Provider.of<ApiClient>(context, listen: false)
+                                    ),
+                                    followUserRepository: FollowUserRepository(
+                                      Provider.of<ApiClient>(context, listen: false)
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
                           },
-                          variant: UserCardVariant.withButton,
-                          onPressButton: () {},
+                          variant: UserCardVariant.defaultCard,
                         )).toList(),
                       );
                     },
