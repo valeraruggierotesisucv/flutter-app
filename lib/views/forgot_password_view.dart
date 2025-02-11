@@ -77,7 +77,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                   ),
                                   const SizedBox(height: 20),
                                   Text(
-                                    t!.forgotPasswordViewDescription,
+                                    t.forgotPasswordViewDescription,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 16,

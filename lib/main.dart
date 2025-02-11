@@ -3,8 +3,8 @@ import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/services/push_notifications.dart';
 import 'package:eventify/view_models/search_view_model.dart';
-import 'package:eventify/views/add_view.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:eventify/views/onboarding_view.dart';
 import 'package:eventify/views/forgot_password_view.dart';
@@ -18,10 +18,10 @@ import 'package:eventify/views/edit_event_view.dart';
 import 'package:eventify/views/configuration_view.dart';
 import 'package:eventify/views/change_password_view.dart';
 import 'package:eventify/views/search_view.dart';
-import 'package:eventify/views/notifications_view.dart';
 import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/navigation.dart';
 import 'package:eventify/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +37,9 @@ void main() async {
   await Supabase.initialize(
       anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
       url: dotenv.env['SUPABASE_URL']!);
+
+  //await Firebase.initializeApp();
+ // await FirebaseApi().initNotifications(); 
 
   final apiClient = ApiClient(
     baseUrl: dotenv.env['API_URL']!,
@@ -104,16 +107,16 @@ class MyApp extends StatelessWidget {
 
             // AppTabs routes
             '/${AppTabs.home.name}': (context) => const MainView(),
-            '/${AppTabs.search.name}': (context) =>  SearchView(
+            '/${AppTabs.search.name}': (context) => SearchView(
                 viewModel: SearchViewModel(
-                  context: context,
-                  userRepository: UserRepository(
-                      Provider.of<ApiClient>(context, listen: false)),
-                  eventRepository: EventRepository(
-                      Provider.of<ApiClient>(context, listen: false)))),
+                    context: context,
+                    userRepository: UserRepository(
+                        Provider.of<ApiClient>(context, listen: false)),
+                    eventRepository: EventRepository(
+                        Provider.of<ApiClient>(context, listen: false)))),
             // '/${AppTabs.add.name}': (context) => const AddView(),
             // '/${AppTabs.notifications.name}': (context) =>
-                // const NotificationsView(),
+            // const NotificationsView(),
             '/${AppTabs.profile.name}': (context) => const ProfileView(),
           },
         ),

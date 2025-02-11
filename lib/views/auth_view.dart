@@ -1,5 +1,4 @@
 import 'package:eventify/services/auth_service.dart';
-import 'package:eventify/views/forgot_password_view.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/date_time_picker_field.dart';
 import 'package:eventify/widgets/icon_logo.dart';

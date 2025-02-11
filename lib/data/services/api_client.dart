@@ -10,7 +10,6 @@ import 'package:eventify/models/user_model.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:eventify/models/location_model.dart';
 

@@ -1,13 +1,11 @@
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/event_model.dart';
-import 'package:eventify/models/supabase_user_model.dart';
 import 'package:eventify/models/user_model.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/utils/command.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 class SearchViewModel extends ChangeNotifier {
