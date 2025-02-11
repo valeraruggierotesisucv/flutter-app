@@ -1,3 +1,4 @@
+import 'package:eventify/utils/command.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/event_card.dart';
@@ -59,13 +60,11 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                       userComment: userComment,
                       variant: EventCardVariant.details,
                       onPressUser: () {},
-                      onComment: (eventId, comment) async {
-                        debugPrint(eventId);
-                        debugPrint(comment);
-                      },
                       onShare: () {},
-                      fetchComments: () async => [],
                       handleLike: () {},
+                      
+                      onCommentSubmit: (message) {},
+                      
                     ),
                     if (widget.canEdit)
                       Padding(

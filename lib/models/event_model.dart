@@ -34,8 +34,9 @@ class EventModel {
     required this.categoryId,
     required this.musicUrl,
     required this.userId,
-    this.isLiked = false,
+    required this.isLiked,
   });
+
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
@@ -54,7 +55,7 @@ class EventModel {
       category: json['category'],
       categoryId: json['category_id'],
       musicUrl: json['music_url'],
-      isLiked: json['is_liked'] ?? false,
+      isLiked: json['is_liked'],
       userId: json['user_id'],
     );
   }

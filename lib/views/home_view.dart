@@ -3,6 +3,7 @@ import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/comments_section.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/event_card.dart';
 import 'package:flutter/material.dart';
@@ -78,53 +79,57 @@ class _HomeScreenState extends State<HomeScreen> {
               ListenableBuilder(
                 listenable: widget.viewModel,
                 builder: (context, child) {
+                  
                   if (widget.viewModel.load.running) {
                     return Loading();
                   }
+                  
                   return Column(
                     children: widget.viewModel.events
-                        .map((event) => EventCard(
-                              eventId: event.eventId,
-                              profileImage: event.profileImage,
-                              username: event.username,
-                              eventImage: event.eventImage,
-                              title: event.title,
-                              description: event.description,
-                              isLiked: event.isLiked,
-                              date: event.date,
-                              userComment: {},
-                              onPressUser: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfileDetailsView(
-                                      userId: event.userId, 
-                                    ),
+                        .map((event) {
+                          
+                          return EventCard(
+                            eventId: event.eventId,
+                            profileImage: event.profileImage,
+                            username: event.username,
+                            eventImage: event.eventImage,
+                            title: event.title,
+                            description: event.description,
+                            isLiked: event.isLiked,
+                            date: event.date,
+                            userComment: {},
+                            onPressUser: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfileDetailsView(
+                                    userId: event.userId, 
                                   ),
-                                );
-                              },
-                              onComment: (eventId, comment) async {
-                                debugPrint(eventId);
-                                debugPrint(comment);
-                              },                              
-                              onMoreDetails: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EventDetailsView(
-                                      eventId: event.eventId, 
-                                      canEdit: false,
-                                    ),
+                                ),
+                              );
+                            },
+                            fetchComments: widget.viewModel.loadComments,
+                            commentsListenable: widget.viewModel.commentsListenable,       
+                            onMoreDetails: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EventDetailsView(
+                                    eventId: event.eventId, 
+                                    canEdit: false,
                                   ),
-                                );
-                              }, 
-                              onShare: () {},
-                              fetchComments: () async => [],
-                              handleLike: () async {
-                                await widget.viewModel.handleLike.execute(event.eventId);
-                                
-                              },
-                            ))
+                                ),
+                              );
+                            }, 
+                            onShare: () {},
+                            handleLike: () async {
+                              await widget.viewModel.handleLike.execute(event.eventId);
+                            },
+                            onCommentSubmit: (message) async {
+                              await widget.viewModel.submitComment.execute(event.eventId, message);
+                            },
+                          );
+                        })
                         .toList(),
                   );
                 },

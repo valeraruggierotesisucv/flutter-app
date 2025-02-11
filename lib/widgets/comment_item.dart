@@ -5,13 +5,14 @@ class CommentItem extends StatelessWidget {
   final String username;
   final DateTime timeAgo;
   final String comment;
-
+  final String profileImage;
 
   const CommentItem({
     super.key,
     required this.username,
     required this.timeAgo,
     required this.comment,
+    required this.profileImage,
   });
 
   @override
@@ -19,13 +20,15 @@ class CommentItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
-        
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundColor: Colors.grey[300],
-            child: Text(username[0].toUpperCase()),
+            backgroundImage: NetworkImage(profileImage),
+            onBackgroundImageError: (_, __) {
+              // Fallback to initial if image fails to load
+              Text(username[0].toUpperCase());
+            },
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -10,8 +10,8 @@ class UserModel {
   final int followingCounter;
   int? eventsCounter;
 
-  UserModel(
-      {required this.userId,
+  UserModel({
+      required this.userId,
       required this.username,
       required this.fullname,
       required this.email,

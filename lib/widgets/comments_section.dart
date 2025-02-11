@@ -1,3 +1,5 @@
+import 'package:eventify/models/comment_model.dart';
+import 'package:eventify/utils/command.dart';
 import 'package:flutter/material.dart';
 import 'comment_item.dart';
 import 'comment_input.dart';
@@ -8,20 +10,20 @@ class User {
   User({required this.username, required this.imageUrl});
 }
 
+void showCommentsModal(
+  BuildContext context, 
+  String eventId,
+  Command1<void, String> fetchComments,
+  ValueNotifier<List<CommentModel>> commentsListenable,
+  Function(String) onSubmit,
+) {
+  
+  
+  fetchComments.execute(eventId);
 
-class Comment {
-  final String username;
-  final DateTime timeAgo;
-  final String message;
-
-
-  Comment({required this.username, required this.timeAgo, required this.message});
-}
-
-
-void showCommentsModal(BuildContext context, List<Comment> comments, User userInfo, Function(Comment) onSubmit) {
   showModalBottomSheet(
     context: context,
+    
     useSafeArea: true,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
@@ -54,37 +56,43 @@ void showCommentsModal(BuildContext context, List<Comment> comments, User userIn
               ),
               const Text("Comments"),
               Expanded(
-                child: ListView.builder(
-                  itemCount: comments.length,
-                  itemBuilder: (ctx, index) => CommentItem(
-                    username: comments[index].username,
-                    timeAgo: comments[index].timeAgo,
-                    comment: comments[index].message,
-                  ),
+                child: ListenableBuilder(
+                  listenable: fetchComments,
+                  builder: (context, child) {
+                    if(fetchComments.running) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return ValueListenableBuilder<List<CommentModel>>(
+                      valueListenable: commentsListenable,
+                      builder: (context, latestComments, _) {
+                        return latestComments.isEmpty
+                            ? const Center(
+                                child: Text('No comments yet'),
+                              )
+                            : ListView.builder(
+                                itemCount: latestComments.length,
+                                itemBuilder: (ctx, index) => CommentItem(
+                                  username: latestComments[index].username,
+                                  timeAgo: latestComments[index].timestamp,
+                                  comment: latestComments[index].comment,
+                                  profileImage: latestComments[index].profileImage,
+                                ),
+                              );
+                      },
+                    );
+                  },
                 ),
               ),
-
               CommentInput(
                 onSubmit: (message) async {
                   try {
-                    await onSubmit(Comment(
-                      username: userInfo.username, 
-                      timeAgo: DateTime.now(), 
-                      message: message
-                    ));
-                    setState(() {
-                      comments.add(Comment(
-                        username: userInfo.username, 
-                        timeAgo: DateTime.now(), 
-                        message: message
-                      ));
-
-                  });
+                    
+                    await onSubmit(message);
+                    
                   } catch (e) {
-                    print("Error submitting comment: $e");
+                    debugPrint("Error submitting comment: $e");
                   }
                 },
-
               ),
             ],
           ),

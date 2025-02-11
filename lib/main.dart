@@ -1,3 +1,4 @@
+import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
@@ -127,8 +128,11 @@ class MyApp extends StatelessWidget {
                       Provider.of<ApiClient>(context, listen: false)),
                   eventRepository: EventRepository(
                       Provider.of<ApiClient>(context, listen: false)),
+                  commentRepository: CommentRepository(
+                      Provider.of<ApiClient>(context, listen: false)),
                   categoryRepository: CategoryRepository(
-                      Provider.of<ApiClient>(context, listen: false)))),
+                      Provider.of<ApiClient>(context, listen: false)))
+            ),
             // '/${AppTabs.add.name}': (context) => const AddView(),
             // '/${AppTabs.notifications.name}': (context) =>
                 // const NotificationsView(),

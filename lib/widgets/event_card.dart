@@ -1,4 +1,9 @@
+import 'package:eventify/models/comment_model.dart';
+import 'package:eventify/utils/command.dart';
 import 'package:eventify/widgets/audio_player.dart';
+import 'package:eventify/widgets/comment_input.dart';
+import 'package:eventify/widgets/comment_item.dart';
+import 'package:eventify/widgets/comments_section.dart';
 import 'package:flutter/material.dart';
 import 'custom_chip.dart';
 import 'display_input.dart';
@@ -9,21 +14,6 @@ import 'social_interactions.dart';
 enum EventCardVariant {
   defaultCard,
   details,
-}
-
-// Models
-class Comment {
-  final String username;
-  final String comment;
-  final String profileImage;
-  final DateTime timestamp;
-
-  Comment({
-    required this.username,
-    required this.comment,
-    required this.profileImage,
-    required this.timestamp,
-  });
 }
 
 // Widgets auxiliares
@@ -146,12 +136,15 @@ class EventCard extends StatefulWidget {
   final EventCardVariant variant;
   final Map<String, String> userComment;
   final VoidCallback onPressUser;
-  final Future<void> Function(String eventId, String comment) onComment;
+  
   final VoidCallback onShare;
   final VoidCallback? onMoreDetails;
-  final Future<List<Comment>> Function() fetchComments;
   final String? musicUrl;
   final VoidCallback handleLike;
+  final Function(String) onCommentSubmit;
+
+  final Command1<void, String>? fetchComments;
+  final ValueNotifier<List<CommentModel>>? commentsListenable;
 
   const EventCard({
     super.key,
@@ -171,12 +164,14 @@ class EventCard extends StatefulWidget {
     this.variant = EventCardVariant.defaultCard,
     required this.userComment,
     required this.onPressUser,
-    required this.onComment,
     required this.onShare,
     this.onMoreDetails,
-    required this.fetchComments,
     this.musicUrl,
     required this.handleLike,
+
+    required this.onCommentSubmit,
+    this.fetchComments,
+    this.commentsListenable,
   });
 
   @override
@@ -206,7 +201,13 @@ class _EventCardState extends State<EventCard> {
         SocialInteractions(
           isLiked: widget.isLiked,
           onLike: widget.handleLike,
-          onComment: () => debugPrint("OnComment"),
+          onComment: () {
+            if(widget.fetchComments != null) {
+              showCommentsModal(context, widget.eventId, widget.fetchComments!, widget.commentsListenable!, (comment) {
+                widget.onCommentSubmit(comment);
+              });
+            }
+          },
           onShare: widget.onShare,
         ),
         Padding(
