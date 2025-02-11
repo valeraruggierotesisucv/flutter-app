@@ -26,6 +26,7 @@ import 'package:eventify/views/search_view.dart';
 import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/navigation.dart';
 import 'package:eventify/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +47,15 @@ void main() async {
   final apiClient = ApiClient(
     baseUrl: dotenv.env['API_URL']!,
   );
+
+  try {
+    await Firebase.initializeApp();
+    await FirebaseApi().initNotifications(); 
+    print("Firebase inicializado correctamente.");
+  } catch (e) {
+    print("Error al inicializar Firebase: $e");
+    // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario o cerrando la aplicación.
+  }
 
   runApp(
     MultiProvider(
@@ -88,12 +98,10 @@ class MyApp extends StatelessWidget {
           routes: {
             // AppScreens routes
             '/${AppScreens.auth.name}': (context) => AuthView(
-              viewModel: AuthViewModel(
-                context: context, 
-                userRepository: UserRepository(
-                  Provider.of<ApiClient>(context, listen: false))
-                )
-              ),
+                viewModel: AuthViewModel(
+                    context: context,
+                    userRepository: UserRepository(
+                        Provider.of<ApiClient>(context, listen: false)))),
             '/${AppScreens.onboarding.name}': (context) =>
                 const OnboardingView(),
             '/${AppScreens.forgotPassword.name}': (context) =>
@@ -121,7 +129,7 @@ class MyApp extends StatelessWidget {
 
             // AppTabs routes
             '/${AppTabs.home.name}': (context) => const MainView(),
-            '/${AppTabs.search.name}': (context) =>  SearchView(
+            '/${AppTabs.search.name}': (context) => SearchView(
                 viewModel: SearchViewModel(
                   context: context,
                   userRepository: UserRepository(

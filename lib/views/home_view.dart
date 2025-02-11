@@ -3,6 +3,7 @@ import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/services/auth_service.dart';
+import 'package:eventify/services/push_notificatins.dart';
 import 'package:eventify/view_models/event_details_model_view.dart';
 import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/views/event_details_view.dart';
@@ -34,7 +35,6 @@ class HomeView extends StatelessWidget {
   }
 }
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.viewModel});
 
@@ -56,18 +56,15 @@ class _HomeScreenState extends State<HomeScreen> {
     widget.viewModel.load.execute();
   }
 
-
-
- @override
+  @override
   void didUpdateWidget(covariant HomeScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     oldWidget.viewModel.load.removeListener(_onResult);
     widget.viewModel.load.addListener(_onResult);
     oldWidget.viewModel.handleLike.removeListener(_onLike);
     widget.viewModel.handleLike.addListener(_onLike);
-
   }
-  
+
   @override
   void dispose() {
     widget.viewModel.load.removeListener(_onResult);
