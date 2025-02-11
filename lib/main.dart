@@ -127,11 +127,12 @@ class MyApp extends StatelessWidget {
                   userRepository: UserRepository(
                       Provider.of<ApiClient>(context, listen: false)),
                   eventRepository: EventRepository(
-                      Provider.of<ApiClient>(context, listen: false))),
-                  categoryRepository: CategoryRepository(
-                      Provider.of<ApiClient>(context, listen: false))),
+                      Provider.of<ApiClient>(context, listen: false)),
                   commentRepository: CommentRepository(
-                      Provider.of<ApiClient>(context, listen: false)))),
+                      Provider.of<ApiClient>(context, listen: false)),
+                  categoryRepository: CategoryRepository(
+                      Provider.of<ApiClient>(context, listen: false)))
+            ),
             // '/${AppTabs.add.name}': (context) => const AddView(),
             // '/${AppTabs.notifications.name}': (context) =>
                 // const NotificationsView(),

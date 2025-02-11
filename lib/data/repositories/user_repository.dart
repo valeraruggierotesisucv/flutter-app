@@ -42,17 +42,5 @@ class UserRepository {
     return result;
   }
 
-  Future<Result<UserModel>> getUser(String userId) async {
-    try {
-      final result = await _apiClient.getUser(userId);
-      print("getUser");
-      print(result);
-      return result;
-    } on Exception catch (error) {
-      return Result.error(error);
-    }
-
-  }
-
 
 } 
