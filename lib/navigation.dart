@@ -7,7 +7,7 @@ import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/search_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:eventify/views/add_view.dart';
+import 'package:eventify/views/add_event_view.dart';
 import 'package:eventify/views/search_view.dart';
 import 'package:eventify/views/notifications_view.dart';
 import 'package:eventify/views/profile_view.dart';

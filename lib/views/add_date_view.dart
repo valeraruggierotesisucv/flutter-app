@@ -1,5 +1,5 @@
 //import 'package:eventify/widgets/calendar.dart';
-import 'package:eventify/views/add_view.dart';
+import 'package:eventify/views/add_event_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:flutter/material.dart';

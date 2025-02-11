@@ -46,6 +46,7 @@ dependencies:
   file_picker: ^8.3.1
   flutter_sound: ^9.22.0
   permission_handler: ^11.3.1
+  location: ^5.0.0
 
 dev_dependencies:
   flutter_test:

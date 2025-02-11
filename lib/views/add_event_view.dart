@@ -11,6 +11,7 @@ import 'package:eventify/widgets/display_input.dart';
 import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
 
 import 'dart:io';
 
@@ -66,6 +67,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _musicUri;
   String? _latitude;
   String? _longitude;
+
+  final Location location = Location();
 
   @override
   void initState() {
@@ -374,15 +377,53 @@ class _AddViewScreenState extends State<AddViewScreen> {
           );
   }
 
+  Future<void> _getLocation() async {
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
+
+    // Check if location services are enabled
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    // Check if permission is granted
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    // Get location
+    try {
+      locationData = await location.getLocation();
+      setState(() {
+        _latitude = locationData.latitude?.toString();
+        _longitude = locationData.longitude?.toString();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error al obtener la ubicación')),
+      );
+    }
+  }
+
   Widget _addLocation({String? latitude, String? longitude}) {
     return (latitude != null && longitude != null)
         ? DisplayInput(
-            label: "CATEGORIA", data: _locationPills(latitude, longitude))
+            label: "UBICACIÓN", 
+            data: _locationPills(latitude, longitude))
         : CustomInput(
             label: "UBICACIÓN",
             placeholder: "Agrega ubicación",
             variant: InputVariant.arrow,
-            onPress: () => {},
+            onPress: _getLocation,
           );
   }
 
@@ -395,8 +436,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
     _viewModel.endsAt = _endsAt;
     _viewModel.categoryId = _categoryId;
     _viewModel.musicUri = _musicUri;
-    _viewModel.latitude = "30"; // TO-DO: falta geolocation
-    _viewModel.longitude = "60"; // TO-DO: falta geoLocation
+    _viewModel.latitude = _latitude;
+    _viewModel.longitude = _longitude;
 
     debugPrint("[add_view] Creando evento...");
     debugPrint("music--> $_music, $_musicUri");
