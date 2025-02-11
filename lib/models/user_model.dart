@@ -3,12 +3,12 @@ class UserModel {
   final String username;
   final String fullname;
   final String email;
-  final String? profileImage;
+  String? profileImage;
   final DateTime birthDate;
   final String? biography;
   final int followersCounter;
   final int followingCounter;
-  final int eventsCounter;
+  int? eventsCounter;
 
   UserModel(
       {required this.userId,
@@ -20,8 +20,9 @@ class UserModel {
       this.biography,
       required this.followersCounter,
       required this.followingCounter,
+      this.eventsCounter
+      });
 
-      required this.eventsCounter});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -34,6 +35,6 @@ class UserModel {
         biography: json['biography'],
         followersCounter: json['followersCounter'],
         followingCounter: json['followingCounter'],
-        eventsCounter: json['eventsCounter']);
+        eventsCounter: json['eventsCounter'] ?? 0);
   }
 }

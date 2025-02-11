@@ -1,22 +1,31 @@
+import 'package:eventify/data/repositories/user_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/view_models/edit_profile_view_model.dart';
+import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/views/configuration_view.dart';
 import 'package:eventify/views/edit_profile_view.dart';
 import 'package:eventify/views/followed_view.dart';
 import 'package:eventify/views/folowers_view.dart';
+import 'package:eventify/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
+import 'package:provider/provider.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  const ProfileView({super.key, required this.viewModel});
+
+  final ProfileViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-          builder: (context) => const ProfileHomeScreen(),
+            builder: (context) => ProfileHomeScreen( viewModel: viewModel ),
         );
       },
     );
@@ -24,7 +33,8 @@ class ProfileView extends StatelessWidget {
 }
 
 class ProfileHomeScreen extends StatefulWidget {
-  const ProfileHomeScreen({super.key});
+  final ProfileViewModel viewModel;
+  const ProfileHomeScreen({super.key, required this.viewModel});
 
   @override
   State createState() => _ProfileHomeScreenState();
@@ -32,79 +42,110 @@ class ProfileHomeScreen extends StatefulWidget {
 
 class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
   final authService = AuthService();
-  // Lista de eventos de ejemplo
-  List<Event> sampleEvents = [
-    Event(id: '1', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '1', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '2', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '3', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '4', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-    Event(id: '5', imageUrl: 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg'),
-  ];
-  bool isLoading = false;
+  
+  @override
+  void initState() {
+    super.initState();
+    final userId = Provider.of<UserProvider>(context, listen: false).user?.id;
+    if (userId != null) {
+      widget.viewModel.initLoad.execute(userId);
+    }
+    widget.viewModel.initLoad.addListener(_onLoad);
+    
+  }
+
+  @override
+  void dispose() {
+    widget.viewModel.initLoad.removeListener(_onLoad);
+    super.dispose();
+  }
+
+  void _onLoad() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppHeader(),
       backgroundColor: Colors.white,
-      body: 
-        Column(
-          children: [
-            ProfileCard(
-              username: "John Doe",
-              biography: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-              events: 0,
-              followers: 0,
-              following: 0,
-              onFollowers: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FollowersView()),
-                );
-              },
-              onFollowed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FollowedView()),
-                );
-              },
-              onConfigureProfile: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ConfigurationView()),
-                );
-              },
-              onEditProfile: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const EditProfileView()),
-                );
-              },
-            ),
-            Expanded( 
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  height: 400, 
-                  child: EventThumbnailList(
-                    events: sampleEvents,
-                    onEventTap: (String eventId) {
-                      debugPrint("Evento tapped: $eventId");
-                    },
-                  ),
+      body: ListenableBuilder(
+        listenable: widget.viewModel,
+        builder: (context, _) {
+          if (widget.viewModel.initLoad.running) {
+            return const Center(child: Loading());
+          }
+
+          final user = widget.viewModel.user;
+          if (user == null) {
+            return const Center(
+              child: Text('Failed to load profile'),
+            );
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                ProfileCard(
+                  username: user.fullname,
+                  biography: user.biography ?? "",
+                  events: user.eventsCounter ?? 0,
+                  followers: user.followersCounter,
+                  following: user.followingCounter,
+                  profileImage: user.profileImage,
+                  onFollowers: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FollowersView()),
+                    );
+                  },
+                  onFollowed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FollowedView()),
+                    );
+                  },
+                  onConfigureProfile: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ConfigurationView()),
+                    );
+                  },
+                  onEditProfile: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileView(
+                          viewModel: EditProfileViewModel(
+                            context: context,
+                            userRepository: UserRepository(
+                              Provider.of<ApiClient>(context, listen: false)
+                            )
+                          ),
+                          onProfileUpdated: () {
+                            final userId = Provider.of<UserProvider>(context, listen: false).user?.id;
+                            if (userId != null) {
+                              widget.viewModel.initLoad.execute(userId);
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ),
+                EventThumbnailList(
+                  events: widget.viewModel.events,
+                  onEventTap: (String eventId) {
+                    debugPrint("Event tapped: $eventId");
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
+      ),
     );
   }
 }

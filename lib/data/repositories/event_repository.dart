@@ -1,5 +1,6 @@
 import 'package:eventify/models/event_model.dart';
 import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/models/event_summary_model.dart';
 import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/utils/result.dart' show Result, Ok;
 
@@ -10,7 +11,7 @@ class EventRepository {
   List<EventModel>? _cachedEvents;
 
 
-  Future<Result<List<EventModel>>> getEvents(String userId) async {
+  Future<Result<List<EventModel>>> getHomeEvents(String userId) async {
     if (_cachedEvents == null) {
       final result = await _apiClient.getEvents(userId);
       
@@ -62,5 +63,15 @@ class EventRepository {
       endsAt: endsAt,
       eventMusic: eventMusic,
     );
+  }
+
+  Future<Result<List<EventSummaryModel>>> getUserEvents(String userId) async {
+    try {
+      final result = await _apiClient.getUserEvents(userId);
+      print(result);
+      return result;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
   }
 } 

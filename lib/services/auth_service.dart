@@ -67,4 +67,13 @@ class AuthService {
   SupabaseUserModel? getCurrentUser(BuildContext context) {
     return Provider.of<UserProvider>(context, listen: false).user;
   }
+
+  Future<void> changePassword(String newPassword, String confirmPassword) async {
+    
+    final response = await _supabaseClient.auth.updateUser(
+      UserAttributes(
+      password: newPassword,
+    )
+    );
+  }
 }

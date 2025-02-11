@@ -3,6 +3,7 @@ import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/view_models/add_event_view_model.dart';
 import 'package:eventify/view_models/home_view_model.dart';
+import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/search_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/views/add_view.dart';
@@ -72,7 +73,19 @@ class _MainViewState extends State<MainView> {
         ),
       ),
     ),
-    const ProfileView(),
+    Builder(
+      builder: (context) => ProfileView(
+        viewModel: ProfileViewModel(
+          context: context,
+          userRepository: UserRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
+          eventRepository: EventRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
+        ),
+      ),
+    ),
   ];
 
   void _onItemTapped(int index) {
