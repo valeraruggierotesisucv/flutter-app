@@ -1,4 +1,9 @@
+import 'package:eventify/data/repositories/comment_repository.dart';
+import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/user_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/services/auth_service.dart';
+import 'package:eventify/view_models/event_details_model_view.dart';
 import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/views/profile_details_view.dart';
@@ -7,13 +12,16 @@ import 'package:eventify/widgets/comments_section.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/event_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key,
-  required this.viewModel,
+  const HomeView({
+    super.key,
+    required this.viewModel,
   }); 
 
   final HomeViewModel viewModel;
+  
   @override
   Widget build(BuildContext context) {
     return Navigator(
@@ -63,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     widget.viewModel.load.removeListener(_onResult);
+    widget.viewModel.handleLike.removeListener(_onLike);
     super.dispose();
   }
 
@@ -117,6 +126,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   builder: (context) => EventDetailsView(
                                     eventId: event.eventId, 
                                     canEdit: false,
+                                    viewModel: EventDetailsViewModel(context: context, eventRepository: 
+                                      EventRepository(
+                                        Provider.of<ApiClient>(context, listen: false)
+                                      ),
+                                      commentRepository: CommentRepository(
+                                        Provider.of<ApiClient>(context, listen: false)
+                                      ),
+                                      userRepository: UserRepository(
+                                        Provider.of<ApiClient>(context, listen: false)
+                                      )
+                                      )
                                   ),
                                 ),
                               );
@@ -142,11 +162,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onResult() {
-    
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _onLike() {
-    
+    if (mounted) {
+      setState(() {});
+      widget.viewModel.load.execute();
+    }
   }
 
 }

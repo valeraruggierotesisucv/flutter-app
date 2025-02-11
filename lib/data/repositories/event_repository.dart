@@ -74,4 +74,9 @@ class EventRepository {
       return Result.error(error);
     }
   }
+
+  Future<Result<EventModel>> getEventDetails(String eventId, String userId) async {
+    final result = await _apiClient.getEventDetails(eventId, userId);
+    return result;
+  }
 } 
