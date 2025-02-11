@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:eventify/models/category_model.dart';
 import 'package:eventify/models/event_summary_model.dart';
 import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/social_interactions.dart';
@@ -474,6 +475,37 @@ class ApiClient {
         }));
       } else {
         return Result.error(HttpException("Failed to update profile: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<List<CategoryModel>>> getCategories() async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/categories');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        
+        return Result.ok(jsonData.map((element) => CategoryModel.fromJson({
+          'id': element['categoryId'],
+          'name_es': element['nameEs'],
+          'name_en': element['nameEn'],
+          'description': element['description'],
+        })).toList());
+        
+      } else {
+        return Result.error(HttpException("Failed to get categories: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);

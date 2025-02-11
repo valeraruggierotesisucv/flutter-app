@@ -1,3 +1,4 @@
+import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
@@ -45,6 +46,9 @@ class _MainViewState extends State<MainView> {
             Provider.of<ApiClient>(context, listen: false),
           ),
           eventRepository: EventRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          ),
+          categoryRepository: CategoryRepository(
             Provider.of<ApiClient>(context, listen: false),
           ),
         ),

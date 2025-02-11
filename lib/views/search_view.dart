@@ -9,6 +9,7 @@ import 'package:eventify/widgets/event_card.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/user_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:async';
 
 class SearchView extends StatefulWidget {
   final SearchViewModel viewModel;
@@ -24,35 +25,7 @@ class _SearchViewState extends State<SearchView> {
   bool _isLoading = false;
   int selectedTab = 1;
   String query = '';
-
-
-  Future<List<Category>> fetchCategories() async {
-    return [
-      Category(id: '1', label: 'Fiesta'),
-      Category(id: '2', label: 'Concierto'),
-      Category(id: '3', label: 'Deporte'),
-      Category(id: '4', label: 'Cultura'),
-      Category(id: '5', label: 'Fiesta'),
-      Category(id: '6', label: 'Concierto'),
-      Category(id: '7', label: 'Deporte'),
-      Category(id: '8', label: 'Cultura'),
-    ];
-  }
-
-  Future<List<dynamic>> fetchUsers() async {
-    return [
-      {
-        'id': '1',
-        'name': 'Usuario 1',
-        'image': 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
-      },
-      {
-        'id': '2',
-        'name': 'Usuario 2',
-        'image': 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
-      },
-    ];
-  }
+  Timer? _debounce;
 
   
   @override
@@ -60,6 +33,7 @@ class _SearchViewState extends State<SearchView> {
     super.initState();
     widget.viewModel.searchEvents.addListener(_onSearch);
     widget.viewModel.searchUsers.addListener(_onSearch);
+    widget.viewModel.getCategories.execute();
   }
 
   @override
@@ -76,22 +50,27 @@ class _SearchViewState extends State<SearchView> {
     _searchController.dispose();
     widget.viewModel.searchEvents.removeListener(_onSearch);
     widget.viewModel.searchUsers.removeListener(_onSearch);
+    _debounce?.cancel();
     super.dispose();
   }
 
   void _performSearch(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
     
-    setState(() {
-      this.query = query;
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        this.query = query;
+      });
+      
+      switch (selectedTab) {
+        case 1:
+          widget.viewModel.searchEvents.execute(query);
+          break;
+        case 2:
+          widget.viewModel.searchUsers.execute(query);
+          break;
+      }
     });
-    switch (selectedTab) {
-      case 1:
-        widget.viewModel.searchEvents.execute(query);
-        break;
-      case 2:
-        widget.viewModel.searchUsers.execute(query);
-        break;
-    }
   }
   final tabs = [
     TabItem(id: 1, title: 'Eventos'),
@@ -102,7 +81,11 @@ class _SearchViewState extends State<SearchView> {
     setState(() {
       selectedTab = id;
     });
-    widget.viewModel.searchUsers.execute(query);
+    if (id == 1) {
+      widget.viewModel.searchEvents.execute(query);
+    } else {
+      widget.viewModel.searchUsers.execute(query);
+    }
   }
   
 
@@ -129,12 +112,16 @@ class _SearchViewState extends State<SearchView> {
                     
                     children: [
                       Container(
-                        child: FutureBuilder(
-                          future: fetchCategories(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) return const SizedBox();
+                        child: ListenableBuilder(
+                          listenable: widget.viewModel.getCategories,
+                          builder: (context, child) {
+                            if (widget.viewModel.getCategories.running) return const SizedBox();
                             return Pills(
-                              categories: snapshot.data!.map((category) => category).toList()
+                              categories: widget.viewModel.categories,
+                              selectedCategories: widget.viewModel.selectedCategories,
+                              onSelectCategories: (categoryIds) {
+                                  widget.viewModel.selectCategory(categoryIds);
+                              },
                             );
                           },
                         ),
@@ -143,13 +130,13 @@ class _SearchViewState extends State<SearchView> {
                       _isLoading 
                         ? const Center(child: CircularProgressIndicator())
                         : ListenableBuilder(
-                            listenable: widget.viewModel.searchEvents,
+                            listenable: widget.viewModel,
                             builder: (context, child) {
                               if (widget.viewModel.searchEvents.running) {
                                 return Loading();
                               }
                               
-                              if (query.isEmpty) {
+                              if (query.isEmpty && widget.viewModel.selectedCategories.isEmpty) {
                                 return Center(
                                   child: Text(
                                     t.searchViewInitialEvents,
@@ -240,6 +227,9 @@ class _SearchViewState extends State<SearchView> {
   }
 
   void _onSearch() {
-    
+    setState(() {
+      _isLoading = widget.viewModel.searchEvents.running || 
+                   widget.viewModel.searchUsers.running;
+    });
   }
 }
