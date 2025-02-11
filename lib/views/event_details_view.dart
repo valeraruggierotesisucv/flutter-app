@@ -11,6 +11,7 @@ class EventDetailsView extends StatefulWidget {
   final bool canEdit; 
   final EventDetailsViewModel viewModel;
 
+
   const EventDetailsView({
     super.key, 
     required this.eventId,
@@ -41,7 +42,9 @@ class _EventDetailsViewState extends State<EventDetailsView> {
     return Scaffold(
       appBar: AppHeader(
         title: "Event Details",
-        goBack: () => Navigator.pop(context),
+        goBack: () {
+          Navigator.pop(context);
+        },
       ),
       body: SafeArea(
         child: isLoading
@@ -74,13 +77,15 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           userComment: userComment,
                           variant: EventCardVariant.details,
                           onPressUser: () {},
-                          onComment: (eventId, comment) async {
-                            debugPrint(eventId);
-                            debugPrint(comment);
-                          },
+                          fetchComments: widget.viewModel.loadComments,
+                          commentsListenable: widget.viewModel.commentsListenable,
+                          onCommentSubmit: (message) async {
+                              await widget.viewModel.submitComment.execute(widget.eventId, message);
+                            },
                           onShare: () {},
-                          fetchComments: () async => [],
-                          handleLike: () {},
+                          handleLike: () async {
+                            await widget.viewModel.handleLike.execute(widget.eventId);
+                          },
                         );
                       },
                     ),
