@@ -1,5 +1,6 @@
 import 'package:eventify/models/comment_model.dart';
 import 'package:eventify/utils/command.dart';
+import 'package:eventify/utils/date_formatter.dart';
 import 'package:eventify/widgets/audio_player.dart';
 import 'package:eventify/widgets/comment_input.dart';
 import 'package:eventify/widgets/comment_item.dart';
@@ -127,12 +128,12 @@ class EventCard extends StatefulWidget {
   final String title;
   final String description;
   final bool isLiked;
-  final String date;
+  final DateTime date;
   final String? latitude;
   final String? longitude;
-  final String? startsAt;
+  final DateTime? startsAt;
   final String? category;
-  final String? endsAt;
+  final DateTime? endsAt;
   final EventCardVariant variant;
   final Map<String, String> userComment;
   final VoidCallback onPressUser;
@@ -226,7 +227,7 @@ class _EventCardState extends State<EventCard> {
               ),
               if (widget.variant == EventCardVariant.defaultCard)
                 CustomChip(
-                  label: widget.date,
+                  label: formatDateToLocalString(widget.date),
                   variant: ChipVariant.defaultChip,
                 ),
             ],
@@ -261,9 +262,9 @@ class _EventCardState extends State<EventCard> {
           DisplayEvent(
             latitude: widget.latitude,
             longitude: widget.longitude,
-            startsAt: widget.startsAt,
-            endsAt: widget.endsAt,
-            date: widget.date,
+            startsAt: formatTime(widget.startsAt!),
+            endsAt: formatTime(widget.endsAt!),
+            date: formatDateToLocalString(widget.date),
             category: widget.category,
             musicUrl: widget.musicUrl,
           ),

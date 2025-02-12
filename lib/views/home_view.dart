@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: event.title,
                             description: event.description,
                             isLiked: event.isLiked,
-                            date: event.date,
+                            date: DateTime.parse(event.date),
                             userComment: {},
                             onPressUser: () {
                               Navigator.push(
