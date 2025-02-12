@@ -50,11 +50,11 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<Result<List<EventModel>>> _loadEvents() async {
     try {
-        
-        final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
-        if (userId == null) {
-          return Result.error(Exception('User not logged in'));
-        }
+      final userId =
+          Provider.of<UserProvider>(_context, listen: false).user?.id;
+      if (userId == null) {
+        return Result.error(Exception('User not logged in'));
+      }
 
         final result = await _eventRepository.getHomeEvents(userId);
         switch (result) {
@@ -73,18 +73,17 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<Result<void>> _handleLike(String eventId) async {
     try {
-      final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
+      final userId =
+          Provider.of<UserProvider>(_context, listen: false).user?.id;
       if (userId == null) {
         return Result.error(Exception('User not logged in'));
       }
 
-      final result = await _eventRepository.likeEvent(
-        eventId: eventId, 
-        userId: userId
-      );
+      final result =
+          await _eventRepository.likeEvent(eventId: eventId, userId: userId);
 
       final event = _events.firstWhere((e) => e.eventId == eventId);
-      
+
       switch (result) {
         case Ok():
           event.isLiked = !event.isLiked;

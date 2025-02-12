@@ -50,9 +50,9 @@ class NotificationsView extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final notification = viewModel.notifications[index];
                   return NotificationItem(
-                    user: notification.username,
+                    user: notification.username ?? "No disponible",
                     timestamp: notification.createdAt,
-                    userAvatar: notification.profileImage,
+                    userAvatar: notification.profileImage ?? "No disponible",
                     type: notification.type,
                     eventImage: notification.eventImage ?? "https://placehold.co/600x400/png",
                     onFollow: () => debugPrint("SEGUIR"),

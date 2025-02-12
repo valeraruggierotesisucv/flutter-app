@@ -20,20 +20,29 @@ class NotificationRepository {
       'title': title,
       'body': body,
     };
-    await _apiClient.sendNotification(toNotificationToken, data);
-    return Result.ok(null);
+
+    return await _apiClient.sendNotification(toNotificationToken, data);
   }
 
-  Future<String> getNotificationToken(String userId) async {
+  Future<String?> getNotificationToken(String userId) async {
     final result = await _apiClient.getNotificationToken(userId);
-    debugPrint("[notification_repository]: $result"); 
+    debugPrint("[notification_repository]: $result");
     return result;
   }
 
-  Future<Result<void>> updateNotificationToken(String userId, String notificationToken) async {
-    final result = await _apiClient.updateNotificationToken(userId, notificationToken);
-    
+  Future<Result<void>> updateNotificationToken(
+      String userId, String notificationToken) async {
+    final result =
+        await _apiClient.updateNotificationToken(userId, notificationToken);
+
     return result;
   }
 
+  Future<Result<void>> createNotification(
+      NotificationModel notificationData) async {
+    final result = await _apiClient.createNotification(notificationData);
+
+    debugPrint("result $result");
+    return result; 
+  }
 }

@@ -13,35 +13,31 @@ class FirebaseApi {
   final _firebaseMesagging = FirebaseMessaging.instance;
   String? fCMToken;
 
-  Future<void> sendPushNotification(
-      String token, String title, String body) async {
-    final url =
-        'https://api-production-37c6.up.railway.app/api/push-notifications/$token';
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'title': title,
-        'body': body,
-      }),
-    );
-    debugPrint("token-->$fCMToken");
-    if (response.statusCode == 200) {
-      debugPrint("Notificación enviada correctamente.");
-    } else {
-      debugPrint("Error al enviar la notificación: ${response.body}");
-    }
+  void setupFirebaseListeners() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint("📲 [Foreground] Notificación recibida!");
+      debugPrint("🎯 Title: ${message.notification?.title}");
+      debugPrint("📝 Body: ${message.notification?.body}");
+      debugPrint("📦 Payload: ${message.data}");
+
+      // Aquí podrías mostrar una notificación local con flutter_local_notifications
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      debugPrint("🚀 [onMessageOpenedApp] La notificación fue tocada!");
+    });
+
+    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
   }
 
   Future<String> initNotifications() async {
     try {
       await _firebaseMesagging.requestPermission();
       String? fCMToken = await _firebaseMesagging.getToken();
-      
+
       if (fCMToken != null) {
         debugPrint("Token de notificación: $fCMToken");
+        setupFirebaseListeners();
         FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
         return fCMToken;
       } else {
@@ -56,7 +52,7 @@ class FirebaseApi {
   Future<String> getFirebaseToken() async {
     try {
       String? fCMToken = await _firebaseMesagging.getToken();
-      
+
       if (fCMToken != null) {
         debugPrint("Token de notificación: $fCMToken");
         return fCMToken;
@@ -69,4 +65,3 @@ class FirebaseApi {
     }
   }
 }
-

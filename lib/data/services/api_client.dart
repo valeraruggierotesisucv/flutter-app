@@ -10,6 +10,7 @@ import 'package:eventify/models/event_summary_model.dart';
 import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/models/user_model.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
 import 'package:flutter/material.dart';

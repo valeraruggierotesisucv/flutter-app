@@ -1,14 +1,14 @@
 import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/services/push_notifications.dart';
 import 'package:flutter/material.dart';
-import '../models/notification_model.dart';
 
 class NotificationProvider with ChangeNotifier {
   final NotificationRepository _notificationRepository;
   String? notificationToken;
-  List<NotificationModel> _notifications = [];
 
   NotificationProvider(this._notificationRepository);
+
+  String? get token => notificationToken;
 
   Future<void> fetchNotificationToken(String userId) async {
     final result = await _notificationRepository.getNotificationToken(userId);
@@ -21,9 +21,10 @@ class NotificationProvider with ChangeNotifier {
     if (result != fcmToken) {
       debugPrint("Se debe actualizar el token");
       notificationToken = fcmToken; // Actualizar notificationToken
-      await _notificationRepository.updateNotificationToken(userId, fcmToken); 
+      await _notificationRepository.updateNotificationToken(userId, fcmToken);
     } else {
       debugPrint("No se debe actualizar el token");
+      notificationToken = result; 
     }
 
     notifyListeners(); // Notifica a los oyentes sobre el cambio
@@ -35,6 +36,4 @@ class NotificationProvider with ChangeNotifier {
         toNotificationToken, title, body);
     debugPrint("[notification_provider]: $result");
   }
-
-  List<NotificationModel> get notifications => _notifications;
 }

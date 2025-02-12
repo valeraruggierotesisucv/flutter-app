@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    print('HomeScreen initialized');
+    debugPrint('HomeScreen initialized');
     widget.viewModel.load.addListener(_onResult);
     widget.viewModel.handleLike.addListener(_onLike);
     widget.viewModel.load.execute();
