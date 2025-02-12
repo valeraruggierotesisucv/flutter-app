@@ -3,11 +3,13 @@ import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/follow_user_repository.dart';
 import 'package:eventify/data/repositories/notification_repository.dart';
+import 'package:eventify/data/repositories/location_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/providers/notification_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/view_models/edit_event_view_model.dart';
 import 'package:eventify/services/push_notifications.dart';
 import 'package:eventify/view_models/edit_profile_view_model.dart';
 import 'package:eventify/view_models/followed_view_model.dart';
@@ -148,7 +150,16 @@ class MyApp extends StatelessWidget {
                         Provider.of<ApiClient>(context, listen: false)),
                   ),
                 ),
-            '/${AppScreens.editEvent.name}': (context) => const EditEventView(),
+            '/${AppScreens.editEvent.name}': (context) => EditEventView(
+              viewModel: EditViewModel(
+                context: context,
+                eventId: '',
+                eventRepository: EventRepository(
+                    Provider.of<ApiClient>(context, listen: false)),
+                locationRepository: LocationRepository(
+                    Provider.of<ApiClient>(context, listen: false)),
+              ),
+            ),
             '/${AppScreens.configuration.name}': (context) =>
                 const ConfigurationView(),
             '/${AppScreens.changePassword.name}': (context) =>

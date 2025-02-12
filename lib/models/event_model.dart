@@ -1,21 +1,21 @@
 class EventModel {
-  final String eventId;
-  final String profileImage;
-  final String username;
-  final String eventImage;
-  final String title;
-  final String description;
-  final String locationId;
-  final String latitude;
-  final String longitude;
-  final String startsAt;
-  final String endsAt;
-  final String date;
-  final String category;
-  final String categoryId;
-  final String musicUrl;
+  String eventId;
+  String profileImage;
+  String username;
+  String eventImage;
+  String title;
+  String description;
+  String locationId;
+  String latitude;
+  String longitude;
+  String startsAt;
+  String endsAt;
+  String date;
+  String category;
+  String categoryId;
+  String musicUrl;
   bool isLiked;
-  final String userId;
+  String userId;
 
   EventModel({
     required this.eventId,
@@ -57,6 +57,46 @@ class EventModel {
       musicUrl: json['music_url'],
       isLiked: json['is_liked'],
       userId: json['user_id'],
+    );
+  }
+
+  EventModel copyWith({
+    String? eventId,
+    String? userId,
+    String? username,
+    String? profileImage,
+    String? eventImage,
+    String? title,
+    String? description,
+    String? date,
+    String? startsAt,
+    String? endsAt,
+    String? categoryId,
+    String? category,
+    String? musicUrl,
+    String? locationId,
+    String? latitude,
+    String? longitude,
+    bool? isLiked,
+  }) {
+    return EventModel(
+      eventId: eventId ?? this.eventId,
+      userId: userId ?? this.userId,
+      username: username ?? this.username,
+      profileImage: profileImage ?? this.profileImage,
+      eventImage: eventImage ?? this.eventImage,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      startsAt: startsAt ?? this.startsAt,
+      endsAt: endsAt ?? this.endsAt,
+      categoryId: categoryId ?? this.categoryId,
+      category: category ?? this.category,
+      musicUrl: musicUrl ?? this.musicUrl,
+      locationId: locationId ?? this.locationId,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      isLiked: isLiked ?? this.isLiked,
     );
   }
 } 
