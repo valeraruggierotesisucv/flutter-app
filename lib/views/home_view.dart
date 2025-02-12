@@ -2,14 +2,15 @@ import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/models/notification_model.dart';
+import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/services/auth_service.dart';
-import 'package:eventify/services/push_notificatins.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/view_models/event_details_model_view.dart';
 import 'package:eventify/view_models/home_view_model.dart';
 import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/views/profile_details_view.dart';
 import 'package:eventify/widgets/app_header.dart';
-import 'package:eventify/widgets/comments_section.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/event_card.dart';
 import 'package:flutter/material.dart';
@@ -141,6 +142,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             onShare: () {},
                             handleLike: () async {
                               await widget.viewModel.handleLike.execute(event.eventId);
+                              final toUserToken = await widget.viewModel.fetchNotificationToken(event.userId); 
+                              final fromUserId = Provider.of<UserProvider>(context, listen: false).user?.id; 
+
+                              if(toUserToken != null && fromUserId != null){
+                                await widget.viewModel.sendNotification(toUserToken, event.username, "Le gustó tu evento"); 
+                                await widget.viewModel.createNotification(NotificationModel(notificationId: "", fromUserId: fromUserId, toUserId: event.userId, type: NotificationType.likeEvent, message: "Le gustó tu evento", createdAt: DateTime.now(), username: event.username, profileImage: event.profileImage, eventImage: event.eventImage)); 
+                              }                              
                             },
                             onCommentSubmit: (message) async {
                               await widget.viewModel.submitComment.execute(event.eventId, message);

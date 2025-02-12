@@ -7,6 +7,7 @@ import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/providers/notification_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/services/push_notifications.dart';
 import 'package:eventify/view_models/edit_profile_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/auth_view_model.dart';

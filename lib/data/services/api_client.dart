@@ -641,4 +641,146 @@ class ApiClient {
     }
   }
 
+    Future<Result<void>> sendNotification(
+      String toNotificationToken, Map<String, dynamic> data) async {
+    final client = _clientFactory();
+
+    try {
+      final uri =
+          Uri.parse('$_baseUrl/push-notifications/$toNotificationToken');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {'title': data['title'], 'body': data['body']};
+      request.write(jsonEncode(body));
+      final response = await request.close();
+      debugPrint("-->$uri");
+      debugPrint("sending notification to $toNotificationToken, $body");
+      if (response.statusCode != 200) {
+        debugPrint("ERROR ENVIANDO LA NOTIFICACION");
+        return Result.error(
+            Exception('Failed to send notification: ${response.statusCode}'));
+      } else {
+        debugPrint("Notificaion enviada");
+        return Result.ok(null);
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<String?> getNotificationToken(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/push-notification');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+
+        if (jsonResponse['success'] == true) {
+          return jsonResponse['data']; // Devuelve directamente el token FCM
+        } else {
+          throw Exception(
+              'Failed to fetch notification token: ${jsonResponse['error']}');
+        }
+      } else {
+        throw Exception(
+            'Failed to fetch notification token: ${response.statusCode}');
+      }
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<void>> updateNotificationToken(
+      String userId, String notificationToken) async {
+    final client = _clientFactory();
+
+    try {
+      final uri =
+          Uri.parse('$_baseUrl/users/$userId/notifications/$notificationToken');
+      final request = await client.putUrl(uri);
+      debugPrint("uri-->$uri");
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+      final response = await request.close();
+
+      if (response.statusCode != 200) {
+        debugPrint(
+            'Failed to update notification token: ${response.statusCode}');
+        return Result.error(Exception(
+            'Failed to update notification token: ${response.statusCode}'));
+      } else {
+        debugPrint("Token actualizado");
+        return Result.ok(null);
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<void>> createNotification(
+      NotificationModel notificationData) async {
+    final client = _clientFactory();
+
+    try {
+      final uri = Uri.parse('$_baseUrl/notifications');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+      debugPrint("type ${notificationData.type}");
+
+      String type; 
+      switch (notificationData.type) {
+        case NotificationType.likeEvent:
+          type = "LIKE";
+          break;
+        case NotificationType.follow:
+          type = "FOLLOW";
+          break;
+        case NotificationType.commentEvent:
+          type = "COMMENT";
+          break;
+        default:
+          type = "UNKNOWN"; // Valor por defecto en caso de error
+      }
+
+      final body = {
+        "fromUserId": notificationData.fromUserId,
+        "toUserId": notificationData.toUserId,
+        "type": type,
+        "message": notificationData.message,
+        "eventImage": notificationData.eventImage
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+      debugPrint("$uri->$body");
+
+      if (response.statusCode != 200) {
+        debugPrint("Error creando la notificacion");
+        return Result.error(
+            Exception('Failed to send notification: ${response.statusCode}'));
+      } else {
+        debugPrint("Notificaion creada");
+        return Result.ok(null);
+      }
+    } on Exception catch (error) {
+      debugPrint("Error $error");
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+
 }
