@@ -12,6 +12,7 @@ import 'package:eventify/widgets/image_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
+import 'package:eventify/widgets/modal.dart';
 
 import 'dart:io';
 
@@ -69,6 +70,8 @@ class _AddViewScreenState extends State<AddViewScreen> {
   String? _longitude;
 
   final Location location = Location();
+
+  bool _isCreatingEvent = false;
 
   @override
   void initState() {
@@ -138,19 +141,33 @@ class _AddViewScreenState extends State<AddViewScreen> {
     return Scaffold(
       appBar: AppHeader(title: "Nuevo Evento"),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _imagePickerWidget(image: _image),
-            _addTitle(title: _title),
-            _addDescription(description: _description),
-            _addDate(date: _date, startsAt: _startsAt, endsAt: _endsAt),
-            _addCategory(category: _category),
-            _addMusic(music: _music),
-            _addLocation(latitude: _latitude, longitude: _longitude),
-            _addPublishButton(),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _imagePickerWidget(image: _image),
+                  _addTitle(title: _title),
+                  _addDescription(description: _description),
+                  _addDate(date: _date, startsAt: _startsAt, endsAt: _endsAt),
+                  _addCategory(category: _category),
+                  _addMusic(music: _music),
+                  _addLocation(latitude: _latitude, longitude: _longitude),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom: 32,
+              top: 16,
+            ),
+            child: _addPublishButton(),
+          ),
+        ],
       ),
     );
   }
@@ -427,7 +444,46 @@ class _AddViewScreenState extends State<AddViewScreen> {
           );
   }
 
+  bool _isFormValid() {
+    return _image != null &&
+        _title != null &&
+        _title!.isNotEmpty &&
+        _description != null &&
+        _description!.isNotEmpty &&
+        _date != null &&
+        _startsAt != null &&
+        _endsAt != null &&
+        _category != null &&
+        _categoryId != null &&
+        _latitude != null &&
+        _longitude != null;
+  }
+
+  void _clearForm() {
+    setState(() {
+      _image = null;
+      _imageUri = null;
+      _title = null;
+      _description = null;
+      _date = null;
+      _startsAt = null;
+      _endsAt = null;
+      _category = null;
+      _categoryId = null;
+      _music = null;
+      _musicUri = null;
+      _latitude = null;
+      _longitude = null;
+    });
+  }
+
   void _handlePublish() async {
+    if (!_isFormValid()) return;
+
+    setState(() {
+      _isCreatingEvent = true;
+    });
+
     _viewModel.imageUri = _imageUri;
     _viewModel.title = _title;
     _viewModel.description = _description;
@@ -439,16 +495,32 @@ class _AddViewScreenState extends State<AddViewScreen> {
     _viewModel.latitude = _latitude;
     _viewModel.longitude = _longitude;
 
-    debugPrint("[add_view] Creando evento...");
-    debugPrint("music--> $_music, $_musicUri");
-    debugPrint("image-->$_image, $_imageUri"); 
-    await _viewModel.createEvent();
+    try {
+      await _viewModel.createEvent();
+      _clearForm();
+      showSuccessModal(
+        context, 
+        title: "¡Evento creado con éxito!",
+        onClose: () {
+          
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al crear el evento: ${e.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _isCreatingEvent = false;
+      });
+    }
   }
 
   Widget _addPublishButton() {
     return CustomButton(
-      label: "Publicar",
-      onPress: _handlePublish,
+      label: _isCreatingEvent ? "Creando..." : "Publicar",
+      onPress: _isCreatingEvent ? null : _handlePublish,
+      disabled: !_isFormValid() || _isCreatingEvent,
     );
   }
 }

@@ -165,7 +165,7 @@ class _SearchViewState extends State<SearchView> {
                                         title: event.title,
                                         description: event.description,
                                         isLiked: event.isLiked,
-                                        date: event.date,
+                                        date: DateTime.parse(event.date),
                                         userComment: {},
                                         commentsListenable: widget.viewModel.commentsListenable,
                                         fetchComments: widget.viewModel.loadComments,
