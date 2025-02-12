@@ -75,16 +75,4 @@ class NotificationsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> sendNotification(
-      String toNotificationToken, String title, String body) async {
-    final result = await _notificationRepository.sendNotification(
-        toNotificationToken, title, body);
-
-    debugPrint("[notifications_view_model] sendNotification: $result");
-  }
-
-  Future<void> fetchNotificationToken(String userId) async {
-    final result = await _notificationRepository.getNotificationToken(userId);
-    debugPrint("[notifications_view_model] fetchNotificationToken: $result"); 
-  }
 }
