@@ -1,3 +1,6 @@
+import 'package:eventify/models/notification_model.dart';
+import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/view_models/search_view_model.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
 import 'package:eventify/widgets/pills.dart';
@@ -10,6 +13,8 @@ import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/user_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:async';
+
+import 'package:provider/provider.dart';
 
 class SearchView extends StatefulWidget {
   final SearchViewModel viewModel;
@@ -179,9 +184,13 @@ class _SearchViewState extends State<SearchView> {
                                         onShare: () {},
                                         handleLike: () async {
                                           await widget.viewModel.handleLike.execute(event.eventId);
+                                          if(event.isLiked){
+                                            handleSendNotification(event, NotificationType.likeEvent);
+                                          } 
                                         },
                                         onCommentSubmit: (message) async {
                                           await widget.viewModel.submitComment.execute(event.eventId, message);
+                                          handleSendNotification(event, NotificationType.commentEvent); 
                                         },
                                       );
                                     })
@@ -247,5 +256,28 @@ class _SearchViewState extends State<SearchView> {
       _isLoading = widget.viewModel.searchEvents.running || 
                    widget.viewModel.searchUsers.running;
     });
+  }
+
+    void handleSendNotification(event, type) async {
+    final toUserToken =
+        await widget.viewModel.fetchNotificationToken(event.userId);
+    final fromUserId =
+        Provider.of<UserProvider>(context, listen: false).user?.id;
+
+    final message = type == NotificationType.likeEvent ? "Le gustó tu evento" : "Comentó en tu evento"; 
+
+    if (toUserToken != null && fromUserId != null) {
+      await widget.viewModel.sendNotification(toUserToken, event.username, message);
+      await widget.viewModel.createNotification(NotificationModel(
+          notificationId: "",
+          fromUserId: fromUserId,
+          toUserId: event.userId,
+          type: type,
+          message: message,
+          createdAt: DateTime.now(),
+          username: event.username,
+          profileImage: event.profileImage,
+          eventImage: event.eventImage));
+    }
   }
 }

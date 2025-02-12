@@ -1,10 +1,12 @@
 import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/category_model.dart';
 import 'package:eventify/models/comment_model.dart';
 import 'package:eventify/models/event_model.dart';
+import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/user_model.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/utils/command.dart';
@@ -20,11 +22,14 @@ class SearchViewModel extends ChangeNotifier {
       required EventRepository eventRepository,
       required UserRepository userRepository,
       required CommentRepository commentRepository,
-      required CategoryRepository categoryRepository})
+      required CategoryRepository categoryRepository, 
+      required NotificationRepository notificationRepository
+      })
       : _eventRepository = eventRepository,
         _userRepository = userRepository,
         _categoryRepository = categoryRepository,
         _commentRepository = commentRepository,
+        _notificationRepository = notificationRepository,
         _context = context {
     searchEvents = Command1<void, String>(_searchEvents);
     getCategories = Command0<void>(_getCategories);
@@ -38,6 +43,7 @@ class SearchViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
   final UserRepository _userRepository;
   final CategoryRepository _categoryRepository;
+  final NotificationRepository _notificationRepository; 
 
   final _log = Logger('SearchViewModel');
   List<EventModel> _events = [];
@@ -267,5 +273,25 @@ class SearchViewModel extends ChangeNotifier {
       _log.severe('Error in submitComment', e);
       return Result.error(Exception('Failed to submit comment'));
     }
+  }
+
+     Future<void> sendNotification(
+      String toNotificationToken, String title, String body) async {
+    final result = await _notificationRepository.sendNotification(
+        toNotificationToken, title, body);
+
+    debugPrint("[home_view_model] sendNotification: $result");
+  }
+
+  Future<String?> fetchNotificationToken(String userId) async {
+    final result = await _notificationRepository.getNotificationToken(userId);
+    debugPrint("[notifications_view_model] fetchNotificationToken: $result");
+    return result;
+  }
+
+  Future<Result<void>> createNotification(NotificationModel notificationData) async {
+    final result =
+        await _notificationRepository.createNotification(notificationData);
+    return result; 
   }
 }
