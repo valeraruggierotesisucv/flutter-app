@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:eventify/models/location_model.dart';
+import 'package:http/http.dart' as http;
 
 /// Adds the `Authentication` header to a header configuration.
 typedef AuthHeaderProvider = String? Function();
@@ -53,7 +54,6 @@ class ApiClient {
         final jsonData = jsonResponse['data'] as List<dynamic>;
 
         return Result.ok(jsonData.map((element) {
-          
           final user = element['user'] as Map<String, dynamic>;
           final location = element['location'] as Map<String, dynamic>;
           bool isLiked = false;
@@ -130,19 +130,20 @@ class ApiClient {
     }
   }
 
-  Future<Result<List<EventModel>>> searchEvents(String query, String userId) async {
+  Future<Result<List<EventModel>>> searchEvents(
+      String query, String userId) async {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/search/events');
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
-      
+
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode({'search': query, 'userId': userId}));
-      
+
       final response = await request.close();
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
         final jsonData = jsonResponse['data'] as List<dynamic>;
@@ -179,9 +180,9 @@ class ApiClient {
             'is_liked': isLiked,
           });
         }).toList());
-        
       } else {
-        return Result.error(HttpException("Failed to search events: ${response.statusCode}"));
+        return Result.error(
+            HttpException("Failed to search events: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
@@ -190,25 +191,24 @@ class ApiClient {
     }
   }
 
-
   Future<Result<List<UserModel>>> searchUsers(String query) async {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/search/users');
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
-      
+
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode({'search': query}));
-      
+
       final response = await request.close();
-      
-      if(response.statusCode == 200) {
+
+      if (response.statusCode == 200) {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
-        
+
         final jsonData = jsonResponse['data'] as List<dynamic>;
-        
+
         return Result.ok(jsonData.map((element) {
           print("ELEMENT");
           print(element);
@@ -226,9 +226,9 @@ class ApiClient {
             'eventsCounter': 0,
           });
         }).toList());
-        
       } else {
-        return Result.error(HttpException("Failed to search events: ${response.statusCode}"));
+        return Result.error(
+            HttpException("Failed to search events: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
@@ -270,7 +270,7 @@ class ApiClient {
         'endsAt': endsAt.toUtc().toIso8601String(),
         'eventMusic': eventMusic,
       };
-      debugPrint("body $body"); 
+      debugPrint("body $body");
 
       request.write(jsonEncode(body));
       final response = await request.close();
@@ -301,7 +301,6 @@ class ApiClient {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/locations');
-      debugPrint(uri.toString());
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
       request.headers.contentType = ContentType.json;
@@ -333,7 +332,7 @@ class ApiClient {
     }
   }
 
-    Future<Result<List<NotificationModel>>> getNotifications(
+  Future<Result<List<NotificationModel>>> getNotifications(
       String userId) async {
     final client = _clientFactory();
     try {

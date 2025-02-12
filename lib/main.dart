@@ -1,9 +1,11 @@
 import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/providers/notification_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
 import 'package:eventify/view_models/edit_profile_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
@@ -51,10 +53,9 @@ void main() async {
   try {
     await Firebase.initializeApp();
     await FirebaseApi().initNotifications(); 
-    print("Firebase inicializado correctamente.");
+    debugPrint("Firebase inicializado correctamente.");
   } catch (e) {
-    print("Error al inicializar Firebase: $e");
-    // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario o cerrando la aplicación.
+    debugPrint("Error al inicializar Firebase: $e");
   }
 
   runApp(
@@ -62,10 +63,12 @@ void main() async {
       providers: [
         Provider.value(value: apiClient),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider(NotificationRepository(apiClient))) 
       ],
       child: const MyApp(),
     ),
   );
+
 }
 
 class MyApp extends StatelessWidget {
