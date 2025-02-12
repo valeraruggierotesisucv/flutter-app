@@ -33,4 +33,22 @@ class FollowUserRepository {
       return Result.error(error);
     }
   }
+
+  Future<Result<List<FollowUserModel>>> getFollowed(String userId) async {
+    try {
+      final result = await _apiClient.getFollowed(userId);
+      return result;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
+
+  Future<Result<List<FollowUserModel>>> getFollowers(String userId) async {
+    try {
+      final result = await _apiClient.getFollowers(userId);
+      return result;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
 }

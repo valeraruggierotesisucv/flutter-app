@@ -876,4 +876,64 @@ Future<Result<void>> followUser(String targetUserId, String userId) async {
       client.close();
     }
   }
+
+  Future<Result<List<FollowUserModel>>> getFollowed(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/followed');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        return Result.ok(jsonData.map((element) => FollowUserModel.fromJson({
+          'userIdFollows': userId,
+          'userIdFollowedBy': element['followedId'],
+          'createdAt': DateTime.now(),
+          'isActive': element['followed'],
+          'followedName': element['followedName'],
+          'followedProfileImage': element['followedProfileImage'],
+        })).toList());
+      } else {
+        return Result.error(HttpException("Failed to get followed: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<List<FollowUserModel>>> getFollowers(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/followers');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        return Result.ok(jsonData.map((element) => FollowUserModel.fromJson({
+          'userIdFollows': element['followerId'],
+          'userIdFollowedBy': userId,
+          'createdAt': DateTime.now(),
+          'isActive': element['followed'],
+          'followerName': element['followerName'],
+          'followerProfileImage': element['followerProfileImage'],
+        })).toList());
+      } else {
+        return Result.error(HttpException("Failed to get followers: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
 }

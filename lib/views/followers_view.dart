@@ -1,37 +1,37 @@
-import 'package:eventify/view_models/followed_view_model.dart';
+import 'package:eventify/view_models/followers_view_model.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/user_card.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
 
-class FollowedView extends StatefulWidget {
-  const FollowedView({
-    super.key,
+class FollowersView extends StatefulWidget {
+  const FollowersView({
+    super.key, 
     required this.viewModel,
     required this.userId,
   }); 
 
-  final FollowedViewModel viewModel;
+  final FollowersViewModel viewModel;
   final String userId;
   
   @override
-  State createState() => _FollowedViewState();
+  State createState() => _FollowersViewState();
 }
 
-class _FollowedViewState extends State<FollowedView> {
+class _FollowersViewState extends State<FollowersView> {
   String searchQuery = "";
 
   @override
   void initState() {
     super.initState();
-    widget.viewModel.getFollowed.addListener(_onLoad);
-    widget.viewModel.getFollowed.execute();
+    widget.viewModel.getFollowers.addListener(_onLoad);
+    widget.viewModel.getFollowers.execute();
   }
 
   @override
   void dispose() {
-    widget.viewModel.getFollowed.removeListener(_onLoad);
+    widget.viewModel.getFollowers.removeListener(_onLoad);
     super.dispose();
   }
 
@@ -45,8 +45,8 @@ class _FollowedViewState extends State<FollowedView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppHeader(
-        title: "Seguidos",
-        goBack: () => Navigator.of(context).pop(),
+        title: "Seguidores", 
+        goBack: () => Navigator.of(context).pop()
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -63,36 +63,39 @@ class _FollowedViewState extends State<FollowedView> {
               child: ListenableBuilder(
                 listenable: widget.viewModel,
                 builder: (context, _) {
-                  if (widget.viewModel.getFollowed.running) {
+                  if (widget.viewModel.getFollowers.running) {
                     return Loading();
                   }
 
-                  final followed = widget.viewModel.followed;
-                  if (followed.isEmpty) {
+                  final followers = widget.viewModel.followers;
+                  if (followers.isEmpty) {
                     return const Center(
-                      child: Text('No sigues a nadie'),
+                      child: Text('No hay seguidores'),
                     );
                   }
 
-                  final filteredFollowed = followed.where((follow) =>
-                    follow.followedName?.toLowerCase().contains(searchQuery.toLowerCase()) ?? false
+                  final filteredFollowers = followers.where((follower) =>
+                    follower.userIdFollows.toLowerCase().contains(searchQuery.toLowerCase())
                   ).toList();
 
                   return ListView.builder(
-                    itemCount: filteredFollowed.length,
+                    itemCount: filteredFollowers.length,
                     itemBuilder: (context, index) {
-                      final follow = filteredFollowed[index];
+                      final follower = filteredFollowers[index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: UserCard(
-                          profileImage: follow.followedProfileImage,
-                          username: follow.followedName ?? "Usuario",
+                          profileImage: follower.followerProfileImage,
+                          username: follower.followerName ?? "Usuario",
                           onPressButton: () {
-                            widget.viewModel.unfollowUser.execute(follow.userIdFollowedBy);
+                            // Handle follow/unfollow
+                            follower.isActive
+                                ? widget.viewModel.unfollowUser.execute(follower.userIdFollows)
+                                : widget.viewModel.followUser.execute(follower.userIdFollows);
                           },
                           variant: UserCardVariant.withButton,
-                          actionLabel: "Dejar de seguir",
-                          isFollowing: true,
+                          actionLabel: follower.isActive ? "Dejar de seguir" : "Seguir",
+                          isFollowing: follower.isActive,
                         ),
                       );
                     },

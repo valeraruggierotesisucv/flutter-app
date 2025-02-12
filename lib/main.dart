@@ -10,18 +10,19 @@ import 'package:eventify/providers/notification_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
 import 'package:eventify/services/push_notifications.dart';
 import 'package:eventify/view_models/edit_profile_view_model.dart';
+import 'package:eventify/view_models/followed_view_model.dart';
+import 'package:eventify/view_models/followers_view_model.dart';
 import 'package:eventify/view_models/profile_details_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/view_models/search_view_model.dart';
-import 'package:eventify/views/add_event_view.dart';
 import 'package:eventify/views/auth_view.dart';
 import 'package:eventify/views/onboarding_view.dart';
 import 'package:eventify/views/forgot_password_view.dart';
 import 'package:eventify/views/forgot_password_login_view.dart';
 import 'package:eventify/views/success_view.dart';
 import 'package:eventify/views/profile_details_view.dart';
-import 'package:eventify/views/folowers_view.dart';
+import 'package:eventify/views/followers_view.dart';
 import 'package:eventify/views/followed_view.dart';
 import 'package:eventify/views/edit_profile_view.dart';
 import 'package:eventify/views/edit_event_view.dart';
@@ -128,10 +129,19 @@ class MyApp extends StatelessWidget {
                         Provider.of<ApiClient>(context, listen: false)),
                   ),
                 ),
-            '/${AppScreens.folowers.name}': (context) => const FollowersView(),
-            '/${AppScreens.folowed.name}': (context) => const FollowedView(),
-            '/${AppScreens.editProfile.name}': (context) =>
-                EditProfileView(
+            '/${AppScreens.followers.name}': (context) => FollowersView(
+                userId: '',
+                viewModel: FollowersViewModel(
+                    context: context,
+                    followUserRepository: FollowUserRepository(
+                        Provider.of<ApiClient>(context, listen: false)))),
+            '/${AppScreens.followed.name}': (context) => FollowedView(
+                userId: '',
+                viewModel: FollowedViewModel(
+                    context: context,
+                    followUserRepository: FollowUserRepository(
+                        Provider.of<ApiClient>(context, listen: false)))),
+            '/${AppScreens.editProfile.name}': (context) => EditProfileView(
                   viewModel: EditProfileViewModel(
                     context: context,
                     userRepository: UserRepository(
@@ -163,15 +173,14 @@ class MyApp extends StatelessWidget {
             ),
             // '/${AppTabs.add.name}': (context) => const AddView(),
             // '/${AppTabs.notifications.name}': (context) =>
-                // const NotificationsView(),
+            // const NotificationsView(),
             '/${AppTabs.profile.name}': (context) => ProfileView(
-                  viewModel: ProfileViewModel(
+                viewModel: ProfileViewModel(
                     context: context,
                     userRepository: UserRepository(
                         Provider.of<ApiClient>(context, listen: false)),
                     eventRepository: EventRepository(
                         Provider.of<ApiClient>(context, listen: false)))),
-            
           },
         ),
       ),
