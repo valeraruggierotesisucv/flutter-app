@@ -75,7 +75,7 @@ class _FollowersViewState extends State<FollowersView> {
                   }
 
                   final filteredFollowers = followers.where((follower) =>
-                    follower.userIdFollows.toLowerCase().contains(searchQuery.toLowerCase())
+                    follower.followerName?.toLowerCase().contains(searchQuery.toLowerCase()) ?? false
                   ).toList();
 
                   return ListView.builder(
