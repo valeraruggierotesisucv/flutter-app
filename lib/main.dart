@@ -140,6 +140,9 @@ class MyApp extends StatelessWidget {
                 userId: '',
                 viewModel: FollowersViewModel(
                     context: context,
+                    notificationRepository: NotificationRepository(
+                      Provider.of<ApiClient>(context, listen: false)
+                    ),
                     followUserRepository: FollowUserRepository(
                         Provider.of<ApiClient>(context, listen: false)))),
             '/${AppScreens.followed.name}': (context) => FollowedView(

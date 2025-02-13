@@ -151,7 +151,7 @@ class ProfileDetailsViewModel extends ChangeNotifier {
     }
   }
 
-       Future<void> sendNotification(
+  Future<void> sendNotification(
       String toNotificationToken, String title, String body) async {
     final result = await _notificationRepository.sendNotification(
         toNotificationToken, title, body);

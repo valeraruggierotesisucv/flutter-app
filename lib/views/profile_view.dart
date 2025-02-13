@@ -1,6 +1,7 @@
 import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/follow_user_repository.dart';
+import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/providers/auth_provider.dart';
@@ -117,6 +118,9 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                               userId: user.userId,
                               viewModel: FollowersViewModel(
                                   context: context,
+                                  notificationRepository: NotificationRepository(
+                                    Provider.of<ApiClient>(context, listen: false)
+                                  ),
                                   followUserRepository: FollowUserRepository(
                                       Provider.of<ApiClient>(context,
                                           listen: false))))),
