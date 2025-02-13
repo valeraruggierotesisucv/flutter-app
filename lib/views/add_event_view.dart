@@ -83,6 +83,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(

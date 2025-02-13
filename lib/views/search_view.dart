@@ -119,6 +119,7 @@ class _SearchViewState extends State<SearchView> {
     LocaleModel localeModel = Provider.of<LocaleModel>(context, listen: false);
     
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppHeader(),
       body: SafeArea(
         child: SingleChildScrollView(

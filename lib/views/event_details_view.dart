@@ -55,6 +55,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
         title: t.eventDetailsTitle,
         goBack: () => Navigator.pop(context),
       ),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: isLoading
             ? Loading()

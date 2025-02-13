@@ -7,11 +7,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(kToolbarHeight + 20),
-      child: Container(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: AppBar(
+    return  AppBar(
           title: title != null 
             ? Text(
                 title!,
@@ -31,8 +27,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
               ) 
             : const SizedBox(),
-        ),
-      ),
     );
   }
 
