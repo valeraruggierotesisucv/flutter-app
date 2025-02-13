@@ -190,6 +190,9 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                             eventRepository: EventRepository(
                               Provider.of<ApiClient>(context, listen: false)
                             ),
+                            notificationRepository: NotificationRepository(
+                              Provider.of<ApiClient>(context, listen: false)
+                            ),
                             commentRepository: CommentRepository(
                               Provider.of<ApiClient>(context, listen: false)
                             ),

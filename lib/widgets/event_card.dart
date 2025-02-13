@@ -2,8 +2,6 @@ import 'package:eventify/models/comment_model.dart';
 import 'package:eventify/utils/command.dart';
 import 'package:eventify/utils/date_formatter.dart';
 import 'package:eventify/widgets/audio_player.dart';
-import 'package:eventify/widgets/comment_input.dart';
-import 'package:eventify/widgets/comment_item.dart';
 import 'package:eventify/widgets/comments_section.dart';
 import 'package:flutter/material.dart';
 import 'custom_chip.dart';

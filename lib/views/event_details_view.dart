@@ -1,9 +1,11 @@
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/location_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/models/notification_model.dart';
+import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/view_models/edit_event_view_model.dart';
 import 'package:eventify/view_models/event_details_model_view.dart';
-import 'package:eventify/utils/command.dart';
 import 'package:eventify/views/edit_event_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
@@ -88,9 +90,13 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           commentsListenable: widget.viewModel.commentsListenable,
                           onCommentSubmit: (message) async {
                               await widget.viewModel.submitComment.execute(widget.eventId, message);
+                              handleSendNotification(widget.viewModel.event, NotificationType.commentEvent);
                             },
                           handleLike: () async {
                             await widget.viewModel.handleLike.execute(widget.eventId);
+                            if(widget.viewModel.event?.isLiked == true){
+                              handleSendNotification(widget.viewModel.event, NotificationType.likeEvent);
+                            } 
                           },
                         );
                       },
@@ -126,5 +132,30 @@ class _EventDetailsViewState extends State<EventDetailsView> {
               ),
             ),
       );
+  }
+
+  void handleSendNotification(event, type) async {
+    final toUserToken =
+        await widget.viewModel.fetchNotificationToken(event.userId);
+    final fromUserId =
+        Provider.of<UserProvider>(context, listen: false).user?.id;
+
+    final message = type == NotificationType.likeEvent ? "Le gustó tu evento" : "Comentó en tu evento"; 
+
+    if(toUserToken != null){
+      await widget.viewModel.sendNotification(toUserToken, event.username, message);
+    }
+    if (fromUserId != null) {      
+      await widget.viewModel.createNotification(NotificationModel(
+          notificationId: "",
+          fromUserId: fromUserId,
+          toUserId: event.userId,
+          type: type,
+          message: message,
+          createdAt: DateTime.now(),
+          username: event.username,
+          profileImage: event.profileImage,
+          eventImage: event.eventImage));
+    }
   }
 }

@@ -208,6 +208,9 @@ class _SearchViewState extends State<SearchView> {
                                                   commentRepository: CommentRepository(
                                                     Provider.of<ApiClient>(context, listen: false)
                                                   ),
+                                                  notificationRepository: NotificationRepository(
+                                                    Provider.of<ApiClient>(context, listen: false)
+                                                  ),
                                                   userRepository: UserRepository(
                                                     Provider.of<ApiClient>(context, listen: false)
                                                   )
