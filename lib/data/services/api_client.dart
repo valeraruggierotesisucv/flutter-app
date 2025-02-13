@@ -843,8 +843,10 @@ Future<Result<void>> followUser(String targetUserId, String userId) async {
       return Result.error(error);
     } finally {
       client.close();
+      
     }
   }
+
 
 
   Future<Result<void>> unfollowUser(String targetUserId, String userId) async {
