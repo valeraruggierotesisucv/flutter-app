@@ -19,10 +19,6 @@ class NotificationItem extends StatelessWidget {
   final DateTime timestamp;
   final NotificationType type;
   final String? eventImage;
-  final Function()? onFollow;
-
-
-
 
   const NotificationItem({
     super.key,
@@ -31,7 +27,6 @@ class NotificationItem extends StatelessWidget {
     required this.timestamp,
     required this.type,
     this.eventImage,
-    this.onFollow,
   });
 
   String _getNotificationMessage(BuildContext context) {

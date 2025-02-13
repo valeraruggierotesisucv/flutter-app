@@ -1,7 +1,6 @@
-import 'package:eventify/data/repositories/comment_repository.dart';
-import 'package:eventify/data/repositories/event_repository.dart';
-import 'package:eventify/data/repositories/user_repository.dart';
-import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/models/notification_model.dart';
+import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/view_models/profile_details_view_model.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/loading.dart';
@@ -84,11 +83,17 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
                   onFollowers: () {},
                   onFollowed: () {},
                   isOtherUser: true,
-                  isFollowing: widget.viewModel.followUserModel?.isActive ?? false,
+                  isFollowing:
+                      widget.viewModel.followUserModel?.isActive ?? false,
                   onFollow: () {
                     widget.viewModel.followUserModel?.isActive == true
                         ? widget.viewModel.unfollowUser.execute(widget.userId)
                         : widget.viewModel.followUser.execute(widget.userId);
+                    
+                    if(widget.viewModel.followUserModel?.isActive == false){
+                      handleSendNotification(user);
+                    }
+                    
                   },
                   eventsLabel: t.profileDetailsEvents,
                   followersLabel: t.profileDetailsFollowers,
@@ -109,5 +114,29 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
         },
       ),
     );
+  }
+
+  void handleSendNotification(user) async {
+    final toUserToken =
+        await widget.viewModel.fetchNotificationToken(user.userId);
+    final fromUserId =
+        Provider.of<UserProvider>(context, listen: false).user?.id;
+
+    final message = "Comenzó a seguirte";
+
+    if(toUserToken != null){
+      await widget.viewModel.sendNotification(toUserToken, user.username, message);
+    }
+    if (fromUserId != null) {      
+      await widget.viewModel.createNotification(NotificationModel(
+        notificationId: "",
+        fromUserId: fromUserId,
+        toUserId: widget.userId,
+        type: NotificationType.follow,
+        message: message,
+        createdAt: DateTime.now(),
+        username: user.username,
+        profileImage: user.profileImage));
+    }
   }
 }
