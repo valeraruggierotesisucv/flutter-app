@@ -8,6 +8,7 @@ import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/providers/notification_provider.dart';
 import 'package:eventify/view_models/auth_view_model.dart';
 import 'package:eventify/views/auth_view.dart';
+import 'package:eventify/views/onboarding_view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -45,18 +46,21 @@ class AuthGate extends StatelessWidget {
             Provider.of<UserProvider>(context, listen: false).setUser(user);
 
             // Obtener el token de notificación
-            debugPrint("[auth_gate] before NotificationProvider"); 
+            debugPrint("[auth_gate] before NotificationProvider");
             final notificationProvider =
                 Provider.of<NotificationProvider>(context, listen: false);
             notificationProvider.fetchNotificationToken(user.id);
             debugPrint("[auth_gate] $notificationProvider");
             return MainView();
           } else {
-            return AuthView(
+            return OnboardingView();
+            /*
+            AuthView(
                 viewModel: AuthViewModel(
                     context: context,
                     userRepository: UserRepository(
                         Provider.of<ApiClient>(context, listen: false))));
+            */
           }
         });
   }
