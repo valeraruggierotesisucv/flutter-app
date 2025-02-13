@@ -214,7 +214,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
   Widget _addTitle({String? title}) {
     final t = AppLocalizations.of(context)!;
     return CustomInput(
-      label: t.addEventTitle,
+      label: (t.addEventTitle).toUpperCase(),
       placeholder: t.addEventTitleHint,
       multiline: false,
       variant: InputVariant.defaultInput,
@@ -360,6 +360,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
                 currentStep = StepsEnum.dateStep;
               })
             },
+            required: date != null ? false : true,
           );
   }
 
@@ -371,6 +372,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
             label: t.addEventCategory,
             placeholder: t.addEventCategoryHint,
             variant: InputVariant.arrow,
+            required: category != null ? false : true,
             onPress: () => {
               setState(() {
                 currentStep = StepsEnum.categoryStep;
@@ -387,6 +389,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
             label: t.addEventMusic,
             placeholder: t.addEventMusicHint,
             variant: InputVariant.arrow,
+            required: music != null ? false : true,
             onPress: () {
               showAudioModal(context, onClose: () {
                 Navigator.of(context, rootNavigator: true).pop();
@@ -453,6 +456,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
             placeholder: t.addEventLocationHint,
             variant: InputVariant.arrow,
             onPress: _getLocation,
+            required: latitude != null ? false : true,
           );
   }
 

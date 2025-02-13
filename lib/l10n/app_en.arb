@@ -82,9 +82,9 @@
 
   "addEventTitle": "New Event",
   "addEventImage": "Image",
-  "addEventTitle": "Title",
+  "addEventTitle": "TITLE",
   "addEventTitleHint": "Add title",
-  "addEventDescription": "Description",
+  "addEventDescription": "DESCRIPTION",
   "addEventDescriptionHint": "Add a description for your event",
   "addEventDate": "WHEN",
   "addEventDateHint": "Add date and time",
