@@ -1,10 +1,16 @@
+import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/location_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/view_models/edit_event_view_model.dart';
 import 'package:eventify/view_models/event_details_model_view.dart';
 import 'package:eventify/utils/command.dart';
+import 'package:eventify/views/edit_event_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/event_card.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EventDetailsView extends StatefulWidget {
   final String eventId;
@@ -95,7 +101,23 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                         child: CustomButton(
                           label: "Edit",
                           onPress: () {
-                            // Navigate to edit event
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditEventView(
+                                  viewModel: EditViewModel(
+                                    context: context,
+                                    eventId: widget.eventId,
+                                    eventRepository: EventRepository(
+                                      Provider.of<ApiClient>(context, listen: false)
+                                    ),
+                                    locationRepository: LocationRepository(
+                                      Provider.of<ApiClient>(context, listen: false)
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),

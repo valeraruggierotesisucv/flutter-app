@@ -938,4 +938,41 @@ Future<Result<void>> followUser(String targetUserId, String userId) async {
       client.close();
     }
   }
+  Future<Result<void>> updateEvent(String eventId, EventModel event) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/events/$eventId');
+      final request = await client.putUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+      print("event ${event.date} ${event.startsAt} ${event.endsAt}");
+      final body = {
+        'userId': event.userId,
+        'title': event.title,
+        'description': event.description,
+        'date': event.date,
+        'startsAt': event.startsAt,
+        'endsAt': event.endsAt,
+        'eventImage': event.eventImage,
+        'eventMusic': event.musicUrl,
+        'categoryId': int.parse(event.categoryId),
+        'latitude': event.latitude,
+        'longitude': event.longitude,
+        'locationId': event.locationId,
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        return Result.ok(null);
+      } else {
+        return Result.error(HttpException("Failed to update event: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
 }

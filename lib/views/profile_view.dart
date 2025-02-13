@@ -1,12 +1,16 @@
+import 'package:eventify/data/repositories/comment_repository.dart';
+import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/follow_user_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/view_models/edit_profile_view_model.dart';
+import 'package:eventify/view_models/event_details_model_view.dart';
 import 'package:eventify/view_models/followers_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/views/configuration_view.dart';
 import 'package:eventify/views/edit_profile_view.dart';
+import 'package:eventify/views/event_details_view.dart';
 import 'package:eventify/views/followed_view.dart';
 import 'package:eventify/views/followers_view.dart';
 import 'package:eventify/widgets/loading.dart';
@@ -160,7 +164,27 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                 EventThumbnailList(
                   events: widget.viewModel.events,
                   onEventTap: (String eventId) {
-                    debugPrint("Event tapped: $eventId");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventDetailsView(
+                          eventId: eventId,
+                          canEdit: true,
+                          viewModel: EventDetailsViewModel(
+                            context: context,
+                            userRepository: UserRepository(
+                              Provider.of<ApiClient>(context, listen: false)
+                            ),
+                            eventRepository: EventRepository(
+                              Provider.of<ApiClient>(context, listen: false)
+                            ),
+                            commentRepository: CommentRepository(
+                              Provider.of<ApiClient>(context, listen: false)
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ],

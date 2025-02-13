@@ -79,4 +79,12 @@ class EventRepository {
     final result = await _apiClient.getEventDetails(eventId, userId);
     return result;
   }
+
+  Future<Result<void>> updateEvent({
+    required String eventId,
+    required EventModel event,
+  }) async {
+    final result = await _apiClient.updateEvent(eventId, event);
+    return result;
+  }
 } 
