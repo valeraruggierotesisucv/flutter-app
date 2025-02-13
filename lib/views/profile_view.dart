@@ -1,12 +1,14 @@
+import 'package:eventify/data/repositories/follow_user_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/view_models/edit_profile_view_model.dart';
+import 'package:eventify/view_models/followers_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/views/configuration_view.dart';
 import 'package:eventify/views/edit_profile_view.dart';
 import 'package:eventify/views/followed_view.dart';
-import 'package:eventify/views/folowers_view.dart';
+import 'package:eventify/views/followers_view.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/services/auth_service.dart';
@@ -14,6 +16,7 @@ import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:provider/provider.dart';
+import 'package:eventify/view_models/followed_view_model.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key, required this.viewModel});
@@ -25,7 +28,7 @@ class ProfileView extends StatelessWidget {
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-            builder: (context) => ProfileHomeScreen( viewModel: viewModel ),
+          builder: (context) => ProfileHomeScreen(viewModel: viewModel),
         );
       },
     );
@@ -42,7 +45,7 @@ class ProfileHomeScreen extends StatefulWidget {
 
 class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
   final authService = AuthService();
-  
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +54,6 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       widget.viewModel.initLoad.execute(userId);
     }
     widget.viewModel.initLoad.addListener(_onLoad);
-    
   }
 
   @override
@@ -98,19 +100,37 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                   onFollowers: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const FollowersView()),
+                      MaterialPageRoute(
+                          builder: (context) => FollowersView(
+                              userId: user.userId,
+                              viewModel: FollowersViewModel(
+                                  context: context,
+                                  followUserRepository: FollowUserRepository(
+                                      Provider.of<ApiClient>(context,
+                                          listen: false))))),
                     );
                   },
                   onFollowed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const FollowedView()),
+                      MaterialPageRoute(
+                        builder: (context) => FollowedView(
+                          userId: user.userId,
+                          viewModel: FollowedViewModel(
+                            context: context,
+                            followUserRepository: FollowUserRepository(
+                              Provider.of<ApiClient>(context, listen: false),
+                            ),
+                          ),
+                        ),
+                      ),
                     );
                   },
                   onConfigureProfile: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ConfigurationView()),
+                      MaterialPageRoute(
+                          builder: (context) => const ConfigurationView()),
                     );
                   },
                   onEditProfile: () {
@@ -119,13 +139,15 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                       MaterialPageRoute(
                         builder: (context) => EditProfileView(
                           viewModel: EditProfileViewModel(
-                            context: context,
-                            userRepository: UserRepository(
-                              Provider.of<ApiClient>(context, listen: false)
-                            )
-                          ),
+                              context: context,
+                              userRepository: UserRepository(
+                                  Provider.of<ApiClient>(context,
+                                      listen: false))),
                           onProfileUpdated: () {
-                            final userId = Provider.of<UserProvider>(context, listen: false).user?.id;
+                            final userId = Provider.of<UserProvider>(context,
+                                    listen: false)
+                                .user
+                                ?.id;
                             if (userId != null) {
                               widget.viewModel.initLoad.execute(userId);
                             }

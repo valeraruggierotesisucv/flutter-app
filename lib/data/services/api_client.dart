@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:eventify/models/comment_model.dart';
 import 'package:eventify/models/category_model.dart';
 import 'package:eventify/models/event_summary_model.dart';
+import 'package:eventify/models/follow_user_model.dart';
 import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/models/user_model.dart';
@@ -728,6 +729,40 @@ class ApiClient {
     }
   }
 
+  Future<Result<FollowUserModel>> isFollowing(String userId, String targetUserId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/isFollowing/$targetUserId');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+      
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'];  // This can be null
+        bool isActive = false;
+        if (jsonData != null) {
+          isActive = (jsonData as Map<String, dynamic>)['isActive'];
+        }
+
+        return Result.ok(FollowUserModel.fromJson({
+          'isActive': isActive,
+          'userIdFollows': userId,
+          'userIdFollowedBy': targetUserId,
+          'createdAt': DateTime.now(),
+        }));
+      } else {
+        return Result.error(HttpException("Failed to check if following: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
   Future<Result<void>> createNotification(
       NotificationModel notificationData) async {
     final client = _clientFactory();
@@ -782,5 +817,123 @@ class ApiClient {
     }
   }
 
+Future<Result<void>> followUser(String targetUserId, String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/follow/$targetUserId');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+  
+      final response = await request.close();
+      print("response $response");
+      print("response.statusCode ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+      
+        if (jsonResponse['success'] == true) {
+          return Result.ok(null);
+        } else {
+          return Result.error(HttpException("Failed to follow user: ${response.statusCode}"));
+        }
+      } else {
+        return Result.error(HttpException("Failed to follow user: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
 
+
+  Future<Result<void>> unfollowUser(String targetUserId, String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/unfollow/$targetUserId');
+      final request = await client.deleteUrl(uri);
+      await _authHeader(request.headers);
+  
+      final response = await request.close();
+      print("response $response");
+      print("response.statusCode ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        
+        
+        if (jsonResponse['success'] == true) {
+          return Result.ok(null);
+        } else {
+          return Result.error(HttpException("Failed to unfollow user: ${response.statusCode}"));
+        }
+      } else {
+        return Result.error(HttpException("Failed to unfollow user: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<List<FollowUserModel>>> getFollowed(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/followed');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        return Result.ok(jsonData.map((element) => FollowUserModel.fromJson({
+          'userIdFollows': userId,
+          'userIdFollowedBy': element['followedId'],
+          'createdAt': DateTime.now(),
+          'isActive': element['followed'],
+          'followedName': element['followedName'],
+          'followedProfileImage': element['followedProfileImage'],
+        })).toList());
+      } else {
+        return Result.error(HttpException("Failed to get followed: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<List<FollowUserModel>>> getFollowers(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/followers');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+
+      final response = await request.close();
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+        final jsonData = jsonResponse['data'] as List<dynamic>;
+        return Result.ok(jsonData.map((element) => FollowUserModel.fromJson({
+          'userIdFollows': element['followerId'],
+          'userIdFollowedBy': userId,
+          'createdAt': DateTime.now(),
+          'isActive': element['followed'],
+          'followerName': element['followerName'],
+          'followerProfileImage': element['followerProfileImage'],
+        })).toList());
+      } else {
+        return Result.error(HttpException("Failed to get followers: ${response.statusCode}"));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
 }

@@ -1,68 +1,101 @@
-import 'package:eventify/models/event_summary_model.dart';
+import 'package:eventify/data/repositories/comment_repository.dart';
+import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/user_repository.dart';
+import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/view_models/profile_details_view_model.dart';
 import 'package:eventify/widgets/app_header.dart';
+import 'package:eventify/widgets/loading.dart';
 import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ProfileDetailsView extends StatelessWidget {
+class ProfileDetailsView extends StatefulWidget {
   final String userId;
-  const ProfileDetailsView({super.key, required this.userId});
+  final ProfileDetailsViewModel viewModel;
+
+  const ProfileDetailsView({
+    super.key,
+    required this.userId,
+    required this.viewModel,
+  });
+
+  @override
+  State<ProfileDetailsView> createState() => _ProfileDetailsViewState();
+}
+
+class _ProfileDetailsViewState extends State<ProfileDetailsView> {
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.initLoad.execute(widget.userId);
+    widget.viewModel.initLoad.addListener(_onLoad);
+  }
+
+  @override
+  void dispose() {
+    widget.viewModel.initLoad.removeListener(_onLoad);
+    super.dispose();
+  }
+
+  void _onLoad() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Sample events data - replace with your actual data
-    final sampleEvents = [
-      {
-        'id': '1',
-        'imageUrl': 'https://theglobalfilipinomagazine.com/wp-content/uploads/2024/03/white-bg-97.jpg',
-        'title': 'Event 1',
-        'location': 'Location 1',
-        'date': '2024-01-01',
-        'userId': '1',
-        'description': 'Description 1',
-        'likes': 10,
-        'comments': 5,
-      },
-      // Add more sample events as needed
-    ];
-
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppHeader(
-        goBack: () => Navigator.pop(context),
+        title: "Detalles",
+        goBack: () => Navigator.of(context).pop(),
       ),
-      body: Column(
-        children: [
-          ProfileCard(
-            username: "José Miguel Valera",
-            biography: "No 5th street off one palace road eltufun hella state",
-            events: 24,
-            followers: 32,
-            following: 40,
-            onFollowers: () {
-              // Navigate to followers view
-            },
-            onFollowed: () {
-              // Navigate to following view
-            },
-            isOtherUser: true,
-            isFollowing: false,
-            onFollow: () {
-              debugPrint("Follow/Unfollow user");
-            },
-          ),
-          Expanded(
-            child: EventThumbnailList(
-              events: sampleEvents.map((event) => EventSummaryModel(
-                eventId: event['id'] as String,
-                imageUrl: event['imageUrl'] as String,
-              )).toList(),
-              onEventTap: (String eventId) {
-                debugPrint("Event tapped: $eventId");
-              },
+      backgroundColor: Colors.white,
+      body: ListenableBuilder(
+        listenable: widget.viewModel,
+        builder: (context, _) {
+          if (widget.viewModel.initLoad.running) {
+            return const Center(child: Loading());
+          }
+
+          final user = widget.viewModel.user;
+          if (user == null) {
+            return const Center(
+              child: Text('Failed to load profile'),
+            );
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                ProfileCard(
+                  username: user.fullname,
+                  biography: user.biography ?? "",
+                  events: user.eventsCounter ?? 0,
+                  followers: user.followersCounter,
+                  following: user.followingCounter,
+                  profileImage: user.profileImage,
+                  onFollowers: () {},
+                  onFollowed: () {},
+                  isOtherUser: true,
+                  isFollowing: widget.viewModel.followUserModel?.isActive ?? false,
+                  onFollow: () {
+                    widget.viewModel.followUserModel?.isActive == true
+                        ? widget.viewModel.unfollowUser.execute(widget.userId)
+                        : widget.viewModel.followUser.execute(widget.userId);
+                  },
+                ),
+                EventThumbnailList(
+                  events: widget.viewModel.events,
+                  onEventTap: (String eventId) {
+                    debugPrint("Event tapped: $eventId");
+                  },
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
