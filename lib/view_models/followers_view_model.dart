@@ -1,5 +1,7 @@
 import 'package:eventify/data/repositories/follow_user_repository.dart';
+import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/models/follow_user_model.dart';
+import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/providers/auth_provider.dart';
 import 'package:eventify/utils/command.dart';
 import 'package:eventify/utils/result.dart';
@@ -8,19 +10,21 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 class FollowersViewModel extends ChangeNotifier {
-
   FollowersViewModel(
       {required BuildContext context,
-      required FollowUserRepository followUserRepository})
+      required FollowUserRepository followUserRepository,
+      required NotificationRepository notificationRepository})
       : _followUserRepository = followUserRepository,
+        _notificationRepository = notificationRepository,
         _context = context {
-        getFollowers = Command0(_getFollowers);
-        followUser = Command1<void, String>(_followUser);
-        unfollowUser = Command1<void, String>(_unfollowUser);
+    getFollowers = Command0(_getFollowers);
+    followUser = Command1<void, String>(_followUser);
+    unfollowUser = Command1<void, String>(_unfollowUser);
   }
 
   final BuildContext _context;
   final FollowUserRepository _followUserRepository;
+  final NotificationRepository _notificationRepository; 
   final _log = Logger('FollowersViewModel');
 
   late final Command0<dynamic> getFollowers;
@@ -30,10 +34,10 @@ class FollowersViewModel extends ChangeNotifier {
   List<FollowUserModel> _followers = [];
   List<FollowUserModel> get followers => _followers;
 
-
   Future<Result<List<FollowUserModel>>> _getFollowers() async {
     try {
-      final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
+      final userId =
+          Provider.of<UserProvider>(_context, listen: false).user?.id;
       if (userId == null) {
         return Result.error(Exception('User not logged in'));
       }
@@ -51,15 +55,17 @@ class FollowersViewModel extends ChangeNotifier {
       return Result.error(Exception(e));
     }
   }
-  
+
   Future<Result<void>> _followUser(String targetUserId) async {
     try {
-      final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
+      final userId =
+          Provider.of<UserProvider>(_context, listen: false).user?.id;
       if (userId == null) {
         return Result.error(Exception('User not logged in'));
       }
 
-      final result = await _followUserRepository.followUser(targetUserId, userId);
+      final result =
+          await _followUserRepository.followUser(targetUserId, userId);
       if (result case Ok()) {
         await getFollowers.execute();
       }
@@ -72,12 +78,14 @@ class FollowersViewModel extends ChangeNotifier {
 
   Future<Result<void>> _unfollowUser(String targetUserId) async {
     try {
-      final userId = Provider.of<UserProvider>(_context, listen: false).user?.id;
+      final userId =
+          Provider.of<UserProvider>(_context, listen: false).user?.id;
       if (userId == null) {
         return Result.error(Exception('User not logged in'));
       }
 
-      final result = await _followUserRepository.unfollowUser(targetUserId, userId);
+      final result =
+          await _followUserRepository.unfollowUser(targetUserId, userId);
       if (result case Ok()) {
         await getFollowers.execute();
       }
@@ -86,5 +94,25 @@ class FollowersViewModel extends ChangeNotifier {
       _log.severe('Error in unfollowUser', e);
       return Result.error(Exception('Failed to unfollow user'));
     }
+  }
+
+    Future<void> sendNotification(
+      String toNotificationToken, String title, String body) async {
+    final result = await _notificationRepository.sendNotification(
+        toNotificationToken, title, body);
+
+    debugPrint("[home_view_model] sendNotification: $result");
+  }
+
+  Future<String?> fetchNotificationToken(String userId) async {
+    final result = await _notificationRepository.getNotificationToken(userId);
+    debugPrint("[notifications_view_model] fetchNotificationToken: $result");
+    return result;
+  }
+
+  Future<Result<void>> createNotification(NotificationModel notificationData) async {
+    final result =
+        await _notificationRepository.createNotification(notificationData);
+    return result; 
   }
 }

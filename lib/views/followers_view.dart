@@ -1,20 +1,24 @@
+import 'package:eventify/models/notification_model.dart';
+import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/view_models/followers_view_model.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/user_card.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/widgets/custom_search_bar.dart';
+import 'package:provider/provider.dart';
 
 class FollowersView extends StatefulWidget {
   const FollowersView({
-    super.key, 
+    super.key,
     required this.viewModel,
     required this.userId,
-  }); 
+  });
 
   final FollowersViewModel viewModel;
   final String userId;
-  
+
   @override
   State createState() => _FollowersViewState();
 }
@@ -45,9 +49,7 @@ class _FollowersViewState extends State<FollowersView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppHeader(
-        title: "Seguidores", 
-        goBack: () => Navigator.of(context).pop()
-      ),
+          title: "Seguidores", goBack: () => Navigator.of(context).pop()),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -74,9 +76,13 @@ class _FollowersViewState extends State<FollowersView> {
                     );
                   }
 
-                  final filteredFollowers = followers.where((follower) =>
-                    follower.followerName?.toLowerCase().contains(searchQuery.toLowerCase()) ?? false
-                  ).toList();
+                  final filteredFollowers = followers
+                      .where((follower) =>
+                          follower.followerName
+                              ?.toLowerCase()
+                              .contains(searchQuery.toLowerCase()) ??
+                          false)
+                      .toList();
 
                   return ListView.builder(
                     itemCount: filteredFollowers.length,
@@ -90,11 +96,18 @@ class _FollowersViewState extends State<FollowersView> {
                           onPressButton: () {
                             // Handle follow/unfollow
                             follower.isActive
-                                ? widget.viewModel.unfollowUser.execute(follower.userIdFollows)
-                                : widget.viewModel.followUser.execute(follower.userIdFollows);
+                                ? widget.viewModel.unfollowUser
+                                    .execute(follower.userIdFollows)
+                                : widget.viewModel.followUser
+                                    .execute(follower.userIdFollows);
+
+                            if (follower.isActive == false) {
+                              handleSendNotification(follower.userIdFollows);
+                            } 
                           },
                           variant: UserCardVariant.withButton,
-                          actionLabel: follower.isActive ? "Dejar de seguir" : "Seguir",
+                          actionLabel:
+                              follower.isActive ? "Dejar de seguir" : "Seguir",
                           isFollowing: follower.isActive,
                         ),
                       );
@@ -107,5 +120,31 @@ class _FollowersViewState extends State<FollowersView> {
         ),
       ),
     );
+  }
+
+  void handleSendNotification(toUserId) async {
+    debugPrint("ENVIANDO NOTIFICACION");
+    final toUserToken = await widget.viewModel.fetchNotificationToken(toUserId);
+    final fromUserId =
+        Provider.of<UserProvider>(context, listen: false).user?.id;
+    final username =
+        Provider.of<UserProvider>(context, listen: false).user?.email; 
+
+    final message = "Comenzó a seguirte";
+
+    if (toUserToken != null && username != null) {
+      await widget.viewModel.sendNotification(toUserToken, username, message);
+    }
+    if (fromUserId != null) {
+      await widget.viewModel.createNotification(NotificationModel(
+          notificationId: "",
+          fromUserId: fromUserId,
+          toUserId: widget.userId,
+          type: NotificationType.follow,
+          message: message,
+          createdAt: DateTime.now(),
+          username: username,
+          profileImage: ""));
+    }
   }
 }

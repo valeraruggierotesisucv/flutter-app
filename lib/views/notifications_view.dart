@@ -63,8 +63,7 @@ class NotificationsView extends StatelessWidget {
                     timestamp: notification.createdAt,
                     userAvatar: notification.profileImage ?? t.notificationsUserNotAvailable,
                     type: notification.type,
-                    eventImage: notification.eventImage ?? "https://placehold.co/600x400/png",
-                    onFollow: () => debugPrint("SEGUIR"),
+                    eventImage: notification.eventImage ?? "https://crnarpvpafbywvdzfukp.supabase.co/storage/v1/object/public/DONT%20DELETE//defaultImage.jpg",
                   );
                 },
               ),

@@ -1,6 +1,7 @@
 import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/follow_user_repository.dart';
+import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
 import 'package:eventify/models/notification_model.dart';
@@ -123,6 +124,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       followUserRepository: FollowUserRepository(
                                         Provider.of<ApiClient>(context, listen: false)
                                       ),
+                                      notificationRepository: NotificationRepository(
+                                        Provider.of<ApiClient>(context, listen: false)
+                                      )
                                     ),
                                   ),
                                 ),
@@ -144,9 +148,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       commentRepository: CommentRepository(
                                           Provider.of<ApiClient>(context,
                                               listen: false)),
+                                      notificationRepository: NotificationRepository(
+                                        Provider.of<ApiClient>(context,
+                                              listen: false)
+                                      ),
                                       userRepository: UserRepository(
                                           Provider.of<ApiClient>(context,
-                                              listen: false)))),
+                                              listen: false)), )),
+
+
                             ),
                           );
                         },
@@ -195,8 +205,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final message = type == NotificationType.likeEvent ? "Le gustó tu evento" : "Comentó en tu evento"; 
 
-    if (toUserToken != null && fromUserId != null) {
+    if(toUserToken != null){
       await widget.viewModel.sendNotification(toUserToken, event.username, message);
+    }
+    if (fromUserId != null) {      
       await widget.viewModel.createNotification(NotificationModel(
           notificationId: "",
           fromUserId: fromUserId,
