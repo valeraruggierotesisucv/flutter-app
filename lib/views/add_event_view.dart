@@ -214,7 +214,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
   Widget _addTitle({String? title}) {
     final t = AppLocalizations.of(context)!;
     return CustomInput(
-      label: (t.addEventTitle).toUpperCase(),
+      label: t.addEventTitle,
       placeholder: t.addEventTitleHint,
       multiline: false,
       variant: InputVariant.defaultInput,
