@@ -1,76 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CommentInput extends StatefulWidget {
+class CommentInput extends StatelessWidget {
   final Function(String) onSubmit;
-  const CommentInput({super.key, required this.onSubmit});
-  @override
-  State<CommentInput> createState() => _CommentInputState();
+  final _controller = TextEditingController();
 
-}
-
-class _CommentInputState extends State<CommentInput> {
-  final TextEditingController _controller = TextEditingController();
-  bool canSend = false;
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  CommentInput({super.key, required this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-      ),
-
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: TextField(
               controller: _controller,
-              decoration: const InputDecoration(
-                hintText: 'Add a comment...',
+              decoration: InputDecoration(
+                hintText: t.commentsInputHint,
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
-
-              onSubmitted: (value) {
-                widget.onSubmit(value);
-                _controller.clear();
-              },
-              onChanged: (value) {
-                setState(() {
-                  canSend = value.isNotEmpty;
-                });
-              },
             ),
           ),
-
-
           IconButton(
-            onPressed: canSend 
-              ? () {
-                  widget.onSubmit(_controller.text);
-                  _controller.clear();
-                  setState(() {
-                    canSend = false;  // Reset the state after sending
-                  });
-                }
-              : null,  // Button is disabled when null
-            icon: Icon(
-              Icons.send_rounded, 
-              color: canSend ? Colors.black : Colors.grey,
-            ),
-          )
-
-
-
+            icon: const Icon(Icons.send),
+            onPressed: () {
+              if (_controller.text.isNotEmpty) {
+                onSubmit(_controller.text);
+                _controller.clear();
+              }
+            },
+            tooltip: t.commentsInputSend,
+          ),
         ],
       ),
     );

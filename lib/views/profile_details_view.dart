@@ -9,6 +9,7 @@ import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileDetailsView extends StatefulWidget {
   final String userId;
@@ -46,9 +47,11 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppHeader(
-        title: "Detalles",
+        title: t.profileDetailsTitle,
         goBack: () => Navigator.of(context).pop(),
       ),
       backgroundColor: Colors.white,
@@ -61,8 +64,8 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
 
           final user = widget.viewModel.user;
           if (user == null) {
-            return const Center(
-              child: Text('Failed to load profile'),
+            return Center(
+              child: Text(t.profileDetailsLoadError),
             );
           }
 
@@ -70,6 +73,8 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
             child: Column(
               children: [
                 ProfileCard(
+                  editButtonLabel: t.profileDetailsEdit,
+                  configButtonLabel: t.profileDetailsConfig,
                   username: user.fullname,
                   biography: user.biography ?? "",
                   events: user.eventsCounter ?? 0,
@@ -85,6 +90,12 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
                         ? widget.viewModel.unfollowUser.execute(widget.userId)
                         : widget.viewModel.followUser.execute(widget.userId);
                   },
+                  eventsLabel: t.profileDetailsEvents,
+                  followersLabel: t.profileDetailsFollowers,
+                  followingLabel: t.profileDetailsFollowing,
+                  followButtonLabel: widget.viewModel.followUserModel?.isActive == true 
+                    ? t.profileDetailsUnfollow 
+                    : t.profileDetailsFollow,
                 ),
                 EventThumbnailList(
                   events: widget.viewModel.events,

@@ -30,5 +30,236 @@
   "searchViewNoEvents": "No se encontraron eventos",
   "searchViewNoUsers": "No se encontraron usuarios",
   "searchViewInitialEvents": "Busca un evento",
-  "searchViewInitialUsers": "Busca un usuario"
+  "searchViewInitialUsers": "Busca un usuario",
+
+  "editEventTitle": "Editar Evento",
+  "editEventImage": "Imagen del Evento",
+  "editEventImageHint": "Selecciona una imagen",
+  "editEventTitle": "Título",
+  "editEventTitleHint": "Ingresa un título",
+  "editEventDescription": "Descripción",
+  "editEventDescriptionHint": "Ingresa una descripción",
+  "editEventDate": "Fecha",
+  "editEventDateHint": "Selecciona una fecha",
+  "editEventStartTime": "Hora de inicio",
+  "editEventEndTime": "Hora de finalización",
+  "editEventCategory": "Categoría",
+  "editEventCategoryHint": "Selecciona una categoría",
+  "editEventLocation": "Ubicación",
+  "editEventLocationHint": "Selecciona una ubicación",
+  "editEventMusic": "Música",
+  "editEventMusicHint": "Selecciona música",
+  "editEventUpdateButton": "Actualizar",
+  "editEventUpdatingButton": "Actualizando...",
+  "editEventSuccessTitle": "¡Evento actualizado con éxito!",
+  "editEventErrorMessage": "Error al actualizar el evento: {error}",
+  "@editEventErrorMessage": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "editEventLocationError": "Error al obtener la ubicación",
+
+  "eventCardLocation": "UBICACIÓN",
+  "eventCardWhen": "CUANDO",
+  "eventCardCategory": "CATEGORÍA",
+  "eventCardSeeMore": "Ver más detalles",
+  "eventCardShareMessage": "¡Mira este evento: {title} el {date}!\nDescarga nuestra app Eventify desde la App Store.\nhttps://www.eventify.com",
+  "@eventCardShareMessage": {
+    "placeholders": {
+      "title": {},
+      "date": {}
+    }
+  },
+
+  "eventDetailsTitle": "Detalles del Evento",
+  "eventDetailsEditButton": "Editar",
+  "eventDetailsLocationError": "Error al obtener la ubicación",
+
+  "searchViewTabEvents": "Eventos",
+  "searchViewTabUsers": "Usuarios",
+  "searchViewLikedEvent": "Le gustó tu evento",
+  "searchViewCommentedEvent": "Comentó en tu evento",
+
+  "addEventTitle": "Nuevo Evento",
+  "addEventImage": "Imagen",
+  "addEventTitle": "Título",
+  "addEventTitleHint": "Agregar título",
+  "addEventDescription": "Descripción",
+  "addEventDescriptionHint": "Agrega una descripción de tu evento",
+  "addEventDate": "CUANDO",
+  "addEventDateHint": "Agrega fecha y hora",
+  "addEventCategory": "CATEGORÍA",
+  "addEventCategoryHint": "Agrega una categoría",
+  "addEventMusic": "MÚSICA",
+  "addEventMusicHint": "Agrega música",
+  "addEventLocation": "UBICACIÓN",
+  "addEventLocationHint": "Agrega ubicación",
+  "addEventLocationError": "Error al obtener la ubicación",
+  "addEventPublishButton": "Publicar",
+  "addEventPublishingButton": "Creando...",
+  "addEventSuccessTitle": "¡Evento creado con éxito!",
+  "addEventErrorMessage": "Error al crear el evento: {error}",
+  "@addEventErrorMessage": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "imageModalTakePhoto": "Tomar foto",
+  "imageModalChooseGallery": "Elegir de la galería",
+  "imageModalCancel": "Cancelar",
+
+  "profileDetailsTitle": "Detalles",
+  "profileDetailsLoadError": "Error al cargar el perfil",
+  "profileDetailsEvents": "Eventos",
+  "profileDetailsFollowers": "Seguidores",
+  "profileDetailsFollowing": "Siguiendo",
+  "profileDetailsFollow": "Seguir",
+  "profileDetailsUnfollow": "Dejar de seguir",
+
+  "notificationsTitle": "Notificaciones",
+  "notificationsError": "Error al cargar las notificaciones",
+  "notificationsRetry": "Reintentar",
+  "notificationsUserNotAvailable": "No disponible",
+  "notificationsEmpty": "No hay notificaciones",
+
+  "notificationStartedFollowing": "Comenzó a seguirte",
+  "notificationLikedEvent": "Dió me gusta a tu evento",
+  "notificationCommentedEvent": "Comentó en tu evento",
+
+  "timeJustNow": "ahora mismo",
+  "timeMinutesAgo": "hace {minutes}m",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "timeHoursAgo": "hace {hours}h",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeDaysAgo": "hace {days}d",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "timeMonthsAgo": "hace {months}m",
+  "@timeMonthsAgo": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "timeYearsAgo": "hace {years}a",
+  "@timeYearsAgo": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+
+  "changePasswordTitle": "Cambiar contraseña",
+  "changePasswordNew": "Nueva contraseña",
+  "changePasswordNewHint": "Nueva contraseña",
+  "changePasswordConfirm": "Confirmar contraseña",
+  "changePasswordConfirmHint": "Confirmar contraseña",
+  "changePasswordButton": "Cambiar contraseña",
+  "changePasswordError": "La contraseña debe tener al menos 6 caracteres",
+  "changePasswordMismatch": "Las contraseñas no coinciden",
+  "changePasswordSuccess": "Contraseña actualizada correctamente",
+
+  "profileLoadError": "Error al cargar el perfil",
+  "profileEditButton": "Editar Perfil",
+  "profileConfigButton": "Configurar Perfil",
+  "profileDetailsEdit": "Editar",
+  "profileDetailsConfig": "Configurar",
+
+  "audioModalChooseFile": "Elegir de archivos",
+  "audioModalRecord": "Grabar audio",
+  "audioModalStopRecording": "Detener grabación",
+  "audioModalCancel": "Cancelar",
+  "audioModalMicPermissionDenied": "Permiso de micrófono no concedido",
+  "audioModalRecordingError": "Error al grabar audio",
+
+  "calendarStart": "INICIO",
+  "calendarEnd": "FIN",
+  "calendarSelectStartTime": "Seleccionar hora de inicio",
+  "calendarSelectEndTime": "Seleccionar hora de fin",
+
+  "addEventRecordedAudio": "Audio grabado",
+
+  "addDateTitle": "Cuando",
+  "addDateNext": "Siguiente",
+  "addDateError": "Por favor proporciona la fecha y hora de tu evento",
+
+  "chooseCategoryTitle": "Categoría",
+  "chooseCategoryNext": "Siguiente",
+  "categoryNameCulture": "Cultura",
+  "categoryNameEducation": "Educación",
+  "categoryNameParties": "Fiestas",
+  "categoryNameConcerts": "Conciertos",
+  "categoryNameFestivals": "Festivales",
+  "categoryNameSports": "Deportes",
+  "categoryNameTheater": "Teatro",
+  "categoryNameExhibitions": "Exposiciones",
+  "categoryNameClubs": "Clubes",
+
+  "commentsTitle": "Comentarios",
+  "commentsEmpty": "No hay comentarios",
+  "commentsError": "Error al cargar los comentarios",
+  "commentsInputHint": "Escribe un comentario...",
+  "commentsInputSend": "Enviar",
+  "commentsSubmitError": "Error al enviar el comentario",
+
+  "authTitle": "Iniciar Sesión",
+  "authEmail": "Correo",
+  "authEmailHint": "Ingresa tu correo",
+  "authPassword": "Contraseña",
+  "authPasswordHint": "Ingresa tu contraseña",
+  "authLoginButton": "Iniciar Sesión",
+  "authForgotPassword": "¿Olvidaste tu contraseña?",
+  "authNoAccount": "¿No tienes una cuenta?",
+  "authSignUp": "Regístrate",
+  "authLoginError": "Error al iniciar sesión: {error}",
+  "@authLoginError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "forgotPasswordTitle": "¿Olvidaste tu contraseña?",
+  "forgotPasswordDescription": "Introduce tu dirección de correo electrónico para solicitar el restablecimiento de tu contraseña.",
+  "forgotPasswordEmail": "Correo",
+  "forgotPasswordEmailHint": "Ingresa tu correo",
+  "forgotPasswordSendLink": "Enviar enlace",
+  "forgotPasswordError": "Error al enviar el enlace: {error}",
+  "@forgotPasswordError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "forgotPasswordSuccessTitle": "¡Correo enviado con éxito!",
+  "forgotPasswordSuccessDescription": "Por favor, verifica tu bandeja de entrada y sigue el enlace para cambiar tu contraseña. No olvides revisar la carpeta de spam si no lo encuentras.",
+  "forgotPasswordSuccessLogin": "Iniciar Sesión",
+
+  "authTabLogin": "Iniciar Sesión",
+  "authTabSignup": "Registrarse",
+  
+  "authSignupUsername": "Nombre de Usuario",
+  "authSignupUsernameHint": "Ingresa tu nombre de usuario",
+  "authSignupFullName": "Nombre Completo",
+  "authSignupFullNameHint": "Ingresa tu nombre completo",
+  "authSignupDateOfBirth": "Fecha de Nacimiento",
+  "authSignupButton": "Registrarse",
+  "authSignupError": "Error al registrarse: {error}",
+  "@authSignupError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "authSignupRequiredField": "Este campo es obligatorio",
+  "authSignupEmailError": "Ingrese un correo electrónico válido"
 }

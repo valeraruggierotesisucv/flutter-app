@@ -42,7 +42,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppHeader(
         goBack: () => Navigator.pop(context),
@@ -76,7 +76,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                               child: Column(
                                 children: [
                                   Text(
-                                    t!.forgotPasswordViewTitle,
+                                    t.forgotPasswordTitle,
                                     style: const TextStyle(
                                       fontSize: 28,
                                       fontFamily: 'SFProRounded',
@@ -91,7 +91,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                   ),
                                   const SizedBox(height: 20),
                                   Text(
-                                    t!.forgotPasswordViewDescription,
+                                    t.forgotPasswordDescription,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 16,
@@ -109,8 +109,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         children: [
                           const SizedBox(height: 40),
                           InputField(
-                            label: t.forgotPasswordViewEmail,
-                            hint: t.forgotPasswordViewEmailHint,
+                            label: t.forgotPasswordEmail,
+                            hint: t.forgotPasswordEmailHint,
                             controller: _emailController,
                             error: '',
                           ),
@@ -122,9 +122,17 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 Padding(
                   padding: const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 60.0),
                   child: CustomButton(
-                    label: t.forgotPasswordViewSendLink,
+                    label: t.forgotPasswordSendLink,
                     disabled: _emailController.text.isEmpty,
-                    onPress: handleSendLink,
+                    onPress: () async {
+                      try {
+                        handleSendLink();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(t.forgotPasswordError(e.toString()))),
+                        );
+                      }
+                    },
                   ),
                 ),
               ],

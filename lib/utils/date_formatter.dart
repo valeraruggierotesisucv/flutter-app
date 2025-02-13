@@ -1,32 +1,35 @@
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
-String formatDate(DateTime date) {
+String formatDate(DateTime date, BuildContext context) {
+  final t = AppLocalizations.of(context)!;
   final now = DateTime.now();
   final difference = now.difference(date);
   
   if (difference.inSeconds < 60) {
-    return 'just now';
+    return t.timeJustNow;
   }
   
   if (difference.inMinutes < 60) {
-    return '${difference.inMinutes}m ago';
+    return t.timeMinutesAgo(difference.inMinutes);
   }
   
   if (difference.inHours < 24) {
-    return '${difference.inHours}h ago';
+    return t.timeHoursAgo(difference.inHours);
   }
   
   if (difference.inDays < 30) {
-    return '${difference.inDays}d ago';
+    return t.timeDaysAgo(difference.inDays);
   }
   
   final months = (difference.inDays / 30).floor();
   if (months < 12) {
-    return '${months}mo ago';
+    return t.timeMonthsAgo(months);
   }
   
   final years = (difference.inDays / 365).floor();
-  return '${years}y ago';
+  return t.timeYearsAgo(years);
 }
 
 DateTime parseDate(String date) {

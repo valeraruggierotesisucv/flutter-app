@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PhotoModal extends StatelessWidget {
   final Function(XFile photo) onPhotoSelected;
@@ -13,6 +14,7 @@ class PhotoModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final ImagePicker picker = ImagePicker();
     
     Future<void> takePhoto() async {
@@ -50,7 +52,7 @@ class PhotoModal extends StatelessWidget {
                 TextButton(
                   onPressed: takePhoto,
                   child: Text(
-                    "Tomar foto",
+                    t.imageModalTakePhoto,
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
@@ -58,7 +60,7 @@ class PhotoModal extends StatelessWidget {
                 TextButton(
                   onPressed: chooseFromGallery,
                   child: Text(
-                    "Elegir de la galería",
+                    t.imageModalChooseGallery,
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
@@ -66,8 +68,8 @@ class PhotoModal extends StatelessWidget {
                 TextButton(
                   onPressed: onClose,
                   child: Text(
-                    "Cancelar",
-                    style: TextStyle(color: Colors.blue, fontSize: 18), // Cambia el color y tamaño
+                    t.imageModalCancel,
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
               ],

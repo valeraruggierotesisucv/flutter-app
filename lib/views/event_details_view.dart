@@ -11,6 +11,7 @@ import 'package:eventify/widgets/event_card.dart';
 import 'package:eventify/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EventDetailsView extends StatefulWidget {
   final String eventId;
@@ -45,12 +46,12 @@ class _EventDetailsViewState extends State<EventDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppHeader(
-        title: "Event Details",
-        goBack: () {
-          Navigator.pop(context);
-        },
+        title: t.eventDetailsTitle,
+        goBack: () => Navigator.pop(context),
       ),
       body: SafeArea(
         child: isLoading
@@ -98,7 +99,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 30),
                         child: CustomButton(
-                          label: "Edit",
+                          label: t.eventDetailsEditButton,
                           onPress: () {
                             Navigator.push(
                               context,

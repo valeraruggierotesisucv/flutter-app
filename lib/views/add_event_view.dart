@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:eventify/widgets/modal.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 
@@ -138,8 +139,10 @@ class _AddViewScreenState extends State<AddViewScreen> {
   }
 
   Widget _defaultWidget() {
+    final t = AppLocalizations.of(context)!;
+    
     return Scaffold(
-      appBar: AppHeader(title: "Nuevo Evento"),
+      appBar: AppHeader(title: t.addEventTitle),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -208,9 +211,10 @@ class _AddViewScreenState extends State<AddViewScreen> {
   }
 
   Widget _addTitle({String? title}) {
+    final t = AppLocalizations.of(context)!;
     return CustomInput(
-      label: "Titulo",
-      placeholder: "Agregar titulo",
+      label: t.addEventTitle,
+      placeholder: t.addEventTitleHint,
       multiline: false,
       variant: InputVariant.defaultInput,
       onChangeValue: (newValue) {
@@ -223,9 +227,10 @@ class _AddViewScreenState extends State<AddViewScreen> {
   }
 
   Widget _addDescription({String? description}) {
+    final t = AppLocalizations.of(context)!;
     return CustomInput(
-      label: "Descripción",
-      placeholder: "Agrega una descripción de tu evento",
+      label: t.addEventDescription,
+      placeholder: t.addEventDescriptionHint,
       variant: InputVariant.defaultInput,
       multiline: false,
       onChangeValue: (newValue) {
@@ -333,18 +338,19 @@ class _AddViewScreenState extends State<AddViewScreen> {
   }
 
   Widget _addDate({DateTime? date, DateTime? startsAt, DateTime? endsAt}) {
+    final t = AppLocalizations.of(context)!;
     debugPrint(date.toString());
     debugPrint(startsAt.toString());
     debugPrint(endsAt.toString());
     return (date != null && startsAt != null && endsAt != null)
         ? DisplayInput(
-            label: "CUANDO",
+            label: t.addEventDate,
             data: _datePills(formatDateToLocalString(date),
                 formatTime(startsAt), formatTime(endsAt)),
           )
         : CustomInput(
-            label: "CUANDO",
-            placeholder: "Agrega fecha y hora",
+            label: t.addEventDate,
+            placeholder: t.addEventDateHint,
             variant: InputVariant.arrow,
             onPress: () => {
               setState(() {
@@ -355,11 +361,12 @@ class _AddViewScreenState extends State<AddViewScreen> {
   }
 
   Widget _addCategory({String? category}) {
+    final t = AppLocalizations.of(context)!;
     return (category != null)
-        ? DisplayInput(label: "CATEGORIA", data: _categoryPill(category))
+        ? DisplayInput(label: t.addEventCategory, data: _categoryPill(category))
         : CustomInput(
-            label: "CATEGORIA",
-            placeholder: "Agrega una categoría",
+            label: t.addEventCategory,
+            placeholder: t.addEventCategoryHint,
             variant: InputVariant.arrow,
             onPress: () => {
               setState(() {
@@ -370,18 +377,19 @@ class _AddViewScreenState extends State<AddViewScreen> {
   }
 
   Widget _addMusic({String? music}) {
+    final t = AppLocalizations.of(context)!;
     return (music != null)
-        ? DisplayInput(label: "MUSICA", data: _musicPill(music))
+        ? DisplayInput(label: t.addEventMusic, data: _musicPill(music))
         : CustomInput(
-            label: "MUSICA",
-            placeholder: "Agrega música",
+            label: t.addEventMusic,
+            placeholder: t.addEventMusicHint,
             variant: InputVariant.arrow,
             onPress: () {
               showAudioModal(context, onClose: () {
                 Navigator.of(context, rootNavigator: true).pop();
               }, onRecordingComplete: (recordedPath) {
                 setState(() {
-                  _music = "Recorded audio";
+                  _music = t.addEventRecordedAudio;
                   _musicUri = recordedPath;
                 });
               }, onPickMusicFile: (music, musicUri) {
@@ -426,19 +434,20 @@ class _AddViewScreenState extends State<AddViewScreen> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al obtener la ubicación')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.addEventLocationError)),
       );
     }
   }
 
   Widget _addLocation({String? latitude, String? longitude}) {
+    final t = AppLocalizations.of(context)!;
     return (latitude != null && longitude != null)
         ? DisplayInput(
-            label: "UBICACIÓN", 
+            label: t.addEventLocation, 
             data: _locationPills(latitude, longitude))
         : CustomInput(
-            label: "UBICACIÓN",
-            placeholder: "Agrega ubicación",
+            label: t.addEventLocation,
+            placeholder: t.addEventLocationHint,
             variant: InputVariant.arrow,
             onPress: _getLocation,
           );
@@ -500,14 +509,16 @@ class _AddViewScreenState extends State<AddViewScreen> {
       _clearForm();
       showSuccessModal(
         context, 
-        title: "¡Evento creado con éxito!",
+        title: AppLocalizations.of(context)!.addEventSuccessTitle,
         onClose: () {
           
         },
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al crear el evento: ${e.toString()}')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.addEventErrorMessage(e.toString())),
+        ),
       );
     } finally {
       setState(() {
@@ -517,8 +528,9 @@ class _AddViewScreenState extends State<AddViewScreen> {
   }
 
   Widget _addPublishButton() {
+    final t = AppLocalizations.of(context)!;
     return CustomButton(
-      label: _isCreatingEvent ? "Creando..." : "Publicar",
+      label: _isCreatingEvent ? t.addEventPublishingButton : t.addEventPublishButton,
       onPress: _isCreatingEvent ? null : _handlePublish,
       disabled: !_isFormValid() || _isCreatingEvent,
     );
