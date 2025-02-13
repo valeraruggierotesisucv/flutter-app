@@ -80,20 +80,20 @@ class _FollowedViewState extends State<FollowedView> {
 
                   return ListView.builder(
                     itemCount: filteredFollowed.length,
-                    itemBuilder: (context, index) {
+                itemBuilder: (context, index) {
                       final follow = filteredFollowed[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: UserCard(
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: UserCard(
                           profileImage: follow.followedProfileImage,
                           username: follow.followedName ?? "Usuario",
                           onPressButton: () {
                             widget.viewModel.unfollowUser.execute(follow.userIdFollowedBy);
                           },
-                          variant: UserCardVariant.withButton,
+                      variant: UserCardVariant.withButton,
                           actionLabel: "Dejar de seguir",
                           isFollowing: true,
-                        ),
+                    ),
                       );
                     },
                   );

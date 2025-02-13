@@ -16,6 +16,12 @@ class ProfileCard extends StatelessWidget {
   final VoidCallback? onFollowed;
   final bool disableFollowButton;
   final bool isOtherUser;
+  final String eventsLabel;
+  final String followersLabel;
+  final String followingLabel;
+  final String followButtonLabel;
+  final String editButtonLabel;
+  final String configButtonLabel;
 
   const ProfileCard({
     super.key,
@@ -34,6 +40,12 @@ class ProfileCard extends StatelessWidget {
     this.onFollowed,
     this.disableFollowButton = false,
     this.isOtherUser = false,
+    required this.eventsLabel,
+    required this.followersLabel,
+    required this.followingLabel,
+    required this.followButtonLabel,
+    required this.editButtonLabel,
+    required this.configButtonLabel,
   });
 
   @override
@@ -63,9 +75,9 @@ class ProfileCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStatItem(events, 'Events', onEvents),
-                    _buildStatItem(followers, 'Followers', onFollowers),
-                    _buildStatItem(following, 'Following', onFollowed),
+                    _buildStatItem(events, eventsLabel, onEvents),
+                    _buildStatItem(followers, followersLabel, onFollowers),
+                    _buildStatItem(following, followingLabel, onFollowed),
                   ],
                 ),
               ),
@@ -132,9 +144,9 @@ class ProfileCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text(
-                      'Edit Profile',
-                      style: TextStyle(
+                    child: Text(
+                      editButtonLabel,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
                       ),
@@ -154,9 +166,9 @@ class ProfileCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text(
-                      'Configure Profile',
-                      style: TextStyle(
+                    child: Text(
+                      configButtonLabel,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
                       ),

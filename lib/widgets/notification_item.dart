@@ -1,6 +1,7 @@
 import 'package:eventify/utils/date_formatter.dart';
 import 'package:eventify/utils/notification_types.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 const Map<NotificationType, String> notificationMessages = {
@@ -33,6 +34,21 @@ class NotificationItem extends StatelessWidget {
     this.onFollow,
   });
 
+  String _getNotificationMessage(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
+    switch (type) {
+      case NotificationType.follow:
+        return t.notificationStartedFollowing;
+      case NotificationType.likeEvent:
+        return t.notificationLikedEvent;
+      case NotificationType.commentEvent:
+        return t.notificationCommentedEvent;
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -64,13 +80,13 @@ class NotificationItem extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      formatDate(timestamp),
+                      formatDate(timestamp, context),
                       style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
 
                   ],
                 ),
-                Text(notificationMessages[type]!),
+                Text(_getNotificationMessage(context)),
               ],
             ),
           ),

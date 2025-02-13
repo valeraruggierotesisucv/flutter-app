@@ -65,16 +65,18 @@ void main() async {
   }
 
   runApp(
-    MultiProvider(
-      providers: [
-        Provider.value(value: apiClient),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => NotificationProvider(NotificationRepository(apiClient))) 
-      ],
-      child: const MyApp(),
+    ChangeNotifierProvider(
+      create: (context) => LocaleModel(),
+      child: MultiProvider(
+        providers: [
+          Provider.value(value: apiClient),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => NotificationProvider(NotificationRepository(apiClient))) 
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
-
 }
 
 class MyApp extends StatelessWidget {

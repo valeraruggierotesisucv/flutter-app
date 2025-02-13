@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:eventify/widgets/custom_input.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Calendar extends StatefulWidget {
   final DateTime? initialStartTime;
@@ -45,8 +46,6 @@ class _CalendarState extends State<Calendar> {
       : null;
   }
 
-
-
   String _formatTimeOfDay(TimeOfDay? time) {
     if (time == null) return '';
     final hour = time.hour.toString().padLeft(2, '0');
@@ -83,6 +82,8 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -120,19 +121,19 @@ class _CalendarState extends State<Calendar> {
             child: Column(
               children: [
                 CustomInput(
-                  label: 'START',
+                  label: t.calendarStart,
                   placeholder: _startTime != null 
                     ? _formatTimeOfDay(_startTime)
-                    : 'Select start time',
+                    : t.calendarSelectStartTime,
                   variant: InputVariant.arrow,
                   onPress: () => _selectTime(context, true),
                 ),
                 const SizedBox(height: 16),
                 CustomInput(
-                  label: 'END',
+                  label: t.calendarEnd,
                   placeholder: _endTime != null 
                     ? _formatTimeOfDay(_endTime)
-                    : 'Select end time',
+                    : t.calendarSelectEndTime,
                   variant: InputVariant.arrow,
                   onPress: () => _selectTime(context, false),
                 ),

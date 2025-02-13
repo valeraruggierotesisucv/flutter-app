@@ -11,6 +11,7 @@ import 'display_input.dart';
 import 'user_card.dart';
 import 'social_interactions.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Enums
 enum EventCardVariant {
@@ -91,19 +92,20 @@ class DisplayEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Column(
       children: [
         if (musicUrl != null && musicUrl!.isNotEmpty)
           CustomAudioPlayer(audioUrl: musicUrl!),
         DisplayInput(
-          label: 'LOCATION', // Usar i18n aquí
+          label: t.eventCardLocation,
           data: LocationPill(
             latitude: latitude ?? '',
             longitude: longitude ?? '',
           ),
         ),
         DisplayInput(
-          label: 'WHEN', // Usar i18n aquí
+          label: t.eventCardWhen,
           data: Pill(
             startsAt: startsAt ?? '',
             endsAt: endsAt ?? '',
@@ -111,7 +113,7 @@ class DisplayEvent extends StatelessWidget {
           ),
         ),
         DisplayInput(
-          label: 'CATEGORY', // Usar i18n aquí
+          label: t.eventCardCategory,
           data: CustomChip(
             label: category ?? '',
             variant: ChipVariant.defaultChip,
@@ -182,6 +184,7 @@ class _EventCardState extends State<EventCard> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -209,7 +212,12 @@ class _EventCardState extends State<EventCard> {
             }
           },
           onShare: () {
-            Share.share("Check out this event: ${widget.title} on ${formatDateToLocalString(widget.date)}!\nDownload our Eventify app from the App Store.\nhttps://www.eventify.com");
+            Share.share(
+              t.eventCardShareMessage(
+                widget.title,
+                formatDateToLocalString(widget.date)
+              )
+            );
           },
         ),
         Padding(
@@ -251,7 +259,7 @@ class _EventCardState extends State<EventCard> {
             child: TextButton(
               onPressed: widget.onMoreDetails,
               child: Text(
-                'See more details', // Usar i18n aquí
+                t.eventCardSeeMore,
                 style: TextStyle(
                   color: Colors.grey[600],
                   // fontFamily: 'SF-Pro-Text',

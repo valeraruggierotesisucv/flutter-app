@@ -43,7 +43,7 @@ class CommentItem extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      formatDate(timeAgo),
+                      formatDate(timeAgo, context),
                       style: TextStyle(color: Colors.grey[600], fontSize: 12),
                     ),
                   ],

@@ -16,6 +16,7 @@ import 'package:location/location.dart';
 import 'package:eventify/widgets/modal.dart';
 import 'package:eventify/views/add_event_view.dart' show StepsEnum;
 import 'package:eventify/utils/result.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 
@@ -29,6 +30,7 @@ class EditEventView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return EditViewScreen(viewModel: viewModel);
   }
 }
@@ -77,6 +79,7 @@ class _EditViewScreenState extends State<EditViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       body: ListenableBuilder(
         listenable: _viewModel,
@@ -147,12 +150,11 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Widget _defaultWidget() {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppHeader(
-        title: "Editar Evento",
-        goBack: () {
-          Navigator.of(context).pop();
-        },
+        title: t.editEventTitle,
+        goBack: () => Navigator.pop(context),
       ),
       backgroundColor: Colors.white,
       body: Column(
@@ -218,9 +220,10 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Widget _addTitle() {
+    final t = AppLocalizations.of(context)!;
     return CustomInput(
-      label: "Titulo",
-      placeholder: "Agregar titulo",
+      label: t.editEventTitle,
+      placeholder: t.editEventTitleHint,
       value: _viewModel.event?.title,
       multiline: false,
       variant: InputVariant.defaultInput,
@@ -233,9 +236,10 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Widget _addDescription() {
+    final t = AppLocalizations.of(context)!;
     return CustomInput(
-      label: "Descripción",
-      placeholder: "Agrega una descripción",
+      label: t.editEventDescription,
+      placeholder: t.editEventDescriptionHint,
       value: _viewModel.event?.description,
       multiline: false,
       variant: InputVariant.defaultInput,
@@ -343,18 +347,19 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Widget _addDate() {
+    final t = AppLocalizations.of(context)!;
     final event = _viewModel.event;
     if (event == null) return Container();
     
     return (event.date != "" && event.startsAt != "" && event.endsAt != "")
         ? DisplayInput(
-            label: "CUANDO",
+            label: t.editEventDate,
             data: _datePills(formatDateToLocalString(DateTime.parse(event.date)),
                 formatTime(DateTime.parse(event.startsAt)), formatTime(DateTime.parse(event.endsAt))),
           )
         : CustomInput(
-            label: "CUANDO",
-            placeholder: "Agrega fecha y hora",
+            label: t.editEventDate,
+            placeholder: t.editEventDateHint,
             variant: InputVariant.arrow,
             onPress: () => {
               setState(() {
@@ -365,11 +370,12 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Widget _addCategory() {
+    final t = AppLocalizations.of(context)!;
     return (_category != null)
-        ? DisplayInput(label: "CATEGORIA", data: _categoryPill(_category!))
+        ? DisplayInput(label: t.editEventCategory, data: _categoryPill(_category!))
         : CustomInput(
-            label: "CATEGORIA",
-            placeholder: "Agrega una categoría",
+            label: t.editEventCategory,
+            placeholder: t.editEventCategoryHint,
             variant: InputVariant.arrow,
             onPress: () => {
               setState(() {
@@ -380,6 +386,7 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Widget _addMusic() {
+    final t = AppLocalizations.of(context)!;
     final event = _viewModel.event;
     if (event == null) return Container();
 
@@ -393,11 +400,11 @@ class _EditViewScreenState extends State<EditViewScreen> {
     
     return hasMusic
         ? DisplayInput(
-            label: "MUSICA", 
+            label: t.editEventMusic, 
             data: _musicPill(displayName))
         : CustomInput(
-            label: "MUSICA",
-            placeholder: "Agrega música",
+            label: t.editEventMusic,
+            placeholder: t.editEventMusicHint,
             variant: InputVariant.arrow,
             onPress: () {
               showAudioModal(
@@ -422,6 +429,7 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Future<void> _getLocation() async {
+    final t = AppLocalizations.of(context)!;
     bool serviceEnabled;
     PermissionStatus permissionGranted;
     LocationData locationData;
@@ -453,20 +461,21 @@ class _EditViewScreenState extends State<EditViewScreen> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al obtener la ubicación')),
+        SnackBar(content: Text(t.editEventLocationError)),
       );
     }
   }
 
   Widget _addLocation() {
+    final t = AppLocalizations.of(context)!;
     return (_viewModel.event!.latitude != "" && _viewModel.event!.longitude != "")
         ? DisplayInput(
-            label: "UBICACIÓN",
+            label: t.editEventLocation,
             data: _locationPills(_viewModel.event!.latitude, _viewModel.event!.longitude),
           )
         : CustomInput(
-            label: "UBICACIÓN",
-            placeholder: "Agrega una ubicación",
+            label: t.editEventLocation,
+            placeholder: t.editEventLocationHint,
             variant: InputVariant.arrow,
             onPress: _getLocation,
           );
@@ -485,7 +494,7 @@ class _EditViewScreenState extends State<EditViewScreen> {
       if (result is Ok) {
         showSuccessModal(
           context,
-          title: "¡Evento actualizado con éxito!",
+          title: AppLocalizations.of(context)!.editEventSuccessTitle,
           onClose: () {
             Navigator.of(context).pop();
             Navigator.of(context).pop();
@@ -496,7 +505,11 @@ class _EditViewScreenState extends State<EditViewScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al actualizar el evento: ${e.toString()}')),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.editEventErrorMessage(e.toString())
+          ),
+        ),
       );
     } finally {
       setState(() {
@@ -506,8 +519,11 @@ class _EditViewScreenState extends State<EditViewScreen> {
   }
 
   Widget _addPublishButton() {
+    final t = AppLocalizations.of(context)!;
     return CustomButton(
-      label: _isUpdatingEvent ? "Actualizando..." : "Actualizar",
+      label: _isUpdatingEvent 
+        ? t.editEventUpdatingButton 
+        : t.editEventUpdateButton,
       onPress: _isUpdatingEvent ? null : _handlePublish,
       disabled: !_viewModel.isValid || _isUpdatingEvent,
     );

@@ -7,6 +7,7 @@ import 'package:eventify/widgets/icon_logo.dart';
 import 'package:eventify/widgets/input_field.dart';
 import 'package:eventify/widgets/tabs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthView extends StatefulWidget {
   final AuthViewModel viewModel;
@@ -35,10 +36,7 @@ class _AuthViewState extends State<AuthView> {
   String passwordError = '';
   String confirmPasswordError = '';
 
-  final tabs = [
-    TabItem(id: 1, title: 'Iniciar Sesión'),
-    TabItem(id: 2, title: 'Registrarse'),
-  ];
+  
   int selectedTab = 1;
 
   @override
@@ -51,6 +49,12 @@ class _AuthViewState extends State<AuthView> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+  final tabs = [
+    TabItem(id: 1, title: t.authTabLogin),
+    TabItem(id: 2, title: t.authTabSignup),
+  ];
     void login() async {
       final email = _emailController.text;
       final password = _passwordControler.text;
@@ -58,10 +62,9 @@ class _AuthViewState extends State<AuthView> {
       try {
         await authService.signInWithEmailPassword(email, password, context);
       } catch (e) {
-        
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Error: $e")));
-        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.authLoginError(e.toString()))),
+        );
       }
     }
 
@@ -77,40 +80,39 @@ class _AuthViewState extends State<AuthView> {
       bool isValid = true;
 
     if (_nameController.text.isEmpty) {
-      nameError = 'Este campo es obligatorio';
+      nameError = t.authSignupRequiredField;
       isValid = false;
     }
 
     if (_fullNameController.text.isEmpty) {
-      fullNameError = 'Este campo es obligatorio';
+      fullNameError = t.authSignupRequiredField;
       isValid = false;
     }
 
     if (_emailController.text.isEmpty) {
-      emailError = 'Este campo es obligatorio';
+      emailError = t.authSignupRequiredField;
       isValid = false;
     } else {
-      // Validación de formato de correo electrónico
       String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
       RegExp regex = RegExp(pattern);
       if (!regex.hasMatch(_emailController.text)) {
-        emailError = 'Ingrese un correo electrónico válido';
+        emailError = t.authSignupEmailError;
         isValid = false;
       }
     }
 
     if (_passwordControler.text.isEmpty) {
-      passwordError = 'Este campo es obligatorio';
+      passwordError = t.authSignupRequiredField;
       isValid = false;
     }
 
     if (_confirmPasswordController.text.isEmpty) {
-      confirmPasswordError = 'Este campo es obligatorio';
+      confirmPasswordError = t.authSignupRequiredField;
       isValid = false;
     } 
     
     if (_confirmPasswordController.text != _passwordControler.text) {
-      confirmPasswordError = 'Las contraseñas no coinciden';
+      confirmPasswordError = t.changePasswordMismatch;
       isValid = false;
     }
 
@@ -182,16 +184,16 @@ class _AuthViewState extends State<AuthView> {
                             Column(
                               children: [
                                 InputField(
-                                  label: 'Correo electrónico',
-                                  hint: 'Correo electrónico',
+                                  label: t.authEmail,
+                                  hint: t.authEmailHint,
                                   error: '',
                                   controller: _emailController,
                                   icon: Icons.email,
                                 ),
                                 const SizedBox(height: 20),
                                 InputField(
-                                  label: 'Contraseña',
-                                  hint: 'Contraseña',
+                                  label: t.authPassword,
+                                  hint: t.authPasswordHint,
                                   error: '',
                                   controller: _passwordControler,
                                   secureText: !passwordVisibility,
@@ -213,13 +215,13 @@ class _AuthViewState extends State<AuthView> {
                                       ),
                                     );
                                   },
-                                  child: const Text('¿Olvidaste tu contraseña?'),
+                                  child: Text(t.authForgotPassword),
                                 ),
                                 const SizedBox(height: 20),
                               ],
                             ),
                             CustomButton(
-                              label: "Iniciar Sesión",
+                              label: t.authLoginButton,
                               onPress: login,
                             ),
                           ],
@@ -231,34 +233,34 @@ class _AuthViewState extends State<AuthView> {
                             spacing: 30,
                             children: [
                               InputField(
-                                label: 'Nombre de Usuario',
-                                hint: 'Nombre de Usuario',
+                                label: t.authSignupUsername,
+                                hint: t.authSignupUsernameHint,
                                 error: nameError,
                                 controller: _nameController,
                                 icon: Icons.person,
                               ),
                               InputField(
-                                label: 'Nombre Completo',
-                                hint: 'Nombre Completo',
+                                label: t.authSignupFullName,
+                                hint: t.authSignupFullNameHint,
                                 error: fullNameError,
                                 controller: _fullNameController,
                                 icon: Icons.person_add,
                               ),
                               InputField(
-                                  label: 'Correo electrónico',
-                                  hint: 'Correo electrónico',
+                                  label: t.authEmail,
+                                  hint: t.authEmailHint,
                                   error: emailError,
                                   controller: _emailController,
                                   icon: Icons.email),
                               DateTimePickerField(
-                                  label: 'Fecha de nacimiento',
+                                  label: t.authSignupDateOfBirth,
                                   value: _dateOfBirthController,
                                   onChange: (value) => setState(() {
                                         _dateOfBirthController = value;
                                       })),
                               InputField(
-                                label: 'Contraseña',
-                                hint: 'Contraseña',
+                                label: t.authPassword,
+                                hint: t.authPasswordHint,
                                 error: passwordError,
                                 controller: _passwordControler,
                                 secureText: !passwordVisibility,
@@ -272,8 +274,8 @@ class _AuthViewState extends State<AuthView> {
                                 },
                               ),
                               InputField(
-                                label: 'Confirmar contraseña',
-                                hint: 'Confirmar contraseña',
+                                label: t.changePasswordConfirm,
+                                hint: t.changePasswordConfirmHint,
                                 error: confirmPasswordError,
                                 controller: _confirmPasswordController,
                                 secureText: confirmPasswordVisibility,
@@ -289,7 +291,7 @@ class _AuthViewState extends State<AuthView> {
                               ),
                               const SizedBox(height: 10),
                               CustomButton(
-                                  label: 'Registrarse', onPress: register),
+                                  label: t.authSignupButton, onPress: register),
                             ],
                           ),
                         ],

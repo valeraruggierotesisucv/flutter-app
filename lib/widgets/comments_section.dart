@@ -3,6 +3,7 @@ import 'package:eventify/utils/command.dart';
 import 'package:flutter/material.dart';
 import 'comment_item.dart';
 import 'comment_input.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class User {
   final String username;
@@ -17,13 +18,12 @@ void showCommentsModal(
   ValueNotifier<List<CommentModel>> commentsListenable,
   Function(String) onSubmit,
 ) {
-  
+  final t = AppLocalizations.of(context)!;
   
   fetchComments.execute(eventId);
 
   showModalBottomSheet(
     context: context,
-    
     useSafeArea: true,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
@@ -54,7 +54,7 @@ void showCommentsModal(
                   color: Colors.grey[500],
                 ),
               ),
-              const Text("Comments"),
+              Text(t.commentsTitle),
               Expanded(
                 child: ListenableBuilder(
                   listenable: fetchComments,
@@ -66,8 +66,8 @@ void showCommentsModal(
                       valueListenable: commentsListenable,
                       builder: (context, latestComments, _) {
                         return latestComments.isEmpty
-                            ? const Center(
-                                child: Text('No comments yet'),
+                            ? Center(
+                                child: Text(t.commentsEmpty),
                               )
                             : ListView.builder(
                                 itemCount: latestComments.length,
@@ -86,11 +86,9 @@ void showCommentsModal(
               CommentInput(
                 onSubmit: (message) async {
                   try {
-                    
                     await onSubmit(message);
-                    
                   } catch (e) {
-                    debugPrint("Error submitting comment: $e");
+                    debugPrint(t.commentsSubmitError);
                   }
                 },
               ),

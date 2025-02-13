@@ -3,6 +3,7 @@ import 'package:eventify/data/repositories/event_repository.dart';
 import 'package:eventify/data/repositories/follow_user_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/data/services/api_client.dart';
+import 'package:eventify/models/locale.dart';
 import 'package:eventify/view_models/event_details_model_view.dart';
 import 'package:eventify/view_models/profile_details_view_model.dart';
 import 'package:eventify/models/notification_model.dart';
@@ -40,8 +41,8 @@ class _SearchViewState extends State<SearchView> {
   int selectedTab = 1;
   String query = '';
   Timer? _debounce;
+  late List<TabItem> tabs;
 
-  
   @override
   void initState() {
     super.initState();
@@ -49,6 +50,16 @@ class _SearchViewState extends State<SearchView> {
     widget.viewModel.searchEvents.addListener(_onSearch);
     widget.viewModel.searchUsers.addListener(_onSearch);
     widget.viewModel.getCategories.execute();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final t = AppLocalizations.of(context)!;
+    tabs = [
+      TabItem(id: 1, title: t.searchViewTabEvents),
+      TabItem(id: 2, title: t.searchViewTabUsers),
+    ];
   }
 
   @override
@@ -88,10 +99,6 @@ class _SearchViewState extends State<SearchView> {
       }
     });
   }
-  final tabs = [
-    TabItem(id: 1, title: 'Eventos'),
-    TabItem(id: 2, title: 'Usuarios'),
-  ];
   
   void onTabTap(int id) {
     setState(() {
@@ -108,6 +115,8 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    LocaleModel localeModel = Provider.of<LocaleModel>(context, listen: false);
+    
     return Scaffold(
       appBar: AppHeader(),
       body: SafeArea(
@@ -138,6 +147,7 @@ class _SearchViewState extends State<SearchView> {
                               onSelectCategories: (categoryIds) {
                                   widget.viewModel.selectCategory(categoryIds);
                               },
+                              language: localeModel.locale?.languageCode,
                             );
                           },
                         ),
@@ -170,7 +180,6 @@ class _SearchViewState extends State<SearchView> {
                               return Column(
                                 children: widget.viewModel.events
                                     .map((event) {
-                                      print(event.isLiked);
                                       return EventCard(
                                         eventId: event.eventId,
                                         profileImage: event.profileImage,
@@ -301,12 +310,13 @@ class _SearchViewState extends State<SearchView> {
   }
 
     void handleSendNotification(event, type) async {
-    final toUserToken =
-        await widget.viewModel.fetchNotificationToken(event.userId);
-    final fromUserId =
-        Provider.of<UserProvider>(context, listen: false).user?.id;
+    final toUserToken = await widget.viewModel.fetchNotificationToken(event.userId);
+    final fromUserId = Provider.of<UserProvider>(context, listen: false).user?.id;
+    final t = AppLocalizations.of(context)!;
 
-    final message = type == NotificationType.likeEvent ? "Le gustó tu evento" : "Comentó en tu evento"; 
+    final message = type == NotificationType.likeEvent 
+      ? t.searchViewLikedEvent 
+      : t.searchViewCommentedEvent;
 
     if (toUserToken != null && fromUserId != null) {
       await widget.viewModel.sendNotification(toUserToken, event.username, message);

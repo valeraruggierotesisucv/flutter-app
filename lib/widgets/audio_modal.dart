@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AudioModal extends StatefulWidget {
   final VoidCallback onClose;
@@ -41,6 +42,7 @@ class _AudioModalState extends State<AudioModal> {
   }
 
   void startRecording() async {
+    final t = AppLocalizations.of(context)!;
     try {
       var status = await Permission.microphone.request();
       if (status.isGranted) {
@@ -50,12 +52,12 @@ class _AudioModalState extends State<AudioModal> {
         setState(() {
           _isRecording = true;
         });
-        debugPrint("Grabación iniciada");
+        debugPrint("Recording started");
       } else {
-        debugPrint("Permiso de micrófono no concedido");
+        debugPrint(t.audioModalMicPermissionDenied);
       }
     } catch (e) {
-      debugPrint("Error al iniciar la grabación: $e");
+      debugPrint("${t.audioModalRecordingError}: $e");
     }
   }
 
@@ -87,6 +89,8 @@ class _AudioModalState extends State<AudioModal> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -105,16 +109,15 @@ class _AudioModalState extends State<AudioModal> {
                 TextButton(
                   onPressed: _pickMusic,
                   child: Text(
-                    "Elegir de archivos",
+                    t.audioModalChooseFile,
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextButton(
-                  onPressed:
-                      _isRecording ? handleStopRecording : startRecording,
+                  onPressed: _isRecording ? handleStopRecording : startRecording,
                   child: Text(
-                    _isRecording ? "Detener grabación" : "Grabar audio",
+                    _isRecording ? t.audioModalStopRecording : t.audioModalRecord,
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),
@@ -122,7 +125,7 @@ class _AudioModalState extends State<AudioModal> {
                 TextButton(
                   onPressed: widget.onClose,
                   child: Text(
-                    "Cancelar",
+                    t.audioModalCancel,
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                 ),

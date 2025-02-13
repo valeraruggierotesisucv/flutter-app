@@ -4,6 +4,7 @@ import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/widgets/calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddDateView extends StatefulWidget {
   final Function(StepsEnum) onStepChanged;
@@ -30,12 +31,15 @@ class _AddDateViewState extends State<AddDateView> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppHeader(
-          title: "Cuando",
-          goBack: () {
-            widget.onStepChanged(StepsEnum.defaultStep);
-          }),
+        title: t.addDateTitle,
+        goBack: () {
+          widget.onStepChanged(StepsEnum.defaultStep);
+        }
+      ),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -69,7 +73,7 @@ class _AddDateViewState extends State<AddDateView> {
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: Text(
-                "Por favor proporciona la fecha y hora de tu evento",
+                t.addDateError,
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -77,7 +81,7 @@ class _AddDateViewState extends State<AddDateView> {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: CustomButton(
-                label: "Siguiente",
+                label: t.addDateNext,
                 onPress: () {
                   if (selectedDate != null && startTime != null && endTime != null) {
                     widget.onStepChanged(StepsEnum.defaultStep);

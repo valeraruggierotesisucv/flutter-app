@@ -21,7 +21,7 @@ import 'package:eventify/widgets/profile_card.dart';
 import 'package:eventify/widgets/event_thumbnail_list.dart';
 import 'package:provider/provider.dart';
 import 'package:eventify/view_models/followed_view_model.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key, required this.viewModel});
 
@@ -49,6 +49,7 @@ class ProfileHomeScreen extends StatefulWidget {
 
 class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
   final authService = AuthService();
+  
 
   @override
   void initState() {
@@ -74,6 +75,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppHeader(),
       backgroundColor: Colors.white,
@@ -86,8 +88,8 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
 
           final user = widget.viewModel.user;
           if (user == null) {
-            return const Center(
-              child: Text('Failed to load profile'),
+            return Center(
+              child: Text(t.profileLoadError),
             );
           }
 
@@ -101,6 +103,12 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                   followers: user.followersCounter,
                   following: user.followingCounter,
                   profileImage: user.profileImage,
+                  eventsLabel: t.profileDetailsEvents,
+                  followersLabel: t.profileDetailsFollowers,
+                  followingLabel: t.profileDetailsFollowing,
+                  followButtonLabel: t.profileDetailsFollow,
+                  editButtonLabel: t.profileEditButton,
+                  configButtonLabel: t.profileConfigButton,
                   onFollowers: () {
                     Navigator.push(
                       context,

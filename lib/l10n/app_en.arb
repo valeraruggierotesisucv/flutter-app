@@ -29,5 +29,233 @@
   "searchViewNoUsers": "No users found",
   "searchViewNoEvents": "No events found",
   "searchViewInitialEvents": "Search for an event",
-  "searchViewInitialUsers": "Search for a user"
+  "searchViewInitialUsers": "Search for a user",
+
+  "editEventTitle": "Edit Event",
+  "editEventImage": "Event Image",
+  "editEventImageHint": "Select an image",
+  "editEventTitle": "Title",
+  "editEventTitleHint": "Enter a title",
+  "editEventDescription": "Description",
+  "editEventDescriptionHint": "Enter a description",
+  "editEventDate": "Date",
+  "editEventDateHint": "Select a date",
+  "editEventStartTime": "Start Time",
+  "editEventEndTime": "End Time",
+  "editEventCategory": "Category",
+  "editEventCategoryHint": "Select a category",
+  "editEventLocation": "Location",
+  "editEventLocationHint": "Select a location",
+  "editEventMusic": "Music",
+  "editEventMusicHint": "Select music",
+  "editEventUpdateButton": "Update",
+  "editEventUpdatingButton": "Updating...",
+  "editEventSuccessTitle": "Event updated successfully!",
+  "editEventErrorMessage": "Error updating event: {error}",
+  "@editEventErrorMessage": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "editEventLocationError": "Error getting location",
+
+  "eventCardLocation": "LOCATION",
+  "eventCardWhen": "WHEN",
+  "eventCardCategory": "CATEGORY",
+  "eventCardSeeMore": "See more details",
+  "eventCardShareMessage": "Check out this event: {title} on {date}!\nDownload our Eventify app from the App Store.\nhttps://www.eventify.com",
+  "@eventCardShareMessage": {
+    "placeholders": {
+      "title": {},
+      "date": {}
+    }
+  },
+
+  "eventDetailsTitle": "Event Details",
+  "eventDetailsEditButton": "Edit",
+  "eventDetailsLocationError": "Error getting location",
+
+  "searchViewTabEvents": "Events",
+  "searchViewTabUsers": "Users",
+  "searchViewLikedEvent": "Liked your event",
+  "searchViewCommentedEvent": "Commented on your event",
+
+  "addEventTitle": "New Event",
+  "addEventImage": "Image",
+  "addEventTitle": "Title",
+  "addEventTitleHint": "Add title",
+  "addEventDescription": "Description",
+  "addEventDescriptionHint": "Add a description for your event",
+  "addEventDate": "WHEN",
+  "addEventDateHint": "Add date and time",
+  "addEventCategory": "CATEGORY",
+  "addEventCategoryHint": "Add a category",
+  "addEventMusic": "MUSIC",
+  "addEventMusicHint": "Add music",
+  "addEventLocation": "LOCATION",
+  "addEventLocationHint": "Add location",
+  "addEventLocationError": "Error getting location",
+  "addEventPublishButton": "Publish",
+  "addEventPublishingButton": "Creating...",
+  "addEventSuccessTitle": "Event created successfully!",
+  "addEventErrorMessage": "Error creating event: {error}",
+  "@addEventErrorMessage": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "addEventRecordedAudio": "Recorded audio",
+
+  "imageModalTakePhoto": "Take photo",
+  "imageModalChooseGallery": "Choose from gallery",
+  "imageModalCancel": "Cancel",
+
+  "profileDetailsTitle": "Details",
+  "profileDetailsLoadError": "Failed to load profile",
+  "profileDetailsEvents": "Events",
+  "profileDetailsFollowers": "Followers",
+  "profileDetailsFollowing": "Following",
+  "profileDetailsFollow": "Follow",
+  "profileDetailsUnfollow": "Unfollow",
+
+  "notificationsTitle": "Notifications",
+  "notificationsError": "Error loading notifications",
+  "notificationsRetry": "Retry",
+  "notificationsUserNotAvailable": "Not available",
+  "notificationsEmpty": "No notifications",
+
+  "notificationStartedFollowing": "Started following you",
+  "notificationLikedEvent": "Liked your event",
+  "notificationCommentedEvent": "Commented on your event",
+
+  "timeJustNow": "just now",
+  "timeMinutesAgo": "{minutes}m ago",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "timeHoursAgo": "{hours}h ago",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "timeDaysAgo": "{days}d ago",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "timeMonthsAgo": "{months}mo ago",
+  "@timeMonthsAgo": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "timeYearsAgo": "{years}y ago",
+  "@timeYearsAgo": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+  "changePasswordTitle": "Change Password",
+  "changePasswordNew": "New password",
+  "changePasswordNewHint": "New password",
+  "changePasswordConfirm": "Confirm password",
+  "changePasswordConfirmHint": "Confirm password",
+  "changePasswordButton": "Change password",
+  "changePasswordError": "Password must be at least 6 characters",
+  "changePasswordMismatch": "Passwords do not match",
+  "changePasswordSuccess": "Password updated successfully",
+  "profileLoadError": "Failed to load profile",
+  "profileEditButton": "Edit Profile",
+  "profileConfigButton": "Configure Profile",
+  "profileDetailsEdit": "Edit",
+  "profileDetailsConfig": "Configure",
+
+  "audioModalChooseFile": "Choose from files",
+  "audioModalRecord": "Record audio",
+  "audioModalStopRecording": "Stop recording",
+  "audioModalCancel": "Cancel",
+  "audioModalMicPermissionDenied": "Microphone permission denied",
+  "audioModalRecordingError": "Error recording audio",
+
+  "calendarStart": "START",
+  "calendarEnd": "END",
+  "calendarSelectStartTime": "Select start time",
+  "calendarSelectEndTime": "Select end time",
+
+  "addDateTitle": "When",
+  "addDateNext": "Next",
+  "addDateError": "Please provide the date and time for your event",
+
+  "chooseCategoryTitle": "Category",
+  "chooseCategoryNext": "Next",
+  "categoryNameCulture": "Culture",
+  "categoryNameEducation": "Education",
+  "categoryNameParties": "Parties",
+  "categoryNameConcerts": "Concerts",
+  "categoryNameFestivals": "Festivals",
+  "categoryNameSports": "Sports",
+  "categoryNameTheater": "Theater",
+  "categoryNameExhibitions": "Exhibitions",
+  "categoryNameClubs": "Clubs",
+
+  "commentsTitle": "Comments",
+  "commentsEmpty": "No comments yet",
+  "commentsError": "Error loading comments",
+  "commentsInputHint": "Write a comment...",
+  "commentsInputSend": "Send",
+  "commentsSubmitError": "Error submitting comment",
+
+  "authTitle": "Login",
+  "authEmail": "Email",
+  "authEmailHint": "Enter your email",
+  "authPassword": "Password",
+  "authPasswordHint": "Enter your password",
+  "authLoginButton": "Login",
+  "authForgotPassword": "Forgot password?",
+  "authNoAccount": "Don't have an account?",
+  "authSignUp": "Sign up",
+  "authLoginError": "Error logging in: {error}",
+  "@authLoginError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "forgotPasswordTitle": "Forgot your password?",
+  "forgotPasswordDescription": "Enter your email address to request a password reset link.",
+  "forgotPasswordEmail": "Email",
+  "forgotPasswordEmailHint": "Enter your email",
+  "forgotPasswordSendLink": "Send link",
+  "forgotPasswordError": "Error sending link: {error}",
+  "@forgotPasswordError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "forgotPasswordSuccessTitle": "Email sent successfully!",
+  "forgotPasswordSuccessDescription": "Please check your email for a link to reset your password. Don't forget to check your spam folder if you don't see it.",
+  "forgotPasswordSuccessLogin": "Login",
+
+  "authTabLogin": "Login",
+  "authTabSignup": "Sign up",
+  
+  "authSignupUsername": "Username",
+  "authSignupUsernameHint": "Enter your username",
+  "authSignupFullName": "Full Name",
+  "authSignupFullNameHint": "Enter your full name",
+  "authSignupDateOfBirth": "Date of Birth",
+  "authSignupButton": "Sign up",
+  "authSignupError": "Error signing up: {error}",
+  "@authSignupError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "authSignupRequiredField": "This field is required",
+  "authSignupEmailError": "Please enter a valid email"
 }

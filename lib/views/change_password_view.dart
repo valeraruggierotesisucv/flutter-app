@@ -3,6 +3,7 @@ import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class ChangePasswordView extends StatefulWidget {
@@ -22,6 +23,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   final authService = AuthService();
 
   void changePasword() async {
+    final t = AppLocalizations.of(context)!;
     final newPassword = _newPasswordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
@@ -32,15 +34,15 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 
     if (newPassword.length < 6) {
       setState(() {
-        errorNewPassword = 'La contraseña debe tener al menos 6 caracteres';
+        errorNewPassword = t.changePasswordError;
       });
       return;
     }
 
     if (newPassword != confirmPassword) {
       setState(() {
-        errorNewPassword = 'Las contraseñas no coinciden';
-        errorConfirmPassword = 'Las contraseñas no coinciden';
+        errorNewPassword = t.changePasswordMismatch;
+        errorConfirmPassword = t.changePasswordMismatch;
       });
       return;
     }
@@ -49,7 +51,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Contraseña actualizada correctamente')),
+        SnackBar(content: Text(t.changePasswordSuccess)),
       );
       Navigator.pop(context);
     }
@@ -57,10 +59,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppHeader(
-        title: 'Cambiar contraseña',
+        title: t.changePasswordTitle,
         goBack: () => Navigator.pop(context),
       ),
       body: Padding(
@@ -72,11 +76,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     const SizedBox(height: 40),
                     InputField(
-                      label: "Nueva contraseña",
-                      hint: "Nueva contraseña",
+                      label: t.changePasswordNew,
+                      hint: t.changePasswordNewHint,
                       variant: InputFieldVariant.grayBackground,
                       controller: _newPasswordController,
                       secureText: secureTextNewPassword,
@@ -90,9 +93,9 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     ),
                     const SizedBox(height: 20),
                     InputField(
-                      label: "Confirmar contraseña",
-                      hint: "Confirmar contraseña",
-                      variant: InputFieldVariant  .grayBackground,
+                      label: t.changePasswordConfirm,
+                      hint: t.changePasswordConfirmHint,
+                      variant: InputFieldVariant.grayBackground,
                       controller: _confirmPasswordController,
                       secureText: secureTextConfirmPassword,
                       error: errorConfirmPassword,
@@ -110,10 +113,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: CustomButton(
-                label: "Cambiar contraseña",
-                onPress: () {
-                  changePasword();
-                },
+                label: t.changePasswordButton,
+                onPress: changePasword,
               ),
             ),
           ],
