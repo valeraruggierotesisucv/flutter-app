@@ -1,10 +1,13 @@
 import 'package:eventify/data/repositories/comment_repository.dart';
 import 'package:eventify/data/repositories/category_repository.dart';
 import 'package:eventify/data/repositories/event_repository.dart';
+import 'package:eventify/data/repositories/notification_repository.dart';
 import 'package:eventify/data/repositories/user_repository.dart';
 import 'package:eventify/models/locale.dart';
 import 'package:eventify/providers/auth_provider.dart';
+import 'package:eventify/providers/notification_provider.dart';
 import 'package:eventify/services/auth_gate.dart';
+import 'package:eventify/services/push_notifications.dart';
 import 'package:eventify/view_models/edit_profile_view_model.dart';
 import 'package:eventify/view_models/profile_view_model.dart';
 import 'package:eventify/view_models/auth_view_model.dart';
@@ -26,6 +29,7 @@ import 'package:eventify/views/search_view.dart';
 import 'package:eventify/views/profile_view.dart';
 import 'package:eventify/navigation.dart';
 import 'package:eventify/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -47,15 +51,25 @@ void main() async {
     baseUrl: dotenv.env['API_URL']!,
   );
 
+  try {
+    await Firebase.initializeApp();
+    await FirebaseApi().initNotifications(); 
+    debugPrint("Firebase inicializado correctamente.");
+  } catch (e) {
+    debugPrint("Error al inicializar Firebase: $e");
+  }
+
   runApp(
     MultiProvider(
       providers: [
         Provider.value(value: apiClient),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider(NotificationRepository(apiClient))) 
       ],
       child: const MyApp(),
     ),
   );
+
 }
 
 class MyApp extends StatelessWidget {
@@ -88,12 +102,10 @@ class MyApp extends StatelessWidget {
           routes: {
             // AppScreens routes
             '/${AppScreens.auth.name}': (context) => AuthView(
-              viewModel: AuthViewModel(
-                context: context, 
-                userRepository: UserRepository(
-                  Provider.of<ApiClient>(context, listen: false))
-                )
-              ),
+                viewModel: AuthViewModel(
+                    context: context,
+                    userRepository: UserRepository(
+                        Provider.of<ApiClient>(context, listen: false)))),
             '/${AppScreens.onboarding.name}': (context) =>
                 const OnboardingView(),
             '/${AppScreens.forgotPassword.name}': (context) =>
@@ -121,7 +133,7 @@ class MyApp extends StatelessWidget {
 
             // AppTabs routes
             '/${AppTabs.home.name}': (context) => const MainView(),
-            '/${AppTabs.search.name}': (context) =>  SearchView(
+            '/${AppTabs.search.name}': (context) => SearchView(
                 viewModel: SearchViewModel(
                   context: context,
                   userRepository: UserRepository(
@@ -131,7 +143,10 @@ class MyApp extends StatelessWidget {
                   commentRepository: CommentRepository(
                       Provider.of<ApiClient>(context, listen: false)),
                   categoryRepository: CategoryRepository(
-                      Provider.of<ApiClient>(context, listen: false)))
+                      Provider.of<ApiClient>(context, listen: false)),
+                  notificationRepository: NotificationRepository(
+                      Provider.of<ApiClient>(context, listen: false),)
+                      ), 
             ),
             // '/${AppTabs.add.name}': (context) => const AddView(),
             // '/${AppTabs.notifications.name}': (context) =>

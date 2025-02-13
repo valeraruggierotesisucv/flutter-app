@@ -42,6 +42,9 @@ class _MainViewState extends State<MainView> {
           commentRepository: CommentRepository(
             Provider.of<ApiClient>(context, listen: false),
           ),
+          notificationRepository: NotificationRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          )
         ),
       ),
     ),
@@ -61,6 +64,9 @@ class _MainViewState extends State<MainView> {
           categoryRepository: CategoryRepository(
             Provider.of<ApiClient>(context, listen: false),
           ),
+           notificationRepository: NotificationRepository(
+            Provider.of<ApiClient>(context, listen: false),
+          )
         ),
       ),
     ),

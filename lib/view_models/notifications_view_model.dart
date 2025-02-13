@@ -42,7 +42,7 @@ class NotificationsViewModel extends ChangeNotifier {
 
       final result = await _notificationRepository.getNotifications(userId);
       debugPrint("Resultado de notificaciones-->");
-      
+
       switch (result) {
         case Ok<List<NotificationModel>>():
           _notifications = result.value;
@@ -58,7 +58,6 @@ class NotificationsViewModel extends ChangeNotifier {
               - Fecha: ${notification.createdAt}
               - EventImage: ${notification.eventImage}
               """);
-
           }
           _error = null;
         case Error<List<NotificationModel>>():
@@ -75,4 +74,5 @@ class NotificationsViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 }

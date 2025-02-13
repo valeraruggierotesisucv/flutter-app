@@ -9,8 +9,8 @@ class NotificationModel {
   final String message;
   final DateTime createdAt;
   final String? eventImage;
-  final String username;
-  final String profileImage;
+  final String? username;
+  final String? profileImage;
 
   NotificationModel({
     required this.notificationId,

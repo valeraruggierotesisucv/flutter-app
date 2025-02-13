@@ -10,12 +10,14 @@ import 'package:eventify/models/event_summary_model.dart';
 import 'package:eventify/models/notification_model.dart';
 import 'package:eventify/models/social_interactions.dart';
 import 'package:eventify/models/user_model.dart';
+import 'package:eventify/utils/notification_types.dart';
 import 'package:eventify/utils/result.dart';
 import 'package:eventify/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:eventify/models/location_model.dart';
+import 'package:http/http.dart' as http;
 
 /// Adds the `Authentication` header to a header configuration.
 typedef AuthHeaderProvider = String? Function();
@@ -53,7 +55,6 @@ class ApiClient {
         final jsonData = jsonResponse['data'] as List<dynamic>;
 
         return Result.ok(jsonData.map((element) {
-          
           final user = element['user'] as Map<String, dynamic>;
           final location = element['location'] as Map<String, dynamic>;
           bool isLiked = false;
@@ -130,19 +131,20 @@ class ApiClient {
     }
   }
 
-  Future<Result<List<EventModel>>> searchEvents(String query, String userId) async {
+  Future<Result<List<EventModel>>> searchEvents(
+      String query, String userId) async {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/search/events');
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
-      
+
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode({'search': query, 'userId': userId}));
-      
+
       final response = await request.close();
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
         final jsonData = jsonResponse['data'] as List<dynamic>;
@@ -179,9 +181,9 @@ class ApiClient {
             'is_liked': isLiked,
           });
         }).toList());
-        
       } else {
-        return Result.error(HttpException("Failed to search events: ${response.statusCode}"));
+        return Result.error(
+            HttpException("Failed to search events: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
@@ -190,25 +192,24 @@ class ApiClient {
     }
   }
 
-
   Future<Result<List<UserModel>>> searchUsers(String query) async {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/search/users');
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
-      
+
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode({'search': query}));
-      
+
       final response = await request.close();
-      
-      if(response.statusCode == 200) {
+
+      if (response.statusCode == 200) {
         final stringData = await response.transform(utf8.decoder).join();
         final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
-        
+
         final jsonData = jsonResponse['data'] as List<dynamic>;
-        
+
         return Result.ok(jsonData.map((element) {
           print("ELEMENT");
           print(element);
@@ -226,9 +227,9 @@ class ApiClient {
             'eventsCounter': 0,
           });
         }).toList());
-        
       } else {
-        return Result.error(HttpException("Failed to search events: ${response.statusCode}"));
+        return Result.error(
+            HttpException("Failed to search events: ${response.statusCode}"));
       }
     } on Exception catch (error) {
       return Result.error(error);
@@ -270,7 +271,7 @@ class ApiClient {
         'endsAt': endsAt.toUtc().toIso8601String(),
         'eventMusic': eventMusic,
       };
-      debugPrint("body $body"); 
+      debugPrint("body $body");
 
       request.write(jsonEncode(body));
       final response = await request.close();
@@ -301,7 +302,6 @@ class ApiClient {
     final client = _clientFactory();
     try {
       final uri = Uri.parse('$_baseUrl/locations');
-      debugPrint(uri.toString());
       final request = await client.postUrl(uri);
       await _authHeader(request.headers);
       request.headers.contentType = ContentType.json;
@@ -333,7 +333,7 @@ class ApiClient {
     }
   }
 
-    Future<Result<List<NotificationModel>>> getNotifications(
+  Future<Result<List<NotificationModel>>> getNotifications(
       String userId) async {
     final client = _clientFactory();
     try {
@@ -640,5 +640,147 @@ class ApiClient {
       client.close();
     }
   }
+
+    Future<Result<void>> sendNotification(
+      String toNotificationToken, Map<String, dynamic> data) async {
+    final client = _clientFactory();
+
+    try {
+      final uri =
+          Uri.parse('$_baseUrl/push-notifications/$toNotificationToken');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+
+      final body = {'title': data['title'], 'body': data['body']};
+      request.write(jsonEncode(body));
+      final response = await request.close();
+      debugPrint("-->$uri");
+      debugPrint("sending notification to $toNotificationToken, $body");
+      if (response.statusCode != 200) {
+        debugPrint("ERROR ENVIANDO LA NOTIFICACION");
+        return Result.error(
+            Exception('Failed to send notification: ${response.statusCode}'));
+      } else {
+        debugPrint("Notificaion enviada");
+        return Result.ok(null);
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<String?> getNotificationToken(String userId) async {
+    final client = _clientFactory();
+    try {
+      final uri = Uri.parse('$_baseUrl/users/$userId/push-notification');
+      final request = await client.getUrl(uri);
+      await _authHeader(request.headers);
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final jsonResponse = jsonDecode(stringData) as Map<String, dynamic>;
+
+        if (jsonResponse['success'] == true) {
+          return jsonResponse['data']; // Devuelve directamente el token FCM
+        } else {
+          throw Exception(
+              'Failed to fetch notification token: ${jsonResponse['error']}');
+        }
+      } else {
+        throw Exception(
+            'Failed to fetch notification token: ${response.statusCode}');
+      }
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<void>> updateNotificationToken(
+      String userId, String notificationToken) async {
+    final client = _clientFactory();
+
+    try {
+      final uri =
+          Uri.parse('$_baseUrl/users/$userId/notifications/$notificationToken');
+      final request = await client.putUrl(uri);
+      debugPrint("uri-->$uri");
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+      final response = await request.close();
+
+      if (response.statusCode != 200) {
+        debugPrint(
+            'Failed to update notification token: ${response.statusCode}');
+        return Result.error(Exception(
+            'Failed to update notification token: ${response.statusCode}'));
+      } else {
+        debugPrint("Token actualizado");
+        return Result.ok(null);
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<void>> createNotification(
+      NotificationModel notificationData) async {
+    final client = _clientFactory();
+
+    try {
+      final uri = Uri.parse('$_baseUrl/notifications');
+      final request = await client.postUrl(uri);
+      await _authHeader(request.headers);
+      request.headers.contentType = ContentType.json;
+      debugPrint("type ${notificationData.type}");
+
+      String type; 
+      switch (notificationData.type) {
+        case NotificationType.likeEvent:
+          type = "LIKE";
+          break;
+        case NotificationType.follow:
+          type = "FOLLOW";
+          break;
+        case NotificationType.commentEvent:
+          type = "COMMENT";
+          break;
+        default:
+          type = "UNKNOWN"; // Valor por defecto en caso de error
+      }
+
+      final body = {
+        "fromUserId": notificationData.fromUserId,
+        "toUserId": notificationData.toUserId,
+        "type": type,
+        "message": notificationData.message,
+        "eventImage": notificationData.eventImage
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+      debugPrint("$uri->$body");
+
+      if (response.statusCode != 200) {
+        debugPrint("Error creando la notificacion");
+        return Result.error(
+            Exception('Failed to send notification: ${response.statusCode}'));
+      } else {
+        debugPrint("Notificaion creada");
+        return Result.ok(null);
+      }
+    } on Exception catch (error) {
+      debugPrint("Error $error");
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
 
 }
