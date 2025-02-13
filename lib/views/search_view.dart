@@ -320,6 +320,7 @@ class _SearchViewState extends State<SearchView> {
     void handleSendNotification(event, type) async {
     final toUserToken = await widget.viewModel.fetchNotificationToken(event.userId);
     final fromUserId = Provider.of<UserProvider>(context, listen: false).user?.id;
+    final username = Provider.of<UserProvider>(context, listen: false).user?.email;
     final t = AppLocalizations.of(context)!;
 
     final message = type == NotificationType.likeEvent 
@@ -338,7 +339,7 @@ class _SearchViewState extends State<SearchView> {
         type: type,
         message: message,
         createdAt: DateTime.now(),
-        username: event.username,
+        username: username,
         profileImage: event.profileImage,
         eventImage: event.eventImage));
     }

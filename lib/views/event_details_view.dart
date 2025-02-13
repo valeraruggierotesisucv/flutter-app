@@ -140,6 +140,8 @@ class _EventDetailsViewState extends State<EventDetailsView> {
         await widget.viewModel.fetchNotificationToken(event.userId);
     final fromUserId =
         Provider.of<UserProvider>(context, listen: false).user?.id;
+    final username =
+        Provider.of<UserProvider>(context, listen: false).user?.email; 
 
     final message = type == NotificationType.likeEvent ? "Le gustó tu evento" : "Comentó en tu evento"; 
 
@@ -154,7 +156,7 @@ class _EventDetailsViewState extends State<EventDetailsView> {
           type: type,
           message: message,
           createdAt: DateTime.now(),
-          username: event.username,
+          username: username,
           profileImage: event.profileImage,
           eventImage: event.eventImage));
     }

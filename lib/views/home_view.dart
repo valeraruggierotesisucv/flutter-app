@@ -198,10 +198,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void handleSendNotification(event, type) async {
-    final toUserToken =
-        await widget.viewModel.fetchNotificationToken(event.userId);
-    final fromUserId =
-        Provider.of<UserProvider>(context, listen: false).user?.id;
+    final toUserToken = await widget.viewModel.fetchNotificationToken(event.userId);
+    final fromUserId = Provider.of<UserProvider>(context, listen: false).user?.id;
+    final username = Provider.of<UserProvider>(context, listen: false).user?.email;
 
     final message = type == NotificationType.likeEvent ? "Le gustó tu evento" : "Comentó en tu evento"; 
 
@@ -216,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
           type: type,
           message: message,
           createdAt: DateTime.now(),
-          username: event.username,
+          username: username,
           profileImage: event.profileImage,
           eventImage: event.eventImage));
     }
