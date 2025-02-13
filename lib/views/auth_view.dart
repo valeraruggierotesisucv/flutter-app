@@ -1,5 +1,6 @@
 import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/view_models/auth_view_model.dart';
+import 'package:eventify/views/forgot_password_view.dart';
 import 'package:eventify/widgets/custom_button.dart';
 import 'package:eventify/widgets/date_time_picker_field.dart';
 import 'package:eventify/widgets/icon_logo.dart';
@@ -54,16 +55,13 @@ class _AuthViewState extends State<AuthView> {
       final email = _emailController.text;
       final password = _passwordControler.text;
 
-      debugPrint(email);
-      debugPrint(password);
-
       try {
         await authService.signInWithEmailPassword(email, password, context);
       } catch (e) {
-        if (mounted) {
+        
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("Error: $e")));
-        }
+        
       }
     }
 
@@ -78,7 +76,6 @@ class _AuthViewState extends State<AuthView> {
 
       bool isValid = true;
 
-    // Validación de campos
     if (_nameController.text.isEmpty) {
       nameError = 'Este campo es obligatorio';
       isValid = false;
@@ -208,10 +205,15 @@ class _AuthViewState extends State<AuthView> {
                                   },
                                 ),
                                 TextButton(
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, '/forgot_password'),
-                                  child:
-                                      const Text('¿Olvidaste tu contraseña?'),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ForgotPasswordView(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('¿Olvidaste tu contraseña?'),
                                 ),
                                 const SizedBox(height: 20),
                               ],

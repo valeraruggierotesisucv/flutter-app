@@ -1,3 +1,4 @@
+import 'package:eventify/services/auth_service.dart';
 import 'package:eventify/views/forgot_password_login_view.dart';
 import 'package:eventify/widgets/app_header.dart';
 import 'package:eventify/widgets/input_field.dart';
@@ -14,17 +15,30 @@ class ForgotPasswordView extends StatefulWidget {
 
 class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final _emailController = TextEditingController();
-
+  final AuthService _authService = AuthService();
   @override
   void dispose() {
     _emailController.dispose();
     super.dispose();
   }
 
-  void _sendResetLink() {
-    // Implement password reset logic here
-    print('Send reset link to: ${_emailController.text}');
+
+
+  void handleSendLink() async {
+    try {
+      final email = _emailController.text;
+      await _authService.sendResetLink(email);
+      Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ForgotPasswordLoginView(),
+      ),
+    );
+    } catch (e) {
+      print(e);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +123,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   padding: const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 60.0),
                   child: CustomButton(
                     label: t.forgotPasswordViewSendLink,
-                    onPress: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPasswordLoginView())),
+                    disabled: _emailController.text.isEmpty,
+                    onPress: handleSendLink,
                   ),
                 ),
               ],

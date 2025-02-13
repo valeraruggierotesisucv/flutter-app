@@ -206,7 +206,6 @@ class _SearchViewState extends State<SearchView> {
                                             ),
                                           );
                                         },
-                                        onShare: () {},
                                         handleLike: () async {
                                           await widget.viewModel.handleLike.execute(event.eventId);
                                           if(event.isLiked){

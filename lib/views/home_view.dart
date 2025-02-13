@@ -150,7 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                         },
-                        onShare: () {},
                         handleLike: () async {
                           await widget.viewModel.handleLike
                               .execute(event.eventId);
