@@ -10,6 +10,7 @@ import 'custom_chip.dart';
 import 'display_input.dart';
 import 'user_card.dart';
 import 'social_interactions.dart';
+import 'package:share_plus/share_plus.dart';
 
 // Enums
 enum EventCardVariant {
@@ -68,6 +69,7 @@ class LocationPill extends StatelessWidget {
 }
 
 class DisplayEvent extends StatelessWidget {
+  
   final String? latitude;
   final String? longitude;
   final String? startsAt;
@@ -137,8 +139,6 @@ class EventCard extends StatefulWidget {
   final EventCardVariant variant;
   final Map<String, String> userComment;
   final VoidCallback onPressUser;
-  
-  final VoidCallback onShare;
   final VoidCallback? onMoreDetails;
   final String? musicUrl;
   final VoidCallback handleLike;
@@ -165,7 +165,6 @@ class EventCard extends StatefulWidget {
     this.variant = EventCardVariant.defaultCard,
     required this.userComment,
     required this.onPressUser,
-    required this.onShare,
     this.onMoreDetails,
     this.musicUrl,
     required this.handleLike,
@@ -209,7 +208,9 @@ class _EventCardState extends State<EventCard> {
               });
             }
           },
-          onShare: widget.onShare,
+          onShare: () {
+            Share.share("Check out this event: ${widget.title} on ${formatDateToLocalString(widget.date)}!\nDownload our Eventify app from the App Store.\nhttps://www.eventify.com");
+          },
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),

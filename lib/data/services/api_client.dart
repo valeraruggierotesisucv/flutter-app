@@ -842,8 +842,7 @@ Future<Result<void>> followUser(String targetUserId, String userId) async {
     } on Exception catch (error) {
       return Result.error(error);
     } finally {
-      client.close();
-      
+      client.close(); 
     }
   }
 

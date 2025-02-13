@@ -88,7 +88,6 @@ class _EventDetailsViewState extends State<EventDetailsView> {
                           onCommentSubmit: (message) async {
                               await widget.viewModel.submitComment.execute(widget.eventId, message);
                             },
-                          onShare: () {},
                           handleLike: () async {
                             await widget.viewModel.handleLike.execute(widget.eventId);
                           },

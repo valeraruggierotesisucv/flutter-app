@@ -76,4 +76,12 @@ class AuthService {
     )
     );
   }
+
+  Future<void> sendResetLink(String email) async {
+    try {
+      final response = await _supabaseClient.auth.resetPasswordForEmail(email);
+    } catch (e) {
+      print(e);
+    }
+  }
 }
