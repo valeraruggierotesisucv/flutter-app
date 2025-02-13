@@ -1,4 +1,4 @@
-# eventify
+# Eventify
 
 A new Flutter project.
 
