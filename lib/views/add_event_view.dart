@@ -223,6 +223,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
           _title = newValue;
         });
       },
+      value: title,
       required: title != null ? false : true,
     );
   }
@@ -234,6 +235,7 @@ class _AddViewScreenState extends State<AddViewScreen> {
       placeholder: t.addEventDescriptionHint,
       variant: InputVariant.defaultInput,
       multiline: false,
+      value: description,
       onChangeValue: (newValue) {
         setState(() {
           _description = newValue;
