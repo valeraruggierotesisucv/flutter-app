@@ -33,9 +33,9 @@ class ConfigurationView extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ListTile(
-                onTap: () {
-                  localeModel.setLocale(const Locale('es'));
-                  Navigator.pop(context);
+                onTap: () async {
+                  await localeModel.setLocale(const Locale('es'));
+                  if (context.mounted) Navigator.pop(context);
                 },
                 title: const Text(
                   'Español',
@@ -44,9 +44,9 @@ class ConfigurationView extends StatelessWidget {
                 ),
               ),
               ListTile(
-                onTap: () {
-                  localeModel.setLocale(const Locale('en'));
-                  Navigator.pop(context);
+                onTap: () async {
+                  await localeModel.setLocale(const Locale('en'));
+                  if (context.mounted) Navigator.pop(context);
                 },
                 title: const Text(
                   'English',
