@@ -129,7 +129,7 @@
   "notificationCommentedEvent": "Comentó en tu evento",
 
   "timeJustNow": "ahora mismo",
-  "timeMinutesAgo": "hace {minutes}m",
+  "timeMinutesAgo": "hace {minutes}min",
   "@timeMinutesAgo": {
     "placeholders": {
       "minutes": {}
@@ -147,7 +147,7 @@
       "days": {}
     }
   },
-  "timeMonthsAgo": "hace {months}m",
+  "timeMonthsAgo": "hace {months}mes",
   "@timeMonthsAgo": {
     "placeholders": {
       "months": {}

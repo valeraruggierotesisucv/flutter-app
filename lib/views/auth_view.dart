@@ -11,8 +11,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthView extends StatefulWidget {
   final AuthViewModel viewModel;
+  final AuthService? authService;
 
-  const AuthView({super.key, required this.viewModel});
+  const AuthView({
+    super.key,
+    required this.viewModel,
+    this.authService,
+  });
 
   @override
   State<AuthView> createState() => _AuthViewState();
@@ -20,7 +25,7 @@ class AuthView extends StatefulWidget {
 
 class _AuthViewState extends State<AuthView> {
   late AuthViewModel _viewModel;
-  final authService = AuthService();
+  late final AuthService authService;
   final _emailController = TextEditingController();
   final _passwordControler = TextEditingController();
   final _nameController = TextEditingController();
@@ -43,6 +48,7 @@ class _AuthViewState extends State<AuthView> {
   void initState() {
     super.initState();
     _viewModel = widget.viewModel;
+    authService = widget.authService ?? AuthService();
     DateTime now = DateTime.now();
     _dateOfBirthController = DateTime(now.year - 18, now.month, now.day);
   }

@@ -33,8 +33,33 @@ String formatDate(DateTime date, BuildContext context) {
 }
 
 DateTime parseDate(String date) {
-  final parts = date.split("/").reversed.toList();
-  return DateTime.parse("${parts.join("-")}T16:00:00.000Z");
+  if (date.isEmpty) {
+    throw FormatException('Date string cannot be empty');
+  }
+  
+  final parts = date.split("/");
+  if (parts.length != 3) {
+    throw FormatException('Invalid date format. Expected dd/mm/yyyy');
+  }
+
+  final day = int.tryParse(parts[0]);
+  final month = int.tryParse(parts[1]);
+  final year = int.tryParse(parts[2]);
+
+  if (day == null || month == null || year == null) {
+    throw FormatException('Invalid date components');
+  }
+
+  if (month < 1 || month > 12) {
+    throw FormatException('Invalid month: $month');
+  }
+
+  final daysInMonth = DateTime(year, month + 1, 0).day;
+  if (day < 1 || day > daysInMonth) {
+    throw FormatException('Invalid day: $day for month: $month');
+  }
+
+  return DateTime.parse("$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}T16:00:00.000Z");
 } 
 
 String formatDateToLocalString(DateTime dateTime){
