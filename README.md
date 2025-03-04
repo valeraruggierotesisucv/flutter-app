@@ -72,6 +72,7 @@ flutter-app/
      SUPABASE_URL=tu_url_de_supabase
      SUPABASE_ANON_KEY=tu_clave_anonima_de_supabase
      FIREBASE_API_KEY=tu_clave_de_firebase
+     API_URL=tu_api_url
      ```
 
 ## Ejecución de la Aplicación
