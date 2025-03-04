@@ -50,9 +50,7 @@ flutter-app/
 
 - Flutter SDK (última versión estable)
 - Dart SDK
-- Android Studio / Xcode (para emuladores)
 - Cuenta en Supabase
-- Proyecto en Firebase (para notificaciones)
 
 ## Configuración del Entorno
 
