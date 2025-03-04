@@ -12,7 +12,7 @@ Eventify es una plataforma móvil diseñada para la gestión de eventos e intera
 - **Firebase**: Utilizado para notificaciones push y análisis.
 - **Provider**: Biblioteca para la gestión del estado de la aplicación.
 - **Flutter Localizations**: Solución de internacionalización integrada.
-- **Integration Test & Patrol**: Herramientas para pruebas de integración y UI.
+- **Integration Test**: Herramientas para pruebas de integración y UI.
 
 ## Estructura del Proyecto
 
