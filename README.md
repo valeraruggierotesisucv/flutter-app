@@ -27,6 +27,7 @@ flutter-app/
 │   │   └── auth_provider.dart       # Proveedor de autenticación
 │   │   └── notification_provider.dart  # Proveedor de notificaciones
 │   ├── services/       # Servicios de la aplicación
+│   │   └── auth_gate.dart           # 
 │   │   └── auth_service.dart        # Servicio de autenticación
 │   │   └── push_notifications.dart  # Servicio de notificaciones push
 │   │   └── storage_service.dart     # Servicio de almacenamiento
@@ -100,17 +101,6 @@ Para ejecutar las pruebas de integración:
 ```bash
 flutter test integration_test
 ```
-
-## Características Principales
-
-- **Autenticación**: Registro, inicio de sesión y recuperación de contraseña
-- **Gestión de Eventos**: Creación, edición, visualización y búsqueda de eventos
-- **Perfil de Usuario**: Personalización y gestión del perfil
-- **Sistema Social**: Seguimiento de usuarios, comentarios en eventos
-- **Notificaciones**: Sistema de notificaciones push
-- **Multimedia**: Soporte para imágenes y audio
-- **Localización**: Integración con servicios de ubicación
-- **Multilenguaje**: Soporte para múltiples idiomas
 
 ## Despliegue
 
