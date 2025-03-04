@@ -1,16 +1,128 @@
-# Eventify
+# Eventify - Flutter
 
-A new Flutter project.
+## Descripción
 
-## Getting Started
+Eventify es una plataforma móvil diseñada para la gestión de eventos e interacción entre usuarios. Incluye funcionalidades esenciales como la administración de eventos, la conexión entre usuarios y características sociales, tales como seguidores, notificaciones y comentarios.
 
-This project is a starting point for a Flutter application.
+## Tecnologías Utilizadas
 
-A few resources to get you started if this is your first Flutter project:
+- **Flutter**: Framework multiplataforma para el desarrollo de aplicaciones móviles.
+- **Dart**: Lenguaje de programación optimizado para aplicaciones en múltiples plataformas.
+- **Supabase**: Plataforma de backend como servicio (BaaS) para autenticación, base de datos y almacenamiento.
+- **Firebase**: Utilizado para notificaciones push y análisis.
+- **Provider**: Biblioteca para la gestión del estado de la aplicación.
+- **Flutter Localizations**: Solución de internacionalización integrada.
+- **Integration Test & Patrol**: Herramientas para pruebas de integración y UI.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Estructura del Proyecto
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+flutter-app/
+├── lib/
+│   ├── data/           # Capa de acceso a datos
+│   │   ├── repositories/  # Repositorios para acceso a datos
+│   │   └── services/      # Servicios de API
+│   ├── models/         # Modelos de datos
+│   ├── providers/      # Proveedores para gestión de estado
+│   │   └── auth_provider.dart       # Proveedor de autenticación
+│   │   └── notification_provider.dart  # Proveedor de notificaciones
+│   ├── services/       # Servicios de la aplicación
+│   │   └── auth_service.dart        # Servicio de autenticación
+│   │   └── push_notifications.dart  # Servicio de notificaciones push
+│   │   └── storage_service.dart     # Servicio de almacenamiento
+│   ├── utils/          # Utilidades y helpers
+│   ├── view_models/    # Modelos de vista (MVVM)
+│   ├── views/          # Pantallas de la aplicación
+│   ├── widgets/        # Componentes reutilizables
+│   ├── l10n/           # Archivos de internacionalización
+│   ├── navigation.dart # Sistema de navegación
+│   ├── routes.dart     # Definición de rutas
+│   └── main.dart       # Punto de entrada de la aplicación
+├── assets/            # Recursos estáticos (imágenes, etc.)
+├── fonts/             # Fuentes personalizadas
+├── integration_test/  # Pruebas de integración
+├── test/             # Pruebas unitarias
+└── pubspec.yaml      # Dependencias y configuración
+```
+
+## Requisitos Previos
+
+- Flutter SDK (última versión estable)
+- Dart SDK
+- Android Studio / Xcode (para emuladores)
+- Cuenta en Supabase
+- Proyecto en Firebase (para notificaciones)
+
+## Configuración del Entorno
+
+1. Clona el repositorio:
+   ```bash
+   git clone [URL_DEL_REPOSITORIO]
+   cd flutter-app
+   ```
+
+2. Instala las dependencias:
+   ```bash
+   flutter pub get
+   ```
+
+3. Configura las variables de entorno:
+   - Crea un archivo `.env` en la raíz del proyecto basado en `.env.example`
+   - Añade las siguientes variables:
+     ```
+     SUPABASE_URL=tu_url_de_supabase
+     SUPABASE_ANON_KEY=tu_clave_anonima_de_supabase
+     FIREBASE_API_KEY=tu_clave_de_firebase
+     ```
+
+## Ejecución de la Aplicación
+
+### Desarrollo
+
+Para iniciar la aplicación en modo desarrollo:
+
+```bash
+flutter run
+```
+
+Esto compilará y ejecutará la aplicación en el dispositivo/emulador conectado.
+
+### Pruebas
+
+Para ejecutar las pruebas unitarias:
+
+```bash
+flutter test
+```
+
+Para ejecutar las pruebas de integración:
+
+```bash
+flutter test integration_test
+```
+
+## Características Principales
+
+- **Autenticación**: Registro, inicio de sesión y recuperación de contraseña
+- **Gestión de Eventos**: Creación, edición, visualización y búsqueda de eventos
+- **Perfil de Usuario**: Personalización y gestión del perfil
+- **Sistema Social**: Seguimiento de usuarios, comentarios en eventos
+- **Notificaciones**: Sistema de notificaciones push
+- **Multimedia**: Soporte para imágenes y audio
+- **Localización**: Integración con servicios de ubicación
+- **Multilenguaje**: Soporte para múltiples idiomas
+
+## Despliegue
+
+### Generación de APK/IPA
+
+Para generar archivos de instalación:
+
+```bash
+flutter build apk --release  # Para Android (APK)
+flutter build ios --release  # Para iOS (requiere Xcode)
+```
+
+## Contacto
+
+Para preguntas o sugerencias, por favor contacta a valeraruggierotesisucv@gmail.com
