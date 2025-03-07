@@ -53,7 +53,7 @@ flutter-app/
 
 1. Clona el repositorio:
    ```bash
-   git clone [URL_DEL_REPOSITORIO]
+   git clone https://github.com/valeraruggierotesisucv/flutter-app.git
    cd flutter-app
    ```
 
