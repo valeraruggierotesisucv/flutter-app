@@ -6,13 +6,10 @@ Eventify es una plataforma móvil diseñada para la gestión de eventos e intera
 
 ## Tecnologías Utilizadas
 
-- **Flutter**: Framework multiplataforma para el desarrollo de aplicaciones móviles.
 - **Dart**: Lenguaje de programación optimizado para aplicaciones en múltiples plataformas.
 - **Supabase**: Plataforma de backend como servicio (BaaS) para autenticación, base de datos y almacenamiento.
 - **Firebase**: Utilizado para notificaciones push y análisis.
-- **Provider**: Biblioteca para la gestión del estado de la aplicación.
 - **Flutter Localizations**: Solución de internacionalización integrada.
-- **Integration Test**: Herramientas para pruebas de integración y UI.
 
 ## Estructura del Proyecto
 
@@ -103,13 +100,12 @@ flutter test integration_test
 
 ## Despliegue
 
-### Generación de APK/IPA
+### Generación de APK
 
-Para generar archivos de instalación:
+Para generar el build:
 
 ```bash
-flutter build apk --release  # Para Android (APK)
-flutter build ios --release  # Para iOS (requiere Xcode)
+flutter build apk --split-per-abi  # Para Android (APK)
 ```
 
 ## Contacto
