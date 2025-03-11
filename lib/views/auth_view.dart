@@ -284,7 +284,7 @@ class _AuthViewState extends State<AuthView> {
                                 hint: t.changePasswordConfirmHint,
                                 error: confirmPasswordError,
                                 controller: _confirmPasswordController,
-                                secureText: confirmPasswordVisibility,
+                                secureText: !confirmPasswordVisibility,
                                 icon: confirmPasswordVisibility
                                     ? Icons.visibility
                                     : Icons.visibility_off,
