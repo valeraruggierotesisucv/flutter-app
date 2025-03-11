@@ -20,7 +20,7 @@ class LocaleModel extends ChangeNotifier {
       print('savedLanguage: $savedLanguage');
       _locale = Locale(savedLanguage);
     } else {
-      _locale = const Locale('en'); // Default language
+      _locale = const Locale('es'); // Default language
     }
     notifyListeners();
   }
